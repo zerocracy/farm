@@ -56,14 +56,19 @@ SOFTWARE.
               <xsl:value-of select="personality"/>
             </code>
           </li>
-          <xsl:if test="examiner">
-            <li>
-              <xsl:text>examiner: </xsl:text>
-              <code>
-                <xsl:value-of select="examiner"/>
-              </code>
-            </li>
-          </xsl:if>
+          <li>
+            <xsl:text>examiner: </xsl:text>
+            <xsl:choose>
+              <xsl:when test="examiner">
+                <code>
+                  <xsl:value-of select="examiner"/>
+                </code>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:text>Your resume will be assigned for review soon</xsl:text>
+              </xsl:otherwise>
+            </xsl:choose>
+          </li>
         </ul>
       </li>
     </ul>

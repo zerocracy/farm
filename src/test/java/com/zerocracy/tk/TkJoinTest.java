@@ -100,7 +100,8 @@ public final class TkJoinTest {
                 new IterableOf<>(
                     text,
                     telegram,
-                    personality
+                    personality,
+                    "Your resume will be assigned for review soon"
                 )
             )
         );
