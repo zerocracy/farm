@@ -45,17 +45,17 @@ def exec(Project project, XML xml) {
   TmZerocrat tmZerocrat = Mockito.mock(TmZerocrat)
   Mockito.when(mockedFunc.apply(Mockito.any(ExtTelegram))).thenReturn(tmZerocrat)
   Mockito.doNothing().when(tmZerocrat).post(Mockito.any(SendMessage))
-  Field field = ExtTelegram.class.getDeclaredField("SINGLETON")
+  Field field = ExtTelegram.getDeclaredField('SINGLETON')
 
   setFinalStatic(field, mockedFunc)
 }
 
 static setFinalStatic(Field field, Object newValue) {
   field.setAccessible(true)
-  Field modifiersField = Field.class.getDeclaredField("modifiers")
+  Field modifiersField = Field.getDeclaredField('modifiers')
   modifiersField.setAccessible(true)
   Modifier.FINAL
-  modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL)
+  modifiersField.setInt(field, field.modifiers & ~Modifier.FINAL)
   field.set(null, newValue)
 }
 
