@@ -306,6 +306,27 @@ public final class CatalogTest {
         );
     }
 
+    @Test
+    public void changeSandboxFlag() throws Exception {
+        final Catalog catalog = new Catalog(new FkFarm()).bootstrap();
+        final String pid = "AAAAAAASS";
+        catalog.add(pid, "2018/10/000000404/");
+        MatcherAssert.assertThat(
+            "Project has sandbox flag, but should not",
+            catalog.sandbox(pid), Matchers.is(false)
+        );
+        catalog.sandbox(pid, true);
+        MatcherAssert.assertThat(
+            "Project doesn't have sandbox flag, but it was added",
+            catalog.sandbox(pid), Matchers.is(true)
+        );
+        catalog.sandbox(pid, false);
+        MatcherAssert.assertThat(
+            "Project has sandbox flag, but it was removed",
+            catalog.sandbox(pid), Matchers.is(false)
+        );
+    }
+
     private static Catalog withProject(final String pid) throws IOException {
         final Pmo pmo = new Pmo(new FkFarm());
         final Catalog catalog = new Catalog(pmo).bootstrap();

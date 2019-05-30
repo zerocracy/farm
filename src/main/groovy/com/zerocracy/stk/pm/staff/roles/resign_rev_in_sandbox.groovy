@@ -33,7 +33,7 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Ping hourly')
   Farm farm = binding.variables.farm
   Catalog catalog = new Catalog(farm).bootstrap()
-  if (!catalog.sandbox().contains(project.pid())) {
+  if (!catalog.sandbox(project.pid())) {
     return
   }
   ClaimIn claim = new ClaimIn(xml)

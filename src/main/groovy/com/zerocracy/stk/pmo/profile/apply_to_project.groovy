@@ -60,7 +60,7 @@ def exec(Project pmo, XML xml) {
     )
   }
   if (rate > new Policy().get('33.max-sandbox-rate', Cash.ZERO)
-    && catalog.sandbox().contains(pid)) {
+    && catalog.sandbox(pid)) {
     throw new SoftException(
       new Par(
         farm,
@@ -81,7 +81,7 @@ def exec(Project pmo, XML xml) {
   if (!roles.hasAnyRole(author)) {
     int reputation = new Awards(farm, author).bootstrap().total()
     if (reputation < new Policy().get('33.min-live', 256)
-      && !catalog.sandbox().contains(pid)) {
+      && !catalog.sandbox(pid)) {
       throw new SoftException(
         new Par(
           farm,
@@ -91,7 +91,7 @@ def exec(Project pmo, XML xml) {
       )
     }
     if (reputation > new Policy().get('33.max-sandbox-rep', 256)
-      && catalog.sandbox().contains(pid)) {
+      && catalog.sandbox(pid)) {
       throw new SoftException(
         new Par(
           farm,

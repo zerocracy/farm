@@ -178,5 +178,4 @@ public final class Assume {
         }
         return has;
     }
-
 }
