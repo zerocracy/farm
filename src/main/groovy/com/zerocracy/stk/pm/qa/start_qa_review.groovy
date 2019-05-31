@@ -46,8 +46,24 @@ def exec(Project project, XML xml) {
   Cash cash = new Cash.S(claim.param('cash'))
   Cash bonus = new Cash.S(claim.param('bonus'))
   People people = new People(farm).bootstrap()
-  List<String> qaList = new Roles(project).bootstrap().findByRole('QA')
+  Roles roles = new Roles(project).bootstrap()
+  List<String> qaList = roles.findByRole('QA')
   Collection<String> qa =  new Filtered<String>({ uid -> !people.vacation(uid) }, qaList)
+  if (qa.empty){
+    roles.findByRole('ARC').each { arc ->
+      claim.copy()
+        .type('Notify user')
+        .token("user;$arc")
+        .param(
+          'message',
+          new Par(
+            farm,
+            'All QAs in the project %s are on vacation. Please handle that.'
+          ).say(project.pid())
+        ).postTo(new ClaimsOf(farm, project))
+    }
+    return
+  }
   String inspector
   if (qa.size() > 1) {
     inspector = qa[new SecureRandom().nextInt(qa.size() - 1)]
