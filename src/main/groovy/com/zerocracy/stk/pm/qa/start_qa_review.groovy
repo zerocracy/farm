@@ -28,8 +28,9 @@ import com.zerocracy.pm.qa.Reviews
 import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pmo.Agenda
 import com.zerocracy.pmo.People
-
+import org.cactoos.collection.Filtered
 import java.security.SecureRandom
+
 
 // @todo #1904:30min 0crat often can't update agenda of performer on 'Start QA review'
 //  because failed to find the job in agenda. 0crat is responding with message
@@ -44,13 +45,9 @@ def exec(Project project, XML xml) {
   int minutes = Integer.parseInt(claim.param('minutes'))
   Cash cash = new Cash.S(claim.param('cash'))
   Cash bonus = new Cash.S(claim.param('bonus'))
-  List<String> listQA = new Roles(project).bootstrap().findByRole('QA')
-  List<String> qa = []
-  for (String login : listQA) {
-    if (!new People(farm).bootstrap().vacation(login)) {
-      qa.add(login)
-    }
-  }
+  People people = new People(farm).bootstrap()
+  List<String> qaList = new Roles(project).bootstrap().findByRole('QA')
+  Collection<String> qa =  new Filtered<String>({ uid -> !people.vacation(uid) }, qaList)
   String inspector
   if (qa.size() > 1) {
     inspector = qa[new SecureRandom().nextInt(qa.size() - 1)]
