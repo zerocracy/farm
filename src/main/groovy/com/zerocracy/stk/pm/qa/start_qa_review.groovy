@@ -27,8 +27,10 @@ import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pm.qa.Reviews
 import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pmo.Agenda
-
+import com.zerocracy.pmo.People
+import org.cactoos.collection.Filtered
 import java.security.SecureRandom
+
 
 // @todo #1904:30min 0crat often can't update agenda of performer on 'Start QA review'
 //  because failed to find the job in agenda. 0crat is responding with message
@@ -36,13 +38,16 @@ import java.security.SecureRandom
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Start QA review')
+  Farm farm = binding.variables.farm
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
   String performer = claim.param('login')
   int minutes = Integer.parseInt(claim.param('minutes'))
   Cash cash = new Cash.S(claim.param('cash'))
   Cash bonus = new Cash.S(claim.param('bonus'))
-  List<String> qa = new Roles(project).bootstrap().findByRole('QA')
+  People people = new People(farm).bootstrap()
+  List<String> qaList = new Roles(project).bootstrap().findByRole('QA')
+  Collection<String> qa =  new Filtered<String>({ uid -> !people.vacation(uid) }, qaList)
   String inspector
   if (qa.size() > 1) {
     inspector = qa[new SecureRandom().nextInt(qa.size() - 1)]
@@ -51,7 +56,7 @@ def exec(Project project, XML xml) {
   }
   Reviews reviews = new Reviews(project).bootstrap()
   reviews.add(job, inspector, performer, cash, minutes, bonus)
-  Farm farm = binding.variables.farm
+
   new Agenda(farm, inspector).bootstrap().add(project, job, 'QA')
   claim.copy()
     .type('Agenda was updated')
