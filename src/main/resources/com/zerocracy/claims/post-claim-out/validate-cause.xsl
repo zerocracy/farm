@@ -24,7 +24,7 @@ SOFTWARE.
         <xsl:message terminate="yes">
           <xsl:text>Claim cause "</xsl:text>
           <xsl:value-of select="text()"/>
-          <xsl:text>" is not valid number</xsl:text>
+          <xsl:text>" is not a valid number</xsl:text>
         </xsl:message>
       </xsl:if>
       <xsl:apply-templates select="node()|@*"/>

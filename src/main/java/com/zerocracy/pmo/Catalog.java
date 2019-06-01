@@ -428,7 +428,7 @@ public final class Catalog {
     /**
      * Change project language stack.
      * @param pid Project id
-     * @param langs New laguages
+     * @param langs New languages
      * @throws IOException If fails
      */
     public void languages(final String pid, final Set<String> langs)
