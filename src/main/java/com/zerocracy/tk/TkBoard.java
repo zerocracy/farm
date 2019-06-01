@@ -118,7 +118,7 @@ public final class TkBoard implements Take {
                 )
             ),
             new XeAppend(
-                "languages", String.join(",", catalog.languages(pid))
+                "languages", String.join(", ", catalog.languages(pid))
             ),
             new XeAppend("jobs", Integer.toString(catalog.jobs(pid))),
             new XeAppend("orders", Integer.toString(catalog.orders(pid))),
