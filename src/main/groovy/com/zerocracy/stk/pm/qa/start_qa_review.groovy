@@ -50,18 +50,12 @@ def exec(Project project, XML xml) {
   List<String> qaList = roles.findByRole('QA')
   Collection<String> qa =  new Filtered<String>({ uid -> !people.vacation(uid) }, qaList)
   if (qa.empty){
-    roles.findByRole('ARC').each { arc ->
-      claim.copy()
-        .type('Notify user')
-        .token("user;$arc")
-        .param(
-          'message',
-          new Par(
-            farm,
-            'All QAs in the project %s are on vacation. Please handle that.'
-          ).say(project.pid())
-        ).postTo(new ClaimsOf(farm, project))
-    }
+    String arc = roles.findByRole('ARC')[0]
+    claim.reply(
+      new Par(
+  '@%s all QAs are on vacation. Please handle that.'
+      ).say(arc)
+    ).postTo(new ClaimsOf(farm, project))
     return
   }
   String inspector
