@@ -29,7 +29,6 @@ import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.in.Orders
-import com.zerocracy.pmo.People
 import com.zerocracy.radars.github.Job
 
 def exec(Project project, XML xml) {
@@ -45,23 +44,20 @@ def exec(Project project, XML xml) {
   Github github = new ExtGithub(farm).value()
   Issue.Smart issue = new Issue.Smart(new Job.Issue(github, job))
   try {
-    Boolean added = new IssueLabels.Smart(issue.labels()).addIfAbsent('waiting', 'eafc64')
-    if (added && orders.assigned(job)) {
+    new IssueLabels.Smart(issue.labels()).addIfAbsent('waiting', 'eafc64')
+    if (orders.assigned(job)) {
       String login = orders.performer(job)
-      new People(farm).bootstrap().links(login, 'telegram').any { uid ->
-        claim.copy()
-              .type('Notify in Telegram')
-              .token("telegram;${uid}")
-              .param('login', login)
-              .param(
-                'message',
-                new Par(
-                        farm,
-                        'The job %s in %s is in WAIT status'
-                ).say(job, project.pid())
-              )
-              .postTo(new ClaimsOf(farm, project))
-      }
+      claim.copy()
+        .type('Notify user')
+        .token("user;${login}")
+        .param(
+          'message',
+          new Par(
+            farm,
+            'The job %s in %s is in WAIT status'
+          ).say(job, project.pid())
+        )
+        .postTo(new ClaimsOf(farm, project))
     }
   } catch (AssertionError ex) {
     Logger.warn(this, "Can't add label to issue %s: %s", issue, ex.localizedMessage)
