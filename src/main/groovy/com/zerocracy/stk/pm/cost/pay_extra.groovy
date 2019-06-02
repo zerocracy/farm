@@ -105,7 +105,6 @@ def exec(Project project, XML xml) {
     .type('Make payment')
     .param('login', login)
     .param('minutes', minutes)
-    .param('no-tuition-fee', true)
     .param('reason', new Par('Direct payment from @%s').say(author))
     .postTo(new ClaimsOf(farm, project))
   claim.copy()
