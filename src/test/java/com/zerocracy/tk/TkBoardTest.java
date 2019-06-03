@@ -27,6 +27,7 @@ import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pm.cost.Ledger;
 import com.zerocracy.pmo.Catalog;
+import java.util.Collections;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
 import org.junit.Ignore;
@@ -44,6 +45,39 @@ import org.junit.Test;
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class TkBoardTest {
+
+    @Test
+    public void rendersArchitectsCorrectly() throws Exception {
+        final Farm farm = new PropsFarm(new FkFarm());
+        final Catalog catalog = new Catalog(farm).bootstrap();
+        final String pid = "RENDERARC";
+        catalog.add(pid, "2017/01/XAAABBBBC/");
+        final Repo repo = ((MkGithub) new ExtGithub(farm).value())
+            .randomRepo();
+        catalog.link(pid, "github", repo.coordinates().toString());
+        catalog.languages(pid, Collections.singleton("none"));
+        catalog.publish(pid, true);
+        final String arc = "arc";
+        catalog.architect(pid, arc);
+        MatcherAssert.assertThat(
+            new View(farm, "/board").xml(),
+            XhtmlMatchers.hasXPath(
+                String.format(
+                    String.join(
+                        "/",
+                        "",
+                        "page",
+                        "projects",
+                        "project[./id='%s']",
+                        "architects",
+                        "architect[text() = '%s']"
+                    ),
+                    pid, arc
+                )
+            )
+        );
+    }
+
     @Test
     @Ignore
     public void rendersBoardWithFundedProject() throws Exception {

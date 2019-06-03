@@ -109,7 +109,13 @@ public final class TkBoard implements Take {
             new XeAppend("id", pid),
             new XeAppend("title", catalog.title(pid)),
             new XeAppend("mine", Boolean.toString(members.contains(user))),
-            new XeAppend("architects", catalog.architect(pid)),
+            new XeAppend(
+                "architects",
+                new XeAppend(
+                    "architect",
+                    catalog.architect(pid)
+                )
+            ),
             new XeAppend(
                 "repositories",
                 new XeTransform<>(
