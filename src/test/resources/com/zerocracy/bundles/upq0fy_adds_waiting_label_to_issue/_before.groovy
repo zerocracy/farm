@@ -17,6 +17,7 @@
 package com.zerocracy.bundles.adds_waiting_label_to_issue
 
 import com.jcabi.github.Github
+import com.jcabi.github.Issue
 import com.jcabi.github.Repo
 import com.jcabi.github.Repos
 import com.jcabi.xml.XML
@@ -28,5 +29,7 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
   Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
-  repo.issues().create('The issue', 'to wait')
+  Issue issue = new Issue.Smart(repo.issues().create('The issue', 'to wait'))
+  issue.assign('yegor256')
 }
+
