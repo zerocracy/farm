@@ -132,7 +132,6 @@ SOFTWARE.
           <a href="http://www.zerocracy.com/policy.html#2">
             <xsl:text>apply</xsl:text>
           </a>
-          <xsl:text>.</xsl:text>
         </xsl:otherwise>
       </xsl:choose>
       <xsl:if test="vesting">
