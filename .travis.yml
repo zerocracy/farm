@@ -13,7 +13,7 @@ install:
   - sudo apt-get update
   - sudo apt-get remove -y mongodb-org
   - sudo apt-get install -y --allow-unauthenticated mongodb-org
-  - gem install pdd
+  - gem install pdd -v 0.20.5
   - gem install xcop
 env:
   global:
