@@ -24,4 +24,8 @@ SOFTWARE.
     <created>2017-01-01T00:00:00.000Z</created>
     <role>DEV</role>
   </job>
+  <job id="gh:test/test#3">
+    <created>2017-01-01T00:00:00.000Z</created>
+    <role>DEV</role>
+  </job>
 </wbs>

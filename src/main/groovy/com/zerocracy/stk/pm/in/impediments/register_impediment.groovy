@@ -20,10 +20,13 @@ import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
+import com.zerocracy.SoftException
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
-import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pm.in.Impediments
+import com.zerocracy.pm.in.Orders
+import com.zerocracy.pm.staff.Roles
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
@@ -33,6 +36,13 @@ def exec(Project project, XML xml) {
   String author = claim.author()
   String reason = new Par('@%s asked to wait a bit').say(author)
   Farm farm = binding.variables.farm
+  boolean allowed = new Orders(farm, project).bootstrap().performer(job) == author ||
+    new Roles(project).bootstrap().hasRole(author, 'PO', 'ARC')
+  if (!allowed) {
+    throw new SoftException(
+      new Par(farm, '@%s you can\'t register impediment for this job').say(author)
+    )
+  }
   new Impediments(farm, project)
     .bootstrap()
     .register(job, reason)

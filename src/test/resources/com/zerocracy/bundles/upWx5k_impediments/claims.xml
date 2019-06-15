@@ -35,7 +35,12 @@ SOFTWARE.
     <created>2017-01-15T01:00:00.000Z</created>
   </claim>
   <claim id="3">
-    <type>Ping</type>
-    <created>2017-01-15T01:00:01.000Z</created>
+    <type>Register impediment</type>
+    <author>yegor256</author>
+    <token>job;gh:test/test#3</token>
+    <params>
+      <param name="job">gh:test/test#3</param>
+    </params>
+    <created>2017-01-15T01:00:00.000Z</created>
   </claim>
 </claims>
