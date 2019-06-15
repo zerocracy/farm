@@ -26,4 +26,9 @@ SOFTWARE.
     <performer>yegor256</performer>
     <reason>some reason</reason>
   </order>
+  <order job="gh:test/test#3">
+    <created>2017-01-01T00:00:00.000Z</created>
+    <performer>someoneelse</performer>
+    <reason>some reason</reason>
+  </order>
 </orders>

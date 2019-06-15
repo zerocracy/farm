@@ -32,4 +32,5 @@ def exec(Project project, XML xml) {
     Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
     repo.issues().create('Waiting', '')
     repo.issues().create('Waiting2', '')
+    repo.issues().create('Waiting3', '')
 }
