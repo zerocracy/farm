@@ -73,7 +73,7 @@ def exec(Project project, XML xml) {
     ).say(project.pid(), amount, claim.author())
   ).postTo(new ClaimsOf(farm, project))
   Catalog catalog = new Catalog(farm).bootstrap()
-  if (catalog.sandbox().contains(project.pid())) {
+  if (catalog.sandbox(project.pid())) {
     claim.copy().type('Send zold')
       .param('recipient', claim.author())
       .param('reason', 'contribution reward')
