@@ -59,7 +59,7 @@ SOFTWARE.
       <opt>
         <name>reason</name>
         <regex>.+</regex>
-        <help>The reason of deny</help>
+        <help>The reason of denial</help>
       </opt>
     </opts>
   </cmd>
@@ -107,7 +107,7 @@ SOFTWARE.
       <opt>
         <name>role</name>
         <regex>[A-Z]{2,4}</regex>
-        <help>Project role you want to apply</help>
+        <help>Project role you want to apply to</help>
       </opt>
       <opt>
         <name>rate</name>
@@ -140,7 +140,7 @@ SOFTWARE.
       <opt>
         <name>pid</name>
         <regex>[A-Z0-9]{9}</regex>
-        <help>Project ID you're existing, find them in [your profile](https://www.0crat.com/me)</help>
+        <help>Project ID you're exiting, find it in [your profile](https://www.0crat.com/me)</help>
       </opt>
     </opts>
   </cmd>

@@ -302,9 +302,9 @@ stakeholder.
 
 ## Maven profiles
 
-There are maven profiles which you can enabled:
+There are maven profiles which you can enable:
 
- - `qulice` - enabled [Qulice](https://www.qulice.com/) (Source Code Quality Police) profile
+ - `qulice` - enables [Qulice](https://www.qulice.com/) (Source Code Quality Police) profile
  - `codenarc` - enables [Codenarc](http://codenarc.sourceforge.net/) validation
  - `upgrade-bundles` - fetch fresh xml schemas from `datum` repo and update bundle tests
  - `dynamodb` - starts local dynamodb instance for integration testing
