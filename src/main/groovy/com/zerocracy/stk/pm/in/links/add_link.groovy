@@ -42,7 +42,7 @@ def exec(Project project, XML xml) {
   if (catalog.hasLink(pid, rel, href)) {
     claim.reply(
       new Par(farm, 'The project %s already has link rel=\'%s\' ref=\'%s\'')
-        .say(pid, rel, ref)
+        .say(pid, rel, href)
     ).postTo(new ClaimsOf(farm, project))
   }
   if (rel == 'github') {
