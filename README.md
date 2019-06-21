@@ -13,7 +13,7 @@
 [![Stability of Webhook](https://www.rehttp.net/b?u=http%3A%2F%2Fwww.0crat.com%2Fghook)](https://www.rehttp.net/i?u=http%3A%2F%2Fwww.0crat.com%2Fghook)
 [![Availability at SixNines](https://www.sixnines.io/b/9f5b)](https://www.sixnines.io/h/9f5b)
 
-[What is it?](http://www.zerocracy.com/toc.html)
+Read this article first: [_What is it?_](http://www.zerocracy.com/toc.html)
 
 It's a core repository of [Zerocrat](https://www.0crat.com).
 It contains our persistence layer (`com.zerocracy.farm`),
