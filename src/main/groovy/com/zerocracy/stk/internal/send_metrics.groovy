@@ -16,27 +16,36 @@
  */
 package com.zerocracy.stk.internal
 
+
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.Txn
 import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
+import com.zerocracy.farm.props.Props
 import com.zerocracy.kpi.KpiMetrics
 import com.zerocracy.kpi.KpiOf
 import com.zerocracy.kpi.KpiStats
+import com.zerocracy.pm.cost.Ledger
+import com.zerocracy.pmo.Catalog
+
 import java.time.Duration
+import java.time.Instant
 
 /**
  * Send KPI metrics to PMO users.
  *
- * @param project Project
+ * @param pmo Project
  * @param xml Claim
  */
-def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Ping daily')
-  new Assume(project, xml).isPmo()
+def exec(Project pmo, XML xml) {
+  new Assume(pmo, xml).type('Ping daily').isPmo()
   Farm farm = binding.variables.farm
+  if (new Props(farm).has('//testing')) {
+    return
+  }
   KpiMetrics metrics = new KpiOf(farm)
   int days = 1
   Duration period = Duration.ofDays(days)
@@ -59,6 +68,20 @@ def exec(Project project, XML xml) {
       }
       builder.append('\n')
     }
+  }
+  new Txn(pmo).withCloseable { Project pkt ->
+    Instant start = Instant.now() - Duration.ofDays(16)
+    builder.append('Active projects:')
+    Catalog catalog = new Catalog(pkt).bootstrap()
+    catalog.active().each { String pid ->
+      Ledger ledger = new Ledger(farm, farm.find("@id=${pid}")[0]).bootstrap()
+      if (!ledger.empty(start)) {
+        String arc = catalog.architect()
+        String title = catalog.title(pid)
+        builder.append("  `${pid}`/`${title}`/`${arc}`")
+      }
+    }
+    builder.append('\n')
   }
   builder.append('\nIf you have any questions,')
     .append(' don\'t hesitate to check the [dashboard](https://www.0crat.com).')
