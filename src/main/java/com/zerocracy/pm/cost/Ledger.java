@@ -28,6 +28,7 @@ import com.zerocracy.farm.props.Props;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.time.Instant;
 import java.util.Optional;
 import org.cactoos.Scalar;
 import org.cactoos.time.DateAsText;
@@ -160,6 +161,17 @@ public final class Ledger {
     }
 
     /**
+     * Check if project has any transaction starting from time.
+     * @param start Start time
+     * @return True if doesn't have
+     * @throws IOException If fails
+     */
+    public boolean empty(final Instant start) throws IOException {
+        return new PgLedger(new ExtDataSource(this.farm).value(), this.project)
+            .empty(start);
+    }
+
+    /**
      * Summarize balance lines.
      * @param acc The account
      * @param col The column (either "ct" or "dt")
@@ -197,30 +209,37 @@ public final class Ledger {
      */
     public static final class Transaction
         implements Scalar<Iterable<Directive>> {
+
         /**
          * The amount.
          */
         private final Cash amount;
+
         /**
          * The debit.
          */
         private final String debit;
+
         /**
          * The debit details.
          */
         private final String debitx;
+
         /**
          * The credit.
          */
         private final String credit;
+
         /**
          * The credit details.
          */
         private final String creditx;
+
         /**
          * The details.
          */
         private final String details;
+
         /**
          * Ctor.
          * @param amt Amount
@@ -240,6 +259,7 @@ public final class Ledger {
             this.creditx = cdtx;
             this.details = text;
         }
+
         @Override
         public Iterable<Directive> value() {
             return new Directives()

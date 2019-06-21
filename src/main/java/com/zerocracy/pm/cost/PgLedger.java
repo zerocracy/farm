@@ -215,6 +215,41 @@ public final class PgLedger {
     }
 
     /**
+     * Check if ledger table has any transacion from start time.
+     * @param start Start time
+     * @return True if doesn't have
+     * @throws IOException If fails
+     */
+    @SuppressWarnings("PMD.ExceptionAsFlowControl")
+    public boolean empty(final Instant start) throws IOException {
+        try {
+            return !new JdbcSession(this.data).sql(
+                String.join(
+                    "",
+                    "SELECT exists(",
+                    "SELECT 1 FROM ledger WHERE project = ? AND created >= ?",
+                    ")"
+                )
+            ).prepare(
+                stmt -> {
+                    try {
+                        stmt.setString(1, this.pkt.pid());
+                    } catch (final IOException err) {
+                        throw new SQLException(
+                            "Can't read project id", err
+                        );
+                    }
+                    stmt.setTimestamp(2, Timestamp.from(start));
+                }
+            ).select(new SingleOutcome<>(Boolean.class));
+        } catch (final SQLException err) {
+            throw new IOException(
+                "Failed to find transactions for project", err
+            );
+        }
+    }
+
+    /**
      * Preparation for bootstrap.
      */
     private static final class XmlPreparation implements Preparation {

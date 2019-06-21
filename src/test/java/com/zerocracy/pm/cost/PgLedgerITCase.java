@@ -27,6 +27,7 @@ import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pmo.Pmo;
 import java.sql.SQLException;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
@@ -321,6 +322,24 @@ public final class PgLedgerITCase {
         MatcherAssert.assertThat(
             ledger.fees(Instant.now().minusSeconds(Tv.FIVE)),
             Matchers.equalTo(fee)
+        );
+    }
+
+    @Test
+    public void checksEmpty() throws Exception {
+        final PropsFarm farm = new PropsFarm();
+        final DataSource data = new ExtDataSource(farm).value();
+        PgLedgerITCase.cleanup(data);
+        final PgLedger ledger = new PgLedger(data, new Pmo(farm));
+        ledger.add(
+            new Ledger.Transaction(
+                new Cash.S("$1"),
+                "dt", "dtx", "ct", "ctx", "tx1"
+            )
+        );
+        MatcherAssert.assertThat(
+            ledger.empty(Instant.now().minus(Duration.ofDays(1))),
+            Matchers.is(false)
         );
     }
 
