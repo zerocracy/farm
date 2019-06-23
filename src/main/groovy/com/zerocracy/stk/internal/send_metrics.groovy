@@ -74,7 +74,7 @@ def exec(Project pmo, XML xml) {
     builder.append('Active projects:')
     Catalog catalog = new Catalog(pkt).bootstrap()
     catalog.active().each { String pid ->
-      Ledger ledger = new Ledger(farm, farm.find("@id=${pid}")[0]).bootstrap()
+      Ledger ledger = new Ledger(farm, farm.find("@id='${pid}'").iterator().next()).bootstrap()
       if (!ledger.empty(start)) {
         String arc = catalog.architect()
         String title = catalog.title(pid)
