@@ -49,7 +49,7 @@ def exec(Project project, XML xml) {
       new Par(
         farm,
         'The job %s was assigned to you in %s as %s a minute ago;',
-        'here is [why](/footprint/%2$s/%s);'
+        'here is [why](/footprint/%2$s/%s); '
       ).say(job, project.pid(), role, claim.param('reason')) + tail
     )
     .postTo(new ClaimsOf(farm, project))
