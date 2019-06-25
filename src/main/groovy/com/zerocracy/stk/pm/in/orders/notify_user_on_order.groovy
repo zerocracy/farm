@@ -32,13 +32,13 @@ def exec(Project project, XML xml) {
   String job = claim.param('job')
   String role = claim.param('role')
   Estimates estimates = new Estimates(farm, project).bootstrap()
-  String tail
+  String reward
   if (estimates.exists(job)) {
-    tail = new Par(
+    reward = new Par(
       'you will earn %s on completion'
     ).say(estimates.get(job))
   } else {
-    tail = new Par('you won\'t earn any cash on completion').say()
+    reward = new Par('you won\'t earn any cash on completion').say()
   }
   Farm farm = binding.variables.farm
   claim.copy()
@@ -50,7 +50,7 @@ def exec(Project project, XML xml) {
         farm,
         'The job %s was assigned to you in %s as %s a minute ago;',
         'here is [why](/footprint/%2$s/%s); '
-      ).say(job, project.pid(), role, claim.param('reason')) + tail
+      ).say(job, project.pid(), role, claim.param('reason')) + reward
     )
     .postTo(new ClaimsOf(farm, project))
 }
