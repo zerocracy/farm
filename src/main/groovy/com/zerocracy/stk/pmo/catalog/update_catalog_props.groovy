@@ -53,6 +53,12 @@ def exec(Project pkt, XML xml) {
     }
     catalog.cash(pkt.pid(), cash, ledger.deficit())
     catalog.members(pkt.pid(), roles.everybody())
+    List<String> arcs = roles.findByRole('ARC')
+    String arc = '0crat'
+    if (!arcs.empty) {
+      arc = arcs[0]
+    }
+    catalog.architect(pkt.pid(), arc)
     Iterable<String> repos = catalog.links(pkt.pid(), 'github')
     catalog.languages(pkt.pid(), languages(github, repos))
     pmo.commit()

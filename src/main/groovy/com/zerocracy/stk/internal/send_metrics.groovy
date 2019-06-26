@@ -78,7 +78,7 @@ def exec(Project pmo, XML xml) {
       if (!ledger.empty(start)) {
         String arc = catalog.architect(pid)
         String title = catalog.title(pid)
-        builder.append("  `${pid}`/`${title}`/`${arc}`")
+        builder.append("  `${pid}`/`${title}`/`${arc}`\n")
       }
     }
     builder.append('\n')
