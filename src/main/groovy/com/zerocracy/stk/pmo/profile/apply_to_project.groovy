@@ -26,6 +26,7 @@ import com.zerocracy.cash.Cash
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.claims.ClaimIn
+import com.zerocracy.pm.staff.Applications
 import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pmo.Awards
 import com.zerocracy.pmo.Catalog
@@ -102,6 +103,7 @@ def exec(Project pmo, XML xml) {
     }
   }
   Project project = farm.find("@id='${pid}'")[0]
+  new Applications(project).bootstrap().submit(claim.author(), role, rate)
   claim.copy()
     .type('Notify project')
     .param(

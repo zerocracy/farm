@@ -16,17 +16,34 @@
  */
 package com.zerocracy.bundles.apply_to_a_project
 
+import com.jcabi.matchers.XhtmlMatchers
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Item
 import com.zerocracy.Project
+import com.zerocracy.pm.staff.Applications
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 
-def exec(Project project, XML xml) {
-  Item item = project.acq('test.txt')
+def exec(Project pmo, XML claim) {
+  pmo.acq('test.txt').withCloseable { Item item ->
+    MatcherAssert.assertThat(
+      'user did\'t receive a message',
+      item.path().toFile().readLines(),
+      Matchers.hasItem(Matchers.stringContainsInOrder(['The project', 'was notified about your desire to join them']))
+    )
+  }
+  Farm farm = binding.variables.farm
+  Project project = farm.find('@id="XXXXXX000"').first()
   MatcherAssert.assertThat(
-    item.path().toFile().readLines(),
-    Matchers.hasItem(Matchers.stringContainsInOrder(['The project', 'was notified about your desire to join them']))
+    'application wan\'t added to list',
+    new Applications(project).bootstrap().all(),
+    Matchers.contains(
+      XhtmlMatchers.hasXPaths(
+        '/application[@login="g4s8"]',
+        '/application/rate[text()="$42.00"]',
+        '/application/role[text()="DEV"]'
+      )
+    )
   )
-  item.close()
 }

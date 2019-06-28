@@ -352,6 +352,10 @@ SOFTWARE.
       <a href="/a/{project}?a=pm/staff/roles">
         <xsl:text>Roles</xsl:text>
       </a>
+      <xsl:text>, </xsl:text>
+      <a href="/a/{project}?a=pm/staff/applications">
+        <xsl:text>Applications</xsl:text>
+      </a>
       <xsl:text> (are you </xsl:text>
       <a href="/hiring/{project}">
         <xsl:text>hiring</xsl:text>
