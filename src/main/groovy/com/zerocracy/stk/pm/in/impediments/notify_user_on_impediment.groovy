@@ -17,24 +17,32 @@
 package com.zerocracy.stk.pm.in.impediments
 
 
-import com.jcabi.github.Issue
-import com.jcabi.github.IssueLabels
-import com.jcabi.log.Logger
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
+import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.claims.ClaimIn
-import com.zerocracy.entry.ExtGithub
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
-import com.zerocracy.radars.github.Job
+import com.zerocracy.pm.in.Orders
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).notPmo().github().type('Impediment was registered')
+  new Assume(project, xml).notPmo().type('Impediment was removed', 'Impediment was registered')
+  ClaimIn claim = new ClaimIn(xml)
+  String job = claim.param('job')
   Farm farm = binding.variables.farm
-  try {
-    new IssueLabels.Smart(new Issue.Smart(new Job.Issue(new ExtGithub(farm).value(), new ClaimIn(xml))).labels())
-      .addIfAbsent('waiting', 'eafc64')
-  } catch (AssertionError ex) {
-    Logger.warn(this, "Can't add label to issue %s: %s", issue, ex.localizedMessage)
+  Orders orders = new Orders(farm, project).bootstrap()
+  if (orders.assigned(job)) {
+    String login = orders.performer(job)
+    claim.copy()
+      .type('Notify user')
+      .token("user;${login}")
+      .param(
+      'message',
+      new Par(
+        farm,
+        '%s for %s job'
+      ).say(claim.type(), job)
+    ).postTo(new ClaimsOf(farm, project))
   }
 }
