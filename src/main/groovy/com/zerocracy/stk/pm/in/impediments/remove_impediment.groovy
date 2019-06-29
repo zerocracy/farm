@@ -36,8 +36,7 @@ import com.zerocracy.pm.in.Impediments
  *  remove_impediment_from_agenda.groovy.
  */
 def exec(Project project, XML xml) {
-  new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Remove impediment')
+  new Assume(project, xml).notPmo().type('Remove impediment')
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
   String author = claim.author()
@@ -48,4 +47,5 @@ def exec(Project project, XML xml) {
   claim.reply(
     new Par('@%s continued working on job %s').say(author, job)
   ).postTo(new ClaimsOf(farm, project))
+  claim.copy().type('Impediment was removed').postTo(new ClaimsOf(farm, project))
 }
