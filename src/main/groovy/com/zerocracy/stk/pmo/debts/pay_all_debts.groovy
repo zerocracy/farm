@@ -43,11 +43,18 @@ def exec(Project pmo, XML xml) {
    *  fixed in #565 ticket.
    */
   new Assume(pmo, xml).isPmo()
-  new Assume(pmo, xml).type('Ping hourly')
+  new Assume(pmo, xml).type('Ping hourly', 'Ping daily')
   Farm farm = binding.variables.farm
   Debts debts = new Debts(farm).bootstrap()
   ClaimIn claim = new ClaimIn(xml)
-  debts.iterate().each { uid ->
+  boolean daily = claim.type().equalsIgnoreCase('ping daily')
+  String filter
+  if (daily) {
+    filter = 'failure/attempt > 10'
+  } else {
+    filter = 'failure/attempt <= 10'
+  }
+  debts.iterate(filter).each { uid ->
     boolean  zld = new People(farm).bootstrap().bank(uid) == 'zld'
     if (!debts.expired(uid) && !zld) {
       return
