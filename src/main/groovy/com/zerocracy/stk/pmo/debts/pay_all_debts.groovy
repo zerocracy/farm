@@ -52,7 +52,7 @@ def exec(Project pmo, XML xml) {
   if (daily) {
     filter = 'failure/attempt > 10'
   } else {
-    filter = 'failure/attempt <= 10'
+    filter = 'not(failure) or failure/attempt <= 10'
   }
   debts.iterate(filter).each { uid ->
     boolean  zld = new People(farm).bootstrap().bank(uid) == 'zld'

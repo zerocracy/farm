@@ -144,4 +144,19 @@ public final class DebtsTest {
             Matchers.contains(uid)
         );
     }
+
+    @Test
+    public void iterateWithoutFailures() throws Exception {
+        final Debts debts = new Debts(new FkFarm()).bootstrap();
+        final String uid = "g4s9";
+        debts.add(
+            uid, new Cash.S("$23.46"),
+            "test filter details2", "reason filter2",
+            Instant.EPOCH
+        );
+        MatcherAssert.assertThat(
+            debts.iterate("not(failure) or failure/attempt <= 10"),
+            Matchers.contains(uid)
+        );
+    }
 }
