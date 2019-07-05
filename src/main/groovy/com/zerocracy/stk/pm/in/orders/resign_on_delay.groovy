@@ -50,6 +50,7 @@ import org.cactoos.iterable.Limited
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Ping')
+  Farm farm = binding.variables.farm
   if (new Ledger(farm, project).bootstrap().cash().decimal() <= BigDecimal.ZERO) {
     // We must not resign when the project is not funded, simply
     // because developers can't do anything without money. Their PRs
@@ -63,7 +64,6 @@ def exec(Project project, XML xml) {
   Orders orders = new Orders(farm, project).bootstrap()
   Boosts boosts = new Boosts(farm, project).bootstrap()
   Impediments impediments = new Impediments(farm, project).bootstrap()
-  Farm farm = binding.variables.farm
   Roles pmos = new Roles(new Pmo(farm)).bootstrap()
   List<String> waiting = impediments.jobs().toList()
   Policy policy = new Policy()
@@ -108,6 +108,11 @@ def exec(Project project, XML xml) {
       .param('reason', new Par('Resigned on delay, see §8').say())
       .param('minutes', boosts.factor(job) * -15)
       .postTo(new ClaimsOf(farm, project))
+    claim.copy()
+      .type('Add negligence')
+      .param('job', job)
+      .param('login', worker)
+      .postTo(new ClaimsOf(farm, new Pmo(farm)))
     claim.copy()
       .type('Notify project')
       .param(

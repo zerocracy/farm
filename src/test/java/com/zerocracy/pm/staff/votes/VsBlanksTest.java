@@ -56,7 +56,7 @@ public final class VsBlanksTest {
         );
         MatcherAssert.assertThat(
             votes.take(better, new StringBuilder(0)),
-            Matchers.greaterThan(votes.take(worse, new StringBuilder(0)))
+            Matchers.lessThan(votes.take(worse, new StringBuilder(0)))
         );
     }
 }

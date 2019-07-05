@@ -17,8 +17,14 @@
 package com.zerocracy.pm.time.votes;
 
 import com.zerocracy.farm.fake.FkFarm;
+import com.zerocracy.farm.fake.FkProject;
+import com.zerocracy.pm.staff.Votes;
 import com.zerocracy.pm.staff.votes.VsNegligence;
+import com.zerocracy.pmo.Negligence;
 import com.zerocracy.pmo.Pmo;
+import org.cactoos.list.ListOf;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
@@ -29,15 +35,22 @@ import org.junit.Test;
  */
 public final class VsNegligenceTest {
 
-    /**
-     * VsNegligence can vote (not yet implemented!).
-     * @throws Exception If something goes wrong.
-     */
-    @Test(expected = UnsupportedOperationException.class)
-    public void takesAVote() throws Exception {
-        new VsNegligence(new Pmo(new FkFarm())).take(
-            "amihaiemil", new StringBuilder()
+    @Test
+    public void giveHigherVoteWhenLessNegligence() throws Exception {
+        final String worse = "user2";
+        final String better = "user3";
+        final FkFarm farm = new FkFarm();
+        final FkProject pkt = new FkProject();
+        new Negligence(farm, worse).bootstrap().add(pkt, "gh:test/test#2");
+        new Negligence(farm, worse).bootstrap().add(pkt, "gh:test/test#3");
+        new Negligence(farm, better).bootstrap().add(pkt, "gh:test/test#22");
+        final Votes votes = new VsNegligence(
+            new Pmo(farm),
+            new ListOf<>(worse, better)
+        );
+        MatcherAssert.assertThat(
+            votes.take(better, new StringBuilder(0)),
+            Matchers.lessThan(votes.take(worse, new StringBuilder(0)))
         );
     }
-
 }

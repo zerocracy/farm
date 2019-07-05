@@ -32,7 +32,7 @@ import org.cactoos.scalar.SolidScalar;
 /**
  * Lowest {@link com.zerocracy.pmo.Blanks} wins.
  *
- * Votes for that person with min blanks.
+ * Votes for that person with high blanks.
  *
  * @since 1.0
  */
@@ -71,7 +71,7 @@ public final class VsBlanks implements Votes {
         throws IOException {
         final int mine = this.blanks.value().get(login);
         final int better = new Filtered<>(
-            bks -> bks < mine,
+            bks -> bks > mine,
             this.blanks.value().values()
         ).size();
         log.append(
