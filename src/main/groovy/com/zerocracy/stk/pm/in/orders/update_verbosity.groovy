@@ -70,5 +70,5 @@ def exec(Project project, XML xml) {
       ).value()
     )
   ).value()
-  new Verbosity(new Pmo(farm), performer).bootstrap().add(job, project, verbosity)
+  new Verbosity(new Pmo(farm), performer).bootstrap().add(project, job, verbosity)
 }

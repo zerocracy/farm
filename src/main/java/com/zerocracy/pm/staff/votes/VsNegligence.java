@@ -16,18 +16,13 @@
  */
 package com.zerocracy.pm.staff.votes;
 
-import com.zerocracy.pm.staff.Votes;
 import com.zerocracy.pmo.Negligence;
 import com.zerocracy.pmo.Pmo;
-import java.io.IOException;
 import java.util.Collection;
-import java.util.Map;
-import org.cactoos.collection.Filtered;
+import java.util.Comparator;
 import org.cactoos.map.MapEntry;
 import org.cactoos.map.MapOf;
 import org.cactoos.map.SolidMap;
-import org.cactoos.scalar.IoCheckedScalar;
-import org.cactoos.scalar.SolidScalar;
 
 /**
  * Upvote user if they've been resigned from a lot of jobs because
@@ -38,12 +33,7 @@ import org.cactoos.scalar.SolidScalar;
  * @since 1.0
  */
 @SuppressWarnings({"PMD.SingularField", "PMD.UnusedPrivateField"})
-public final class VsNegligence implements Votes {
-
-    /**
-     * Negligence of others.
-     */
-    private final IoCheckedScalar<Map<String, Integer>> negligences;
+public final class VsNegligence extends VsRank<Integer> {
 
     /**
      * Ctor.
@@ -51,37 +41,18 @@ public final class VsNegligence implements Votes {
      * @param others Other logins
      */
     public VsNegligence(final Pmo pmo, final Collection<String> others) {
-        this.negligences = new IoCheckedScalar<>(
-            new SolidScalar<>(
-                () -> new SolidMap<>(
-                    new MapOf<>(
-                        login -> new MapEntry<>(
-                            login,
-                            new Negligence(pmo, login)
-                                .bootstrap().delays()
-                        ),
-                        others
-                    )
+        super(
+            new SolidMap<>(
+                new MapOf<>(
+                    login -> new MapEntry<>(
+                        login,
+                        new Negligence(pmo, login)
+                            .bootstrap().delays()
+                    ),
+                    others
                 )
-            )
+            ),
+            Comparator.naturalOrder()
         );
-    }
-
-    @Override
-    public double take(
-        final String login, final StringBuilder log
-    ) throws IOException {
-        final int mine = this.negligences.value().get(login);
-        final int better = new Filtered<>(
-            bks -> bks > mine,
-            this.negligences.value().values()
-        ).size();
-        log.append(
-            String.format(
-                "Job delays (negligence) %d is no.%d", mine, better + 1
-            )
-        );
-        return 1.0d - (double) better
-            / (double) this.negligences.value().size();
     }
 }

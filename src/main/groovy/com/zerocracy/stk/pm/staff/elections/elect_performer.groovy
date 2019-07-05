@@ -133,7 +133,8 @@ def exec(Project project, XML xml) {
           (wrapped(new VsBalance(project, farm, logins)))                        : 3,
           (wrapped(new VsRandom()))                                              : 1,
           (wrapped(new VsBlanks(pmo, logins)))                                   : -1,
-          (wrapped(new VsNegligence(pmo, logins)))                               : -1
+          (wrapped(new VsNegligence(pmo, logins)))                               : -1,
+          (wrapped(new VsVerbosity(pmo, logins)))                                : -1
         ]
       )
     )

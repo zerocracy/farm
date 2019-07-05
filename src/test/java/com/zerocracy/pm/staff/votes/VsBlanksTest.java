@@ -35,7 +35,7 @@ import org.junit.Test;
 public final class VsBlanksTest {
 
     @Test
-    public void giveHigherVoteWhenLessBlanks() throws Exception {
+    public void giveHigherVoteWhenMoreBlanks() throws Exception {
         final String worse = "user2";
         final String better = "user3";
         final FkFarm farm = new FkFarm();

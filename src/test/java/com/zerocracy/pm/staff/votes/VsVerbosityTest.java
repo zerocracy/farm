@@ -14,50 +14,49 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pmo;
+package com.zerocracy.pm.staff.votes;
 
+import com.jcabi.aspects.Tv;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
-import java.io.IOException;
+import com.zerocracy.pm.staff.Votes;
+import com.zerocracy.pmo.Pmo;
+import com.zerocracy.pmo.Verbosity;
+import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
- * Test case for {@link Verbosity}.
+ * Test case for {@link VsVerbosity}.
  *
  * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-public final class VerbosityTest {
+public final class VsVerbosityTest {
 
     @Test
-    public void addsVerbosity() throws Exception {
-        final String job = "gh:test/test#1";
-        final int value = 1;
-        final Verbosity verbosity =
-            new Verbosity(new Pmo(new FkFarm()), "user1234").bootstrap();
-        verbosity.add(new FkProject(), job, value);
-        MatcherAssert.assertThat(
-            verbosity.messages(),
-            Matchers.equalTo(value)
-        );
-    }
-
-    @Test
-    public void overridesVerbosity() throws IOException {
-        final Pmo pmo = new Pmo(new FkFarm());
+    public void giveHigherVoteWhenMoreComments() throws Exception {
+        final String worse = "user2";
+        final String better = "user3";
+        final FkFarm farm = new FkFarm();
         final FkProject pkt = new FkProject();
-        final String login = "paulodamaso";
-        final String job = "gh:test/test#256";
-        final int newvalue = 5;
-        final Verbosity verbosity = new Verbosity(pmo, login).bootstrap();
-        verbosity.add(pkt, job, 1);
-        verbosity.add(pkt, job, newvalue);
+        new Verbosity(farm, worse).bootstrap().add(
+            pkt, "gh:test/test#2", Tv.TEN
+        );
+        new Verbosity(farm, worse).bootstrap().add(
+            pkt, "gh:test/test#3", Tv.FIVE
+        );
+        new Verbosity(farm, better).bootstrap().add(
+            pkt, "gh:test/test#22", Tv.EIGHT
+        );
+        final Votes votes = new VsVerbosity(
+            new Pmo(farm),
+            new ListOf<>(worse, better)
+        );
         MatcherAssert.assertThat(
-            verbosity.messages(),
-            Matchers.equalTo(newvalue)
+            votes.take(better, new StringBuilder(0)),
+            Matchers.lessThan(votes.take(worse, new StringBuilder(0)))
         );
     }
 }

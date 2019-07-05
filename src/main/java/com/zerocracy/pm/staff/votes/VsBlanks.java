@@ -16,18 +16,13 @@
  */
 package com.zerocracy.pm.staff.votes;
 
-import com.zerocracy.pm.staff.Votes;
 import com.zerocracy.pmo.Blanks;
 import com.zerocracy.pmo.Pmo;
-import java.io.IOException;
 import java.util.Collection;
-import java.util.Map;
-import org.cactoos.collection.Filtered;
+import java.util.Comparator;
 import org.cactoos.map.MapEntry;
 import org.cactoos.map.MapOf;
 import org.cactoos.map.SolidMap;
-import org.cactoos.scalar.IoCheckedScalar;
-import org.cactoos.scalar.SolidScalar;
 
 /**
  * Lowest {@link com.zerocracy.pmo.Blanks} wins.
@@ -36,12 +31,7 @@ import org.cactoos.scalar.SolidScalar;
  *
  * @since 1.0
  */
-public final class VsBlanks implements Votes {
-
-    /**
-     * Blanks of others.
-     */
-    private final IoCheckedScalar<Map<String, Integer>> blanks;
+public final class VsBlanks extends VsRank<Integer> {
 
     /**
      * Ctor.
@@ -49,34 +39,19 @@ public final class VsBlanks implements Votes {
      * @param others All other logins in the competition
      */
     public VsBlanks(final Pmo pmo, final Collection<String> others) {
-        this.blanks = new IoCheckedScalar<>(
-            new SolidScalar<>(
-                () -> new SolidMap<>(
-                    new MapOf<>(
-                        login -> new MapEntry<>(
-                            login,
-                            new Blanks(pmo, login)
-                                .bootstrap()
-                                .total()
-                        ),
-                        others
-                    )
+        super(
+            new SolidMap<>(
+                new MapOf<>(
+                    login -> new MapEntry<>(
+                        login,
+                        new Blanks(pmo, login)
+                            .bootstrap()
+                            .total()
+                    ),
+                    others
                 )
-            )
+            ),
+            Comparator.naturalOrder()
         );
-    }
-
-    @Override
-    public double take(final String login, final StringBuilder log)
-        throws IOException {
-        final int mine = this.blanks.value().get(login);
-        final int better = new Filtered<>(
-            bks -> bks > mine,
-            this.blanks.value().values()
-        ).size();
-        log.append(
-            String.format("Blanks amount %d is no.%d", mine, better + 1)
-        );
-        return 1.0d - (double) better / (double) this.blanks.value().size();
     }
 }

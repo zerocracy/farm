@@ -16,11 +16,15 @@
  */
 package com.zerocracy.pmo;
 
+import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Project;
 import com.zerocracy.Xocument;
 import java.io.IOException;
 import java.time.Instant;
+import org.cactoos.iterable.ItemAt;
+import org.cactoos.iterable.Mapped;
+import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.text.JoinedText;
 import org.xembly.Directives;
 
@@ -43,6 +47,15 @@ public final class Verbosity {
 
     /**
      * Ctor.
+     * @param farm Farm
+     * @param user User
+     */
+    public Verbosity(final Farm farm, final String user) {
+        this(new Pmo(farm), user);
+    }
+
+    /**
+     * Ctor.
      * @param pmo Project
      * @param user User
      */
@@ -53,12 +66,12 @@ public final class Verbosity {
 
     /**
      * Add verbosity for a job.
-     * @param job Job id
      * @param project Project
+     * @param job Job id
      * @param verbosity Messages for a job
      * @throws IOException If fails
      */
-    public void add(final String job, final Project project,
+    public void add(final Project project, final String job,
         final int verbosity) throws IOException {
         try (final Item item = this.item()) {
             new Xocument(item).modify(
@@ -84,20 +97,21 @@ public final class Verbosity {
 
     /**
      * Verbosity value for a job.
-     * @param job Job id
      * @return Message count
      * @throws IOException If fails
      */
-    public int messages(final String job) throws IOException {
+    public int messages() throws IOException {
         try (final Item item = this.item()) {
-            return Integer.parseInt(
-                new Xocument(item).xpath(
-                    String.format(
-                        "/verbosity/order[@job = '%s']/messages/text()",
-                        job
+            return new IoCheckedScalar<>(
+                new ItemAt<Integer>(
+                    iter -> 0,
+                    new Mapped<>(
+                        Integer::parseInt,
+                        new Xocument(item)
+                            .xpath("/verbosity/order/messages/text()")
                     )
-                ).get(0)
-            );
+                )
+            ).value();
         }
     }
 
