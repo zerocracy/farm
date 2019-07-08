@@ -18,6 +18,7 @@ package com.zerocracy.pmo;
 
 import com.jcabi.aspects.Tv;
 import com.jcabi.matchers.XhtmlMatchers;
+import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.SoftException;
 import com.zerocracy.Xocument;
@@ -199,6 +200,23 @@ public final class AgendaTest {
         agenda.add(project, first, "REV");
         MatcherAssert.assertThat(
             agenda.added(first), Matchers.is(time)
+        );
+    }
+
+    @Test
+    public void returnsRole() throws Exception {
+        final Project project = new FkProject();
+        final Farm farm = new FkFarm(project);
+        final Agenda agenda = new Agenda(farm, "yegor").bootstrap();
+        final String dev = "gh:test/test#1";
+        agenda.add(project, dev, "DEV");
+        MatcherAssert.assertThat(
+            agenda.role(dev), Matchers.is("DEV")
+        );
+        final String rev = "gh:test/test#2";
+        agenda.add(project, rev, "REV");
+        MatcherAssert.assertThat(
+            agenda.role(rev), Matchers.is("REV")
         );
     }
 }

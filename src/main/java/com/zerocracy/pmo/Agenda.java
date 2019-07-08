@@ -390,6 +390,30 @@ public final class Agenda {
     }
 
     /**
+     * Retrieves the role of the specified job.
+     * @param job The job whose role is to be retrieved.
+     * @return The role of the job.
+     * @throws IOException If fails.
+     */
+    public String role(final String job) throws IOException {
+        if (!this.exists(job)) {
+            throw new SoftException(
+                new Par(
+                    "Job %s is not in the agenda of @%s, can't retrieve role"
+                ).say(job, this.login)
+            );
+        }
+        try (final Item item = this.item()) {
+            return new Xocument(item.path()).nodes(
+                String.format(
+                    "/agenda/order[@job='%s']/role",
+                    job
+                )
+            ).get(0).node().getTextContent();
+        }
+    }
+
+    /**
      * The item.
      * @return Item
      * @throws IOException If fails

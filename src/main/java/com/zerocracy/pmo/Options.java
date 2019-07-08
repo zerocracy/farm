@@ -98,6 +98,42 @@ public final class Options {
     }
 
     /**
+     * Max REV jobs in agenda.
+     * @return REV jobs number
+     * @throws IOException If fails
+     */
+    public int maxRevJobsInAgenda() throws IOException {
+        try (final Item item = this.item()) {
+            return new IoCheckedScalar<>(
+                new ItemAt<Number>(
+                    xpath -> Integer.MAX_VALUE,
+                    new Mapped<>(
+                        NumberOf::new,
+                        new Xocument(item.path())
+                            .xpath("/options/maxRevJobsInAgenda/text()")
+                    )
+                )
+            ).value().intValue();
+        }
+    }
+
+    /**
+     * Set max REV jobs in agenda.
+     * @param max Max REV jobs in agenda
+     * @throws IOException If fails
+     */
+    public void maxRevJobsInAgenda(final int max) throws IOException {
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                new Directives()
+                    .xpath("/options")
+                    .addIf("maxRevJobsInAgenda")
+                    .set(max)
+            );
+        }
+    }
+
+    /**
      * Notify students option.
      * @return True if set
      * @throws IOException If fails
