@@ -125,7 +125,7 @@ def exec(Project project, XML xml) {
           (wrapped(new VsBigDebt(pmo)))                                          : -100,
           (wrapped(new VsNoRoom(pmo)))                                           : role == 'REV' ? 0 : -100,
           (wrapped(new VsOptionsMaxJobs(pmo)))                                   : role == 'REV' ? 0 : -100,
-          (wrapped(new VsOptionsMaxRevJobs(pmo)))                                : -100,
+          (wrapped(new VsOptionsMaxRevJobs(pmo)))                                : role == 'REV' ? -100 : 0,
           (wrapped(new VsBanned(project, job)))                                  : -100,
           (wrapped(new VsVacation(pmo)))                                         : -100,
           (wrapped(new VsWorkload(farm, logins)))                                : 1,
