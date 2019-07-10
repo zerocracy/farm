@@ -16,9 +16,6 @@
  */
 package com.zerocracy.tk;
 
-import com.g4s8.hamcrest.json.JsonHas;
-import com.g4s8.hamcrest.json.JsonValueIs;
-import com.g4s8.hamcrest.json.StringIsJson;
 import com.jcabi.http.request.JdkRequest;
 import com.jcabi.http.response.RestResponse;
 import com.zerocracy.Farm;
@@ -31,6 +28,9 @@ import org.takes.Take;
 import org.takes.facets.fork.FkRegex;
 import org.takes.facets.fork.TkFork;
 import org.takes.http.FtRemote;
+import wtf.g4s8.hamcrest.json.JsonHas;
+import wtf.g4s8.hamcrest.json.JsonValueIs;
+import wtf.g4s8.hamcrest.json.StringIsJson;
 
 /**
  * Test case for {@link TkKnown}.

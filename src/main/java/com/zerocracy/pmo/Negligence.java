@@ -31,12 +31,6 @@ import org.xembly.Directives;
  * waiting).
  *
  * @since 1.0
- * @todo #1141:30min Use this metric inside resing_on_delay.groovy. After this,
- *  finish implementing the voter VsNegligence: similar to VsSpeed and
- *  VsWorkload, it should vote for the user with the highest negligence
- *  (most number of delays). When done, the voter should be declared in
- *  elect_performer.groovy with weight -1 (since the highest negligence will
- *  have the highest vote).
  */
 public final class Negligence {
 

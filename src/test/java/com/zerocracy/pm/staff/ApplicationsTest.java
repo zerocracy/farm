@@ -14,43 +14,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pm.time.votes;
+package com.zerocracy.pm.staff;
 
-import com.zerocracy.farm.fake.FkFarm;
+import com.jcabi.matchers.XhtmlMatchers;
+import com.zerocracy.cash.Cash;
 import com.zerocracy.farm.fake.FkProject;
-import com.zerocracy.pm.staff.Votes;
-import com.zerocracy.pm.staff.votes.VsNegligence;
-import com.zerocracy.pmo.Negligence;
-import com.zerocracy.pmo.Pmo;
-import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
- * Test case for {@link VsNegligence}.
+ * Test case for {@link Applications}.
  *
  * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  */
-public final class VsNegligenceTest {
+public final class ApplicationsTest {
 
     @Test
-    public void giveHigherVoteWhenLessNegligence() throws Exception {
-        final String worse = "user2";
-        final String better = "user3";
-        final FkFarm farm = new FkFarm();
-        final FkProject pkt = new FkProject();
-        new Negligence(farm, worse).bootstrap().add(pkt, "gh:test/test#2");
-        new Negligence(farm, worse).bootstrap().add(pkt, "gh:test/test#3");
-        new Negligence(farm, better).bootstrap().add(pkt, "gh:test/test#22");
-        final Votes votes = new VsNegligence(
-            new Pmo(farm),
-            new ListOf<>(worse, better)
-        );
+    public void submitApllication() throws Exception {
+        final Applications apps = new Applications(new FkProject())
+            .bootstrap();
+        final String login = "g4s8";
+        final String role = "DEV";
+        final Cash rate = new Cash.S("$100");
+        apps.submit(login, role, rate);
         MatcherAssert.assertThat(
-            votes.take(better, new StringBuilder(0)),
-            Matchers.lessThan(votes.take(worse, new StringBuilder(0)))
+            apps.all(),
+            Matchers.contains(
+                XhtmlMatchers.hasXPaths(
+                    String.format("/application[@login = '%s']", login),
+                    String.format("/application/role[text() = '%s']", role),
+                    String.format(
+                        "/application/rate[text() = '%s']", rate.toString()
+                    )
+                )
+            )
         );
     }
 }

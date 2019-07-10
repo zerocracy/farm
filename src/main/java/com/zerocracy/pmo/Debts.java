@@ -320,12 +320,16 @@ public final class Debts {
 
     /**
      * Get all users who have debts.
+     * @param filter Additional filter
      * @return Logins
      * @throws IOException If fails
      */
-    public Collection<String> iterate() throws IOException {
+    public Collection<String> iterate(final String filter)
+        throws IOException {
         try (final Item item = this.item()) {
-            return new Xocument(item).xpath("/debts/debt/@login");
+            return new Xocument(item).xpath(
+                String.format("/debts/debt[%s]/@login", filter)
+            );
         }
     }
 

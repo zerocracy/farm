@@ -16,9 +16,13 @@
  */
 package com.zerocracy.pm.staff.votes;
 
-import com.zerocracy.pm.staff.Votes;
+import com.zerocracy.pmo.Negligence;
 import com.zerocracy.pmo.Pmo;
-import java.io.IOException;
+import java.util.Collection;
+import java.util.Comparator;
+import org.cactoos.map.MapEntry;
+import org.cactoos.map.MapOf;
+import org.cactoos.map.SolidMap;
 
 /**
  * Upvote user if they've been resigned from a lot of jobs because
@@ -28,27 +32,27 @@ import java.io.IOException;
  *
  * @since 1.0
  */
-@SuppressWarnings({ "PMD.SingularField", "PMD.UnusedPrivateField" })
-public final class VsNegligence implements Votes {
-
-    /**
-     * PMO project.
-     */
-    private final Pmo pmo;
+@SuppressWarnings({"PMD.SingularField", "PMD.UnusedPrivateField"})
+public final class VsNegligence extends VsRank<Integer> {
 
     /**
      * Ctor.
      * @param pmo PMO project.
+     * @param others Other logins
      */
-    public VsNegligence(final Pmo pmo) {
-        this.pmo = pmo;
+    public VsNegligence(final Pmo pmo, final Collection<String> others) {
+        super(
+            new SolidMap<>(
+                new MapOf<>(
+                    login -> new MapEntry<>(
+                        login,
+                        new Negligence(pmo, login)
+                            .bootstrap().delays()
+                    ),
+                    others
+                )
+            ),
+            Comparator.naturalOrder()
+        );
     }
-
-    @Override
-    public double take(
-        final String login, final StringBuilder log
-    ) throws IOException {
-        throw new UnsupportedOperationException("Not yet implemented!");
-    }
-
 }

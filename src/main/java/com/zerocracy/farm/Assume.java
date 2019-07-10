@@ -71,6 +71,20 @@ public final class Assume {
     }
 
     /**
+     * It's Github job.
+     * @return Self
+     * @throws IOException If not Github job
+     */
+    public Assume github() throws IOException {
+        if (!new ClaimIn(this.xml).param("job", "")
+            .toLowerCase(Locale.US)
+            .startsWith("gh:")) {
+            throw new MismatchException("Not Github job");
+        }
+        return this;
+    }
+
+    /**
      * It's a PMO.
      * @return Self
      * @throws IOException If this is PMO

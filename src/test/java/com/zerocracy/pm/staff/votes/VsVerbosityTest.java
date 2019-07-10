@@ -14,37 +14,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pm.time.votes;
+package com.zerocracy.pm.staff.votes;
 
+import com.jcabi.aspects.Tv;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.pm.staff.Votes;
-import com.zerocracy.pm.staff.votes.VsNegligence;
-import com.zerocracy.pmo.Negligence;
 import com.zerocracy.pmo.Pmo;
+import com.zerocracy.pmo.Verbosity;
 import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
- * Test case for {@link VsNegligence}.
+ * Test case for {@link VsVerbosity}.
  *
  * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  */
-public final class VsNegligenceTest {
+public final class VsVerbosityTest {
 
     @Test
-    public void giveHigherVoteWhenLessNegligence() throws Exception {
+    public void giveHigherVoteWhenMoreComments() throws Exception {
         final String worse = "user2";
         final String better = "user3";
         final FkFarm farm = new FkFarm();
         final FkProject pkt = new FkProject();
-        new Negligence(farm, worse).bootstrap().add(pkt, "gh:test/test#2");
-        new Negligence(farm, worse).bootstrap().add(pkt, "gh:test/test#3");
-        new Negligence(farm, better).bootstrap().add(pkt, "gh:test/test#22");
-        final Votes votes = new VsNegligence(
+        new Verbosity(farm, worse).bootstrap().add(
+            pkt, "gh:test/test#2", Tv.TEN
+        );
+        new Verbosity(farm, worse).bootstrap().add(
+            pkt, "gh:test/test#3", Tv.FIVE
+        );
+        new Verbosity(farm, better).bootstrap().add(
+            pkt, "gh:test/test#22", Tv.EIGHT
+        );
+        final Votes votes = new VsVerbosity(
             new Pmo(farm),
             new ListOf<>(worse, better)
         );

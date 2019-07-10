@@ -35,7 +35,7 @@ import org.junit.Test;
 public final class VsBlanksTest {
 
     @Test
-    public void giveHigherVoteWhenLessBlanks() throws Exception {
+    public void giveHigherVoteWhenMoreBlanks() throws Exception {
         final String worse = "user2";
         final String better = "user3";
         final FkFarm farm = new FkFarm();
@@ -56,7 +56,7 @@ public final class VsBlanksTest {
         );
         MatcherAssert.assertThat(
             votes.take(better, new StringBuilder(0)),
-            Matchers.greaterThan(votes.take(worse, new StringBuilder(0)))
+            Matchers.lessThan(votes.take(worse, new StringBuilder(0)))
         );
     }
 }

@@ -457,9 +457,9 @@ SOFTWARE.
       <version>1.4.01</version>
     </dependency>
     <dependency>
-      <groupId>com.g4s8</groupId>
+      <groupId>wtf.g4s8</groupId>
       <artifactId>matchers-json</artifactId>
-      <version>0.3.4</version>
+      <version>1.0.3</version>
     </dependency>
   </dependencies>
   <build>

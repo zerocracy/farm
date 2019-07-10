@@ -38,9 +38,9 @@ public final class VerbosityTest {
         final int value = 1;
         final Verbosity verbosity =
             new Verbosity(new Pmo(new FkFarm()), "user1234").bootstrap();
-        verbosity.add(job, new FkProject(), value);
+        verbosity.add(new FkProject(), job, value);
         MatcherAssert.assertThat(
-            verbosity.messages(job),
+            verbosity.messages(),
             Matchers.equalTo(value)
         );
     }
@@ -53,10 +53,10 @@ public final class VerbosityTest {
         final String job = "gh:test/test#256";
         final int newvalue = 5;
         final Verbosity verbosity = new Verbosity(pmo, login).bootstrap();
-        verbosity.add(job, pkt, 1);
-        verbosity.add(job, pkt, newvalue);
+        verbosity.add(pkt, job, 1);
+        verbosity.add(pkt, job, newvalue);
         MatcherAssert.assertThat(
-            verbosity.messages(job),
+            verbosity.messages(),
             Matchers.equalTo(newvalue)
         );
     }

@@ -16,54 +16,42 @@
  */
 package com.zerocracy.pm.staff.votes;
 
-import com.zerocracy.pmo.Pmo;
-import com.zerocracy.pmo.Speed;
+import com.zerocracy.Project;
+import com.zerocracy.pmo.Verbosity;
 import java.util.Collection;
 import java.util.Comparator;
-import org.cactoos.iterable.Mapped;
 import org.cactoos.map.MapEntry;
+import org.cactoos.map.MapOf;
 import org.cactoos.map.SolidMap;
 
 /**
- * Highest speed (lowest value) wins.
- *
- * Votes for that person who is the fastest.
- * Returns 1 for fast person and 0 for slow, 0.5 - for middle.
+ * Vote for user if they have a lot of comments in ticket (verobose).
+ * The more verbose is the person
+ * the less likely he/she should get the next job.
  *
  * @since 1.0
  */
-public final class VsSpeed extends VsRank<Double> {
+@SuppressWarnings({"PMD.SingularField", "PMD.UnusedPrivateField"})
+public final class VsVerbosity extends VsRank<Integer> {
 
     /**
      * Ctor.
-     * @param pmo The PMO
-     * @param others All other logins in the competition
+     * @param pmo PMO project.
+     * @param others Other logins
      */
-    @SuppressWarnings(
-        {
-            "PMD.CallSuperInConstructor",
-            "PMD.ConstructorOnlyInitializesOrCallOtherConstructors"
-        }
-    )
-    public VsSpeed(final Pmo pmo, final Collection<String> others) {
+    public VsVerbosity(final Project pmo, final Collection<String> others) {
         super(
             new SolidMap<>(
-                new Mapped<>(
-                    login -> {
-                        final Speed speed = new Speed(pmo, login)
-                            .bootstrap();
-                        final double avg;
-                        if (speed.isEmpty()) {
-                            avg = Double.MAX_VALUE;
-                        } else {
-                            avg = speed.avg();
-                        }
-                        return new MapEntry<>(login, avg);
-                    },
+                new MapOf<>(
+                    login -> new MapEntry<>(
+                        login,
+                        new Verbosity(pmo, login)
+                            .bootstrap().messages()
+                    ),
                     others
                 )
             ),
-            Comparator.reverseOrder()
+            Comparator.naturalOrder()
         );
     }
 }

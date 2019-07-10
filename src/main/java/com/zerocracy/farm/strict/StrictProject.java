@@ -91,7 +91,8 @@ final class StrictProject implements Project {
             "(boosts\\.xml)",
             "(reminders\\.xml)",
             "(releases\\.xml)",
-            "(options\\.xml)"
+            "(options\\.xml)",
+            "(applications\\.xml)"
         )
     );
 

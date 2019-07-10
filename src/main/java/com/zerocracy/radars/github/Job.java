@@ -22,11 +22,15 @@ import com.jcabi.github.Event;
 import com.jcabi.github.Github;
 import com.jcabi.github.IssueLabels;
 import com.jcabi.github.Repo;
+import com.zerocracy.claims.ClaimIn;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.json.JsonObject;
+import org.cactoos.Text;
+import org.cactoos.scalar.UncheckedScalar;
+import org.cactoos.text.TextOf;
 
 /**
  * Job in GitHub.
@@ -69,20 +73,41 @@ public final class Job {
      * Reverse.
      */
     public static final class Issue implements com.jcabi.github.Issue {
+
         /**
          * The GitHub.
          */
         private final Github github;
+
         /**
          * The text presentation of it.
          */
-        private final String label;
+        private final Text label;
+
+        /**
+         * Ctor.
+         * @param ghb Github
+         * @param claim Claim
+         */
+        public Issue(final Github ghb, final ClaimIn claim) {
+            this(ghb, () -> claim.param("job"));
+        }
+
         /**
          * Ctor.
          * @param ghb Github
          * @param txt Label
          */
         public Issue(final Github ghb, final String txt) {
+            this(ghb, new TextOf(txt));
+        }
+
+        /**
+         * Primary ctor.
+         * @param ghb Github
+         * @param txt Label
+         */
+        public Issue(final Github ghb, final Text txt) {
             this.github = ghb;
             this.label = txt;
         }
@@ -122,12 +147,15 @@ public final class Job {
         public int compareTo(final com.jcabi.github.Issue obj) {
             return this.issue().compareTo(obj);
         }
+
         /**
          * Make an issue.
          * @return Issue
          */
         private com.jcabi.github.Issue issue() {
-            final Matcher matcher = Job.PTN.matcher(this.label);
+            final Matcher matcher = Job.PTN.matcher(
+                new UncheckedScalar<>(this.label::asString).value()
+            );
             if (!matcher.matches()) {
                 throw new IllegalArgumentException(
                     String.format(
