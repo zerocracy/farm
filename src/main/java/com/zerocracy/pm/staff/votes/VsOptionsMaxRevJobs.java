@@ -48,7 +48,7 @@ public final class VsOptionsMaxRevJobs implements Votes {
     @Override
     public double take(final String login, final StringBuilder log)
         throws IOException {
-        final int total = revJobs(
+        final int total = VsOptionsMaxRevJobs.revJobs(
             new Agenda(this.pmo, login).bootstrap()
         ).size();
         final double rate;
@@ -74,7 +74,15 @@ public final class VsOptionsMaxRevJobs implements Votes {
         return rate;
     }
 
-    private Collection<String> revJobs(Agenda agenda) throws IOException {
+    /**
+     * All REV jobs in agenda.
+     * @param agenda The agenda.
+     * @return All REV jobs in agenda.
+     * @throws IOException If something fails.
+     */
+    private static Collection<String> revJobs(
+        final Agenda agenda
+    ) throws IOException {
         return agenda.jobs().stream().filter(
             job -> "REV".equals(
                 new UncheckedText(() -> agenda.role(job)).asString()

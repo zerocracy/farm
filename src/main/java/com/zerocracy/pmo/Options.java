@@ -86,6 +86,7 @@ public final class Options {
      * @param max Max jobs in agenda
      * @throws IOException If fails
      */
+    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     public void maxJobsInAgenda(final int max) throws IOException {
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
@@ -122,6 +123,7 @@ public final class Options {
      * @param max Max REV jobs in agenda
      * @throws IOException If fails
      */
+    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     public void maxRevJobsInAgenda(final int max) throws IOException {
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
