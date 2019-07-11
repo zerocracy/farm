@@ -51,11 +51,23 @@ def exec(Project pmo, XML xml) {
     options.maxJobsInAgenda(value.toInteger())
     claim.reply("Your maxJobsInAgenda option is set to ${value.toInteger()}")
       .postTo(new ClaimsOf(farm))
+  } else if (claim.param('name') == 'maxRevJobsInAgenda') {
+    String value = claim.param('value')
+    if (!value.integer || value.toInteger() < 1) {
+      throw new SoftException(
+        new Par(
+          'maxRevJobsInAgenda accepts only positive integers'
+        ).say()
+      )
+    }
+    options.maxRevJobsInAgenda(value.toInteger())
+    claim.reply("Your maxRevJobsInAgenda option is set to ${value.toInteger()}")
+      .postTo(new ClaimsOf(farm))
   } else {
     throw new SoftException(
       new Par(
         'Incorrect option;',
-        'Possible options are: "maxJobsInAgenda"'
+        'Possible options are: "maxJobsInAgenda", "maxRevJobsInAgenda"'
       ).say()
     )
   }
