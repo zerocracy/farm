@@ -32,6 +32,7 @@ import com.zerocracy.pm.cost.Rates
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.qa.Reviews
 import com.zerocracy.pm.scope.Wbs
+import com.zerocracy.pm.staff.Bans
 import com.zerocracy.pm.staff.Election
 import com.zerocracy.pm.staff.ElectionResult
 import com.zerocracy.pm.staff.Roles
@@ -94,8 +95,13 @@ def exec(Project project, XML xml) {
   long vtime = System.nanoTime()
   String elected = 'not-elected'
 
+  Bans bans = new Bans(project).bootstrap()
   for (String job : jobs) {
     if (orders.contains(job) || reviews.contains(job)) {
+      continue
+    }
+    if (bans.reasons(job).empty) {
+      // reporter should be banned first
       continue
     }
     ++count
