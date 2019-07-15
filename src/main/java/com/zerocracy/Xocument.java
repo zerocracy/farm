@@ -42,6 +42,7 @@ import org.cactoos.io.InputStreamOf;
 import org.cactoos.io.InputWithFallback;
 import org.cactoos.io.LengthOf;
 import org.cactoos.io.TeeInput;
+import org.cactoos.iterable.Mapped;
 import org.cactoos.list.SolidList;
 import org.cactoos.scalar.Reduced;
 import org.cactoos.scalar.Ternary;
@@ -268,6 +269,14 @@ public final class Xocument {
         final String after = xml.toString();
         if (!before.toString().equals(after)) {
             new LengthOf(new TeeInput(after, this.file.value())).intValue();
+            Logger.info(
+                this,
+                "modified '%s': %s",
+                this.file.value(),
+                String.join(
+                    ";", new Mapped<>(Object::toString, dirs)
+                )
+            );
         }
     }
 
@@ -373,5 +382,4 @@ public final class Xocument {
         }
         return sum;
     }
-
 }
