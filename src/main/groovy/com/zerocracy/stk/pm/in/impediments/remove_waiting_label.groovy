@@ -32,8 +32,9 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo().github()
     .type('Impediment was removed', 'Order was given', 'Finish order', 'Job removed from WBS')
   Farm farm = binding.variables.farm
+  Issue issue = new Job.Issue(new ExtGithub(farm).value(), new ClaimIn(xml))
   try {
-    new IssueLabels.Smart(new Issue.Smart(new Job.Issue(new ExtGithub(farm).value(), new ClaimIn(xml))).labels())
+    new IssueLabels.Smart(new Issue.Smart(issue).labels())
       .removeIfExists('waiting')
   } catch (AssertionError ex) {
     Logger.warn(this, "Can't add label to issue %s: %s", issue, ex.localizedMessage)

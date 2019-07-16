@@ -31,12 +31,14 @@ import javax.json.JsonObject;
 import org.cactoos.Text;
 import org.cactoos.scalar.UncheckedScalar;
 import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
 
 /**
  * Job in GitHub.
  *
  * @since 1.0
  */
+@SuppressWarnings("PMD.TooManyMethods")
 public final class Job {
 
     /**
@@ -146,6 +148,10 @@ public final class Job {
         @Override
         public int compareTo(final com.jcabi.github.Issue obj) {
             return this.issue().compareTo(obj);
+        }
+        @Override
+        public String toString() {
+            return new UncheckedText(this.label).asString();
         }
 
         /**

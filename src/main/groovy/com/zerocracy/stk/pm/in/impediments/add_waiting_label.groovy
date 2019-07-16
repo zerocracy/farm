@@ -31,8 +31,9 @@ import com.zerocracy.radars.github.Job
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo().github().type('Impediment was registered')
   Farm farm = binding.variables.farm
+  Issue issue = new Job.Issue(new ExtGithub(farm).value(), new ClaimIn(xml))
   try {
-    new IssueLabels.Smart(new Issue.Smart(new Job.Issue(new ExtGithub(farm).value(), new ClaimIn(xml))).labels())
+    new IssueLabels.Smart(new Issue.Smart(issue).labels())
       .addIfAbsent('waiting', 'eafc64')
   } catch (AssertionError ex) {
     Logger.warn(this, "Can't add label to issue %s: %s", issue, ex.localizedMessage)
