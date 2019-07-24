@@ -19,6 +19,8 @@ package com.zerocracy.pmo;
 import com.zerocracy.Project;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
+import java.time.Duration;
+import java.time.Instant;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -76,5 +78,17 @@ public final class BlanksTest {
         MatcherAssert.assertThat(
             blanks.total(), Matchers.equalTo(1)
         );
+    }
+
+    @Test
+    public void removeOldBlanks() throws Exception {
+        final Blanks blanks = new Blanks(new FkFarm(), "user4").bootstrap();
+        final Project pkt = new FkProject();
+        final String job = "gh:test/test#11";
+        final Instant time = Instant.ofEpochMilli(1563956761000L);
+        blanks.add(pkt, job, BlanksTest.ISSUE, time);
+        // @checkstyle MagicNumberCheck (1 line)
+        blanks.removeOlderThan(time.plus(Duration.ofDays(91L)));
+        MatcherAssert.assertThat(blanks.total(), Matchers.is(0));
     }
 }

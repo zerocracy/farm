@@ -73,6 +73,20 @@ public final class Verbosity {
      */
     public void add(final Project project, final String job,
         final int verbosity) throws IOException {
+        this.add(project, job, verbosity, Instant.now());
+    }
+
+    /**
+     * Add verbosity for a job.
+     * @param project Project
+     * @param job Job id
+     * @param verbosity Messages for a job
+     * @param time Added time
+     * @throws IOException If fails
+     * @checkstyle ParameterNumberCheck (5 lines)
+     */
+    public void add(final Project project, final String job,
+        final int verbosity, final Instant time) throws IOException {
         try (final Item item = this.item()) {
             new Xocument(item).modify(
                 new Directives()
@@ -90,7 +104,7 @@ public final class Verbosity {
                     .set(verbosity)
                     .up()
                     .add("added")
-                    .set(Instant.now())
+                    .set(time)
             );
         }
     }

@@ -53,6 +53,7 @@ def exec(Project pkt, XML xml) {
             .param('login', login)
             .param('points', after - before)
             .param('reason', 'fresh awards')
+            .param('outdated', outdated)
             .postTo(new ClaimsOf(farm))
         }
       }
@@ -62,19 +63,37 @@ def exec(Project pkt, XML xml) {
         double after = avg()
         if (Math.abs(after - before) > 0.001) {
           claim.copy()
-            .param('login', login)
             .type('Speed was updated')
+            .param('login', login)
+            .param('outdated', outdated)
+            .param('before', before)
+            .param('after', after)
             .postTo(new ClaimsOf(farm))
         }
       }
       new Blanks(pmo, login).bootstrap().with {
         removeOlderThan(outdated)
+        claim.copy()
+          .type('Blanks were updated')
+          .param('login', login)
+          .param('outdated', outdated)
+          .postTo(new ClaimsOf(farm))
       }
       new Negligence(pmo, login).bootstrap().with {
         removeOlderThan(outdated)
+        claim.copy()
+          .type('Negligance was updated')
+          .param('login', login)
+          .param('outdated', outdated)
+          .postTo(new ClaimsOf(farm))
       }
       new Verbosity(pmo, login).bootstrap().with {
         removeOlderThan(outdated)
+        claim.copy()
+          .type('Verbosity were updated')
+          .param('login', login)
+          .param('outdated', outdated)
+          .postTo(new ClaimsOf(farm))
       }
       pmo.commit()
     }

@@ -76,6 +76,20 @@ public final class Blanks {
      */
     public void add(final Project proj, final String job, final String kind)
         throws IOException {
+        this.add(proj, job, kind, Instant.now());
+    }
+
+    /**
+     * Add a blank.
+     * @param proj Project
+     * @param job Job id
+     * @param kind Job kind
+     * @param time Added time
+     * @throws IOException If fails
+     * @checkstyle ParameterNumberCheck (5 lines)
+     */
+    public void add(final Project proj, final String job, final String kind,
+        final Instant time) throws IOException {
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives()
@@ -93,7 +107,7 @@ public final class Blanks {
                     .set(kind)
                     .up()
                     .add("added")
-                    .set(Instant.now())
+                    .set(time)
             );
         }
     }
@@ -127,18 +141,6 @@ public final class Blanks {
     }
 
     /**
-     * Bootstrap it.
-     * @return This
-     * @throws IOException If fails
-     */
-    public Blanks bootstrap() throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).bootstrap("pmo/blanks");
-        }
-        return this;
-    }
-
-    /**
      * Remove all blanks older than specified date.
      * @param date Date
      * @throws IOException If failed
@@ -158,6 +160,18 @@ public final class Blanks {
                     ).remove()
             );
         }
+    }
+
+    /**
+     * Bootstrap it.
+     * @return This
+     * @throws IOException If fails
+     */
+    public Blanks bootstrap() throws IOException {
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).bootstrap("pmo/blanks");
+        }
+        return this;
     }
 
     /**

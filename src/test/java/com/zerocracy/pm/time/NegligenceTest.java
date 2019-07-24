@@ -16,9 +16,12 @@
  */
 package com.zerocracy.pm.time;
 
+import com.zerocracy.Project;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.pmo.Negligence;
+import java.time.Duration;
+import java.time.Instant;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -64,4 +67,16 @@ public final class NegligenceTest {
         );
     }
 
+    @Test
+    public void removeOldItems() throws Exception {
+        final Project pkt = new FkProject();
+        final Negligence negligence = new Negligence(new FkFarm(), "user4")
+            .bootstrap();
+        final String job = "gh:test/test#11";
+        final Instant time = Instant.ofEpochMilli(1563956761000L);
+        negligence.add(pkt, job, time);
+        // @checkstyle MagicNumberCheck (1 line)
+        negligence.removeOlderThan(time.plus(Duration.ofDays(91L)));
+        MatcherAssert.assertThat(negligence.delays(), Matchers.is(0));
+    }
 }

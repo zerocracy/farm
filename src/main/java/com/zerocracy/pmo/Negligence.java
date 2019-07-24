@@ -105,6 +105,18 @@ public final class Negligence {
      * @throws IOException If fails
      */
     public void add(final Project proj, final String job) throws IOException {
+        this.add(proj, job, Instant.now());
+    }
+
+    /**
+     * Add a negligence.
+     * @param proj Project
+     * @param job Job id
+     * @param time Added time
+     * @throws IOException If fails
+     */
+    public void add(final Project proj, final String job, final Instant time)
+        throws IOException {
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives()
@@ -115,7 +127,7 @@ public final class Negligence {
                     .set(proj.pid())
                     .up()
                     .add("added")
-                    .set(Instant.now().toString())
+                    .set(time)
             );
         }
     }

@@ -16,9 +16,12 @@
  */
 package com.zerocracy.pmo;
 
+import com.zerocracy.Project;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -59,5 +62,18 @@ public final class VerbosityTest {
             verbosity.messages(),
             Matchers.equalTo(newvalue)
         );
+    }
+
+    @Test
+    public void removeOldItems() throws Exception {
+        final Project pkt = new FkProject();
+        final Verbosity verbosity = new Verbosity(new FkFarm(), "user4")
+            .bootstrap();
+        final String job = "gh:test/test#11";
+        final Instant time = Instant.ofEpochMilli(1563956761000L);
+        verbosity.add(pkt, job, 1, time);
+        // @checkstyle MagicNumberCheck (1 line)
+        verbosity.removeOlderThan(time.plus(Duration.ofDays(91L)));
+        MatcherAssert.assertThat(verbosity.messages(), Matchers.is(0));
     }
 }
