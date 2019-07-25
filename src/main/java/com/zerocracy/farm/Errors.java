@@ -110,7 +110,11 @@ public final class Errors {
                 .frame()
                 .through(
                     new QueryValve().withLimit(limit)
-                        .withAttributeToGet(Errors.ATTR_LOCATION)
+                        .withAttributesToGet(
+                            Errors.ATTR_LOCATION,
+                            Errors.ATTR_SYSTEM,
+                            Errors.ATTR_CREATED
+                        )
                 )
                 .where(Errors.ATTR_SYSTEM, Conditions.equalTo(system))
                 .where(
