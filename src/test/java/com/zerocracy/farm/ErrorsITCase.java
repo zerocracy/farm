@@ -50,7 +50,6 @@ public final class ErrorsITCase {
         final Comment deleted = issue.comments().post("to-delete");
         errors.add(comment);
         errors.add(deleted);
-        errors.remove(deleted);
         MatcherAssert.assertThat(
             "Error comment was not found",
             errors.iterate(2, 0L),

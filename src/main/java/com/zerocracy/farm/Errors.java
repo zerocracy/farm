@@ -38,19 +38,24 @@ import org.cactoos.collection.Mapped;
  * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@SuppressWarnings("PMD.TooManyMethods")
 public final class Errors {
+
     /**
      * DynamoDB table.
      */
     private static final String TABLE = "0crat-errors";
+
     /**
      * Comment location.
      */
     private static final String ATTR_LOCATION = "location";
+
     /**
      * Created timestamp attribute.
      */
     private static final String ATTR_CREATED = "created";
+
     /**
      * Comment system, e.g. 'github'.
      */
@@ -95,11 +100,11 @@ public final class Errors {
      * @param hours Hours filter
      * @return Github comments with errors
      */
-    public Iterable<String> iterate(final String system,
+    public Iterable<Errors.Error> iterate(final String system,
         final int limit,
         final long hours) {
         return new Mapped<>(
-            (Item item) -> item.get(Errors.ATTR_LOCATION).getS(),
+            Errors.Error::new,
             this.region
                 .table(Errors.TABLE)
                 .frame()
@@ -143,9 +148,109 @@ public final class Errors {
     }
 
     /**
+     * Github error.
+     */
+    public static final class Error {
+
+        /**
+         * Error data.
+         */
+        private final Item item;
+
+        /**
+         * Ctor.
+         * @param data Error data
+         */
+        public Error(final Item data) {
+            this.item = data;
+        }
+
+        /**
+         * Error location.
+         * @return Coordinates location
+         * @throws IOException If fails
+         */
+        public String location() throws IOException {
+            return this.item.get(Errors.ATTR_LOCATION).getS();
+        }
+
+        /**
+         * Error timestamp.
+         * @return Epoch ms timestamp
+         * @throws IOException If fails
+         */
+        public long timestamp() throws IOException {
+            return Long.valueOf(this.item.get(Errors.ATTR_CREATED).getN());
+        }
+
+        /**
+         * Error system.
+         * @return System string
+         * @throws IOException If fails
+         */
+        public String system() throws IOException {
+            return this.item.get(Errors.ATTR_SYSTEM).getS();
+        }
+    }
+
+    /**
+     * Github error.
+     */
+    public static final class GhError {
+
+        /**
+         * Error.
+         */
+        private final Errors.Error err;
+
+        /**
+         * Github client.
+         */
+        private final com.jcabi.github.Github client;
+
+        /**
+         * Ctor.
+         * @param err Error
+         * @param client Github
+         */
+        GhError(final Errors.Error err,
+            final com.jcabi.github.Github client) {
+            this.err = err;
+            this.client = client;
+        }
+
+        /**
+         * Error.
+         * @return Error
+         */
+        public Errors.Error error() {
+            return this.err;
+        }
+
+        /**
+         * Github comment.
+         * @return Github comment
+         * @throws IOException If fails
+         */
+        public Comment comment() throws IOException {
+            final String[] parts = this.err.location().split("#");
+            return new SfComment(
+                this.client
+                    .repos()
+                    .get(new Coordinates.Simple(parts[0]))
+                    .issues()
+                    .get(Integer.valueOf(parts[1]))
+                    .comments()
+                    .get(Integer.valueOf(parts[2]))
+            );
+        }
+    }
+
+    /**
      * Github comment system wrapper.
      */
     public static final class Github {
+
         /**
          * Comment system.
          */
@@ -155,6 +260,7 @@ public final class Errors {
          * Errors table.
          */
         private final Errors errors;
+
         /**
          * Github client.
          */
@@ -177,9 +283,10 @@ public final class Errors {
          * @param hours Time frame
          * @return Github comments
          */
-        public Iterable<Comment> iterate(final int limit, final long hours) {
+        public Iterable<Errors.GhError> iterate(final int limit,
+            final long hours) {
             return new Mapped<>(
-                this::comment,
+                err -> new Errors.GhError(err, this.client),
                 this.errors.iterate(Errors.Github.SYSTEM, limit, hours)
             );
         }
@@ -202,28 +309,9 @@ public final class Errors {
          * @param comment A comment
          * @throws IOException If fails
          */
-        public void remove(final Comment comment) throws IOException {
+        public void remove(final Errors.GhError comment) throws IOException {
             this.errors.remove(
-                Errors.Github.SYSTEM,
-                new Comment.Smart(comment).createdAt().getTime()
-            );
-        }
-
-        /**
-         * Make a Github comment from location.
-         * @param location Comment location
-         * @return Github comment
-         */
-        private Comment comment(final String location) {
-            final String[] parts = location.split("#");
-            return new SfComment(
-                this.client
-                    .repos()
-                    .get(new Coordinates.Simple(parts[0]))
-                    .issues()
-                    .get(Integer.valueOf(parts[1]))
-                    .comments()
-                    .get(Integer.valueOf(parts[2]))
+                Errors.Github.SYSTEM, comment.error().timestamp()
             );
         }
 

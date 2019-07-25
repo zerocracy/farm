@@ -28,12 +28,7 @@ import com.zerocracy.farm.Errors
 import com.zerocracy.farm.props.Props
 import com.zerocracy.radars.github.Quota
 
-// @todo #1570:30min cleanup_comments often fails. This happens because we
-//  are trying to remove from github some comment that had already been
-//  deleted before using github interface. We must test if the comment exists
-//  in github before trying to delete it. After the correction, uncomment
-//  tests in /cleanup_comments/_after.groovy. Don't forget to remove the lines
-//  that skip this stakeholder in test mode too so we can test its behavior.
+
 def exec(Project project, XML xml) {
   new Assume(project, xml).isPmo()
   new Assume(project, xml).type('Ping hourly')
@@ -52,6 +47,6 @@ def exec(Project project, XML xml) {
   )
   errors.iterate(10, 72L).each { error ->
     errors.remove(error)
-    error.remove()
+    error.comment().remove()
   }
 }
