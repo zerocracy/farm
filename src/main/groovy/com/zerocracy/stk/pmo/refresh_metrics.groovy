@@ -20,82 +20,72 @@ import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Policy
 import com.zerocracy.Project
-import com.zerocracy.Txn
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
-import com.zerocracy.claims.ClaimIn
-import com.zerocracy.pmo.Awards
-import com.zerocracy.pmo.Blanks
-import com.zerocracy.pmo.Negligence
-import com.zerocracy.pmo.People
-import com.zerocracy.pmo.Pmo
-import com.zerocracy.pmo.Speed
-import com.zerocracy.pmo.Verbosity
+import com.zerocracy.pmo.*
 
 import java.time.Instant
 import java.time.Period
 
-def exec(Project pkt, XML xml) {
-  new Assume(pkt, xml).isPmo().type('Ping daily', 'Refresh metrics force')
+def exec(Project pmo, XML xml) {
+  new Assume(pmo, xml).isPmo().type('Ping daily', 'Refresh metrics force')
   ClaimIn claim = new ClaimIn(xml)
   Farm farm = binding.variables.farm
   Policy policy = new Policy(farm)
   Instant outdated = claim.created().toInstant() - Period.ofDays(policy.get('18.days', 90))
-  new Txn(new Pmo(farm)).withCloseable { pmo ->
-    new People(pmo).bootstrap().iterate().each { login ->
-      new Awards(pmo, login).bootstrap().with {
-        int before = total()
-        removeOlderThan(outdated)
-        int after = total()
-        if (before != after) {
-          claim.copy()
-            .type('Award points were added')
-            .param('login', login)
-            .param('points', after - before)
-            .param('reason', 'fresh awards')
-            .param('outdated', outdated)
-            .postTo(new ClaimsOf(farm))
-        }
-      }
-      new Speed(pmo, login).bootstrap().with {
-        double before = avg()
-        removeOlderThan(outdated)
-        double after = avg()
-        if (Math.abs(after - before) > 0.001) {
-          claim.copy()
-            .type('Speed was updated')
-            .param('login', login)
-            .param('outdated', outdated)
-            .param('before', before)
-            .param('after', after)
-            .postTo(new ClaimsOf(farm))
-        }
-      }
-      new Blanks(pmo, login).bootstrap().with {
-        removeOlderThan(outdated)
+  new People(pmo).bootstrap().iterate().each { login ->
+    new Awards(pmo, login).bootstrap().with {
+      int before = total()
+      removeOlderThan(outdated)
+      int after = total()
+      if (before != after) {
         claim.copy()
-          .type('Blanks were updated')
+          .type('Award points were added')
           .param('login', login)
-          .param('outdated', outdated)
-          .postTo(new ClaimsOf(farm))
-      }
-      new Negligence(pmo, login).bootstrap().with {
-        removeOlderThan(outdated)
-        claim.copy()
-          .type('Negligance was updated')
-          .param('login', login)
-          .param('outdated', outdated)
-          .postTo(new ClaimsOf(farm))
-      }
-      new Verbosity(pmo, login).bootstrap().with {
-        removeOlderThan(outdated)
-        claim.copy()
-          .type('Verbosity were updated')
-          .param('login', login)
+          .param('points', after - before)
+          .param('reason', 'fresh awards')
           .param('outdated', outdated)
           .postTo(new ClaimsOf(farm))
       }
     }
-    pmo.commit()
+    new Speed(pmo, login).bootstrap().with {
+      double before = avg()
+      removeOlderThan(outdated)
+      double after = avg()
+      if (Math.abs(after - before) > 0.001) {
+        claim.copy()
+          .type('Speed was updated')
+          .param('login', login)
+          .param('outdated', outdated)
+          .param('before', before)
+          .param('after', after)
+          .postTo(new ClaimsOf(farm))
+      }
+    }
+    new Blanks(pmo, login).bootstrap().with {
+      removeOlderThan(outdated)
+      claim.copy()
+        .type('Blanks were updated')
+        .param('login', login)
+        .param('outdated', outdated)
+        .postTo(new ClaimsOf(farm))
+    }
+    new Negligence(pmo, login).bootstrap().with {
+      removeOlderThan(outdated)
+      claim.copy()
+        .type('Negligance was updated')
+        .param('login', login)
+        .param('outdated', outdated)
+        .postTo(new ClaimsOf(farm))
+    }
+    new Verbosity(pmo, login).bootstrap().with {
+      removeOlderThan(outdated)
+      claim.copy()
+        .type('Verbosity were updated')
+        .param('login', login)
+        .param('outdated', outdated)
+        .postTo(new ClaimsOf(farm))
+    }
   }
 }
