@@ -95,7 +95,7 @@ def exec(Project pkt, XML xml) {
           .param('outdated', outdated)
           .postTo(new ClaimsOf(farm))
       }
-      pmo.commit()
     }
+    pmo.commit()
   }
 }
