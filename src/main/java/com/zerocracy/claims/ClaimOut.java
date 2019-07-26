@@ -86,7 +86,7 @@ public final class ClaimOut implements Iterable<Directive> {
      * Ctor.
      * @param list List of dirs, if any
      */
-    ClaimOut(final Iterable<Directive> list) {
+    public ClaimOut(final Iterable<Directive> list) {
         this.dirs = new Directives(list);
     }
 

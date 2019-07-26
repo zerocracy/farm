@@ -18,25 +18,29 @@ package com.zerocracy.bundles.refresh_speed
 
 import com.jcabi.xml.XML
 import com.zerocracy.Project
+import com.zerocracy.farm.fake.FkProject
 import com.zerocracy.pmo.Awards
-import com.zerocracy.pmo.People
 import com.zerocracy.pmo.Speed
-import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
+
+import java.time.Duration
+import java.time.Instant
 
 def exec(Project pmo, XML xml) {
   String login = 'developer'
-  MatcherAssert.assertThat(
-    new People(pmo).bootstrap().speed(login),
-    Matchers.closeTo(0.0d, 0.0001d)
-  )
-  MatcherAssert.assertThat(
-    new Speed(pmo, login).bootstrap().avg(),
-    Matchers.closeTo(0.0d, 0.0001d)
-  )
-  Awards awards = new Awards(pmo, login).bootstrap()
-  MatcherAssert.assertThat(
-    awards.total(),
-    Matchers.equalTo(100)
-  )
+  Project pkt = new FkProject()
+  new Awards(pmo, login).bootstrap().with {
+    add(pkt, 15, 'gh:test/test#1', 'test', new Date(1517432400000L))
+    add(pkt, 100, 'gh:test/test#1', 'test', new Date(1525122000000L))
+    add(pkt, 10, 'gh:test/test#1', 'test', new Date(1517432400001L))
+  }
+  Instant ctime = Instant.parse('2018-07-28T18:00:00.000Z')
+  new Speed(pmo, login).bootstrap().with {
+    add(
+      pkt.pid(), 'gh:test/speed#1', 10L,
+      ctime - Duration.ofDays(91)
+    )
+    add(
+      pkt.pid(), 'gh:test/speed#2', 20L, ctime
+    )
+  }
 }

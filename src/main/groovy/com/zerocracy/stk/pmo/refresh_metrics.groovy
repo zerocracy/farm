@@ -36,13 +36,13 @@ import java.time.Instant
 import java.time.Period
 
 def exec(Project pkt, XML xml) {
-  new Assume(pkt, xml).isPmo().type('Ping daily')
+  new Assume(pkt, xml).isPmo().type('Ping daily', 'Refresh metrics force')
   ClaimIn claim = new ClaimIn(xml)
   Farm farm = binding.variables.farm
   Policy policy = new Policy(farm)
   Instant outdated = claim.created().toInstant() - Period.ofDays(policy.get('18.days', 90))
   new Txn(new Pmo(farm)).withCloseable { pmo ->
-    new People(farm).bootstrap().iterate().each { login ->
+    new People(pmo).bootstrap().iterate().each { login ->
       new Awards(pmo, login).bootstrap().with {
         int before = total()
         removeOlderThan(outdated)

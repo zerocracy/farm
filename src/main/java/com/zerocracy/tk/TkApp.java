@@ -67,6 +67,7 @@ import org.takes.facets.fallback.FbLog4j;
 import org.takes.facets.fallback.FbStatus;
 import org.takes.facets.fallback.TkFallback;
 import org.takes.facets.flash.TkFlash;
+import org.takes.facets.fork.FkMethods;
 import org.takes.facets.fork.FkRegex;
 import org.takes.facets.fork.Fork;
 import org.takes.facets.fork.TkFork;
@@ -75,6 +76,7 @@ import org.takes.facets.forward.TkForward;
 import org.takes.misc.Concat;
 import org.takes.misc.Href;
 import org.takes.misc.Opt;
+import org.takes.rq.RqMethod;
 import org.takes.rs.RsRedirect;
 import org.takes.rs.RsText;
 import org.takes.rs.RsVelocity;
@@ -266,7 +268,26 @@ public final class TkApp extends TkWrap {
                                                                     ),
                                                                     new FkRegex(
                                                                         "/footprint/(PMO|[A-Z0-9]{9})",
-                                                                        new TkFootprint(farm)
+                                                                        new TkFork(
+                                                                            new FkMethods(
+                                                                                RqMethod.GET,
+                                                                                new TkFork(
+                                                                                    new FkRegex(
+                                                                                        "/footprint/(PMO|[A-Z0-9]{9})",
+                                                                                        new TkFootprint(farm)
+                                                                                    )
+                                                                                )
+                                                                            ),
+                                                                            new FkMethods(
+                                                                                RqMethod.POST,
+                                                                                new TkFork(
+                                                                                    new FkRegex(
+                                                                                        "/footprint/(PMO|[A-Z0-9]{9})",
+                                                                                        new TkFootprintPost(farm)
+                                                                                    )
+                                                                                )
+                                                                            )
+                                                                        )
                                                                     ),
                                                                     new FkRegex(
                                                                         "/footprint/(PMO|[A-Z0-9]{9})/([a-fA-F0-9\\-]+)",

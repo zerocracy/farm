@@ -18,25 +18,28 @@ package com.zerocracy.bundles.refresh_speed
 
 import com.jcabi.xml.XML
 import com.zerocracy.Project
-import com.zerocracy.farm.fake.FkProject
 import com.zerocracy.pmo.Awards
+import com.zerocracy.pmo.People
 import com.zerocracy.pmo.Speed
-
-import java.time.Duration
-import java.time.Instant
+import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers
 
 def exec(Project pmo, XML xml) {
   String login = 'developer'
-  Project pkt = new FkProject()
-  new Awards(pmo, login).bootstrap().with {
-    add(pkt, 15, 'gh:test/test#1', 'test', new Date(1517432400000L))
-    add(pkt, 100, 'gh:test/test#1', 'test', new Date(1525122000000L))
-    add(pkt, 10, 'gh:test/test#1', 'test', new Date(1517432400001L))
-  }
-  new Speed(pmo, login).bootstrap().with {
-    add(
-      pkt.pid(), 'gh:test/speed#1', 10L,
-      Instant.parse('2018-07-28T18:00:00.000Z') - Duration.ofDays(91)
-    )
-  }
+  MatcherAssert.assertThat(
+    new People(pmo).bootstrap().speed(login),
+    Matchers.closeTo(20.0d, 0.0001d)
+  )
+  Awards awards = new Awards(pmo, login).bootstrap()
+  MatcherAssert.assertThat(
+    'awards',
+    awards.total(),
+    Matchers.equalTo(100)
+  )
+  Speed speed = new Speed(pmo, login).bootstrap()
+  MatcherAssert.assertThat(
+    'speed',
+    speed.jobs(),
+    Matchers.contains('gh:test/speed#2')
+  )
 }

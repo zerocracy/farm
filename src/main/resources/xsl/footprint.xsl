@@ -52,6 +52,16 @@ SOFTWARE.
         <xsl:text>.</xsl:text>
       </label>
     </form>
+    <form action="" method="post">
+      <input tabindex="1" name="claim" type="text" style="width:100%">
+        <xsl:attribute name="placeholder">
+          <xsl:text>claim XML</xsl:text>
+        </xsl:attribute>
+      </input>
+      <label style="font-size:80%;color:gray;">
+        <xsl:text>You can submit a claim to the queue for current project.</xsl:text>
+      </label>
+    </form>
     <xsl:if test="skip &gt; 0">
       <p>
         <xsl:text>Starts at claim #</xsl:text>
