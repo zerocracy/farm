@@ -20,12 +20,15 @@ import com.jcabi.xml.XMLDocument;
 import com.zerocracy.Farm;
 import com.zerocracy.claims.ClaimOut;
 import com.zerocracy.entry.ClaimsOf;
+import com.zerocracy.pm.staff.Roles;
+import com.zerocracy.pmo.Pmo;
 import com.zerocracy.tk.project.RqProject;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.Date;
 import java.util.UUID;
 import org.cactoos.time.DateAsText;
+import org.takes.HttpException;
 import org.takes.Response;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
@@ -57,6 +60,10 @@ public final class TkFootprintPost implements TkRegex {
 
     @Override
     public Response act(final RqRegex req) throws IOException {
+        final String login = new RqUser(this.farm, req).value();
+        if (!new Roles(new Pmo(this.farm)).bootstrap().hasAnyRole(login)) {
+            throw new HttpException(HttpURLConnection.HTTP_FORBIDDEN);
+        }
         new ClaimOut(
             new Directives(
                 Directives.copyOf(
@@ -68,7 +75,7 @@ public final class TkFootprintPost implements TkRegex {
             ).xpath("/claim").attr("id", UUID.randomUUID())
                 .addIf("created")
                 .set(new DateAsText(new Date()).asString())
-        ).postTo(
+        ).author(login).postTo(
             new ClaimsOf(
                 this.farm,
                 new RqProject(this.farm, req, "PO")
