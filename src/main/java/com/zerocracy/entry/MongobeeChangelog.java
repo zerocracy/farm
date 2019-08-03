@@ -33,9 +33,14 @@ import com.mongodb.DB;
 @SuppressWarnings("PMD.UseUtilityClass")
 public final class MongobeeChangelog {
 
+    /**
+     * Table name.
+     */
+    private static final String TABLE = "claims";
+
     @ChangeSet(order = "001", id = "basic-indexes", author = "yegor256")
     public static void basicIndexes(final DB mongo) {
-        mongo.getCollection("claims").createIndex(
+        mongo.getCollection(MongobeeChangelog.TABLE).createIndex(
             new BasicDBObjectBuilder()
                 .add("project", 1)
                 .add("created", -1)
@@ -45,4 +50,14 @@ public final class MongobeeChangelog {
         );
     }
 
+    @ChangeSet(order = "002", id = "type-index", author = "g4s8")
+    public static void typeIndex(final DB mongo) {
+        mongo.getCollection(MongobeeChangelog.TABLE).createIndex(
+            new BasicDBObjectBuilder()
+                .add("type", 1)
+                .get(),
+            "by-type",
+            false
+        );
+    }
 }
