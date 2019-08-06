@@ -16,12 +16,10 @@
  */
 package com.zerocracy.tk;
 
+import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
 import com.zerocracy.Item;
-import com.zerocracy.Project;
-import com.zerocracy.Txn;
 import com.zerocracy.Xocument;
-import com.zerocracy.pmo.Catalog;
 import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
 import java.util.Collection;
@@ -41,6 +39,7 @@ import org.takes.rs.xe.XeTransform;
  *
  * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @checkstyle LineLengthCheck (500 line)
  */
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.AvoidDuplicateLiterals"})
 public final class TkBoard implements Take {
@@ -67,14 +66,12 @@ public final class TkBoard implements Take {
             () -> {
                 final String user = new RqUser(this.farm, req, false).value();
                 final Collection<XeSource> sources = new LinkedList<>();
-                // @checkstyle LineLengthCheck (1 line)
-                try (final Txn pmo = new Txn(new Pmo(this.farm)); final Item item = pmo.acq("catalog.xml")) {
-                    new Catalog(pmo).bootstrap();
+                try (final Item item = new Pmo(this.farm).acq("catalog.xml")) {
                     new And(
                         new FuncOf<>(
                             input -> sources.add(
                                 TkBoard.source(
-                                    pmo, input.xpath("@id").get(0), user
+                                    input, user
                                 )
                             ),
                             true
@@ -91,46 +88,47 @@ public final class TkBoard implements Take {
 
     /**
      * Create source for one project.
-     * @param pmo PMO transaction
-     * @param pid Project id
+     * @param node Project XML
      * @param user Current user
      * @return Source
-     * @throws IOException If fails
      */
-    private static XeSource source(final Project pmo, final String pid,
-        final String user) throws IOException {
-        final Catalog catalog = new Catalog(pmo);
-        final Collection<String> members = catalog.members(pid);
+    private static XeSource source(final XML node, final String user) {
+        final Collection<String> members = node.xpath("members/member/text()");
+        final String pid = node.xpath("@id").get(0);
         return new XeAppend(
             "project",
             new XeAppend(
                 "sandbox",
-                Boolean.toString(catalog.sandbox(pid))
+                Boolean.toString(!node.nodes("sandbox").isEmpty())
             ),
             new XeAppend("id", pid),
-            new XeAppend("title", catalog.title(pid)),
+            new XeAppend(
+                "title",
+                node.xpath("title/text()").stream()
+                    .findFirst().orElse(pid)
+            ),
             new XeAppend("mine", Boolean.toString(members.contains(user))),
             new XeAppend(
                 "architects",
                 new XeAppend(
-                    "architect",
-                    catalog.architect(pid)
+                    "architect", node.xpath("architect/text()").get(0)
                 )
             ),
             new XeAppend(
                 "repositories",
                 new XeTransform<>(
-                    catalog.links(pid, "github"),
+                    node.xpath("links/link[@rel='github']/@href"),
                     repo -> new XeAppend("repository", repo)
                 )
             ),
             new XeAppend(
-                "languages", String.join(", ", catalog.languages(pid))
+                "languages",
+                String.join(", ", node.xpath("languages/text()"))
             ),
-            new XeAppend("jobs", Integer.toString(catalog.jobs(pid))),
-            new XeAppend("orders", Integer.toString(catalog.orders(pid))),
-            new XeAppend("deficit", Boolean.toString(catalog.deficit(pid))),
-            new XeAppend("cash", catalog.cash(pid).toString()),
+            new XeAppend("jobs", node.xpath("jobs/text()").get(0)),
+            new XeAppend("orders", node.xpath("orders/text()").get(0)),
+            new XeAppend("deficit", node.xpath("cash/@deficit").get(0)),
+            new XeAppend("cash", node.xpath("cash/text()").get(0)),
             new XeAppend("members", Integer.toString(members.size()))
         );
     }
