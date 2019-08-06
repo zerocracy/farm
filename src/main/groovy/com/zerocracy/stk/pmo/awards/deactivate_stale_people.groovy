@@ -14,43 +14,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.internal
+package com.zerocracy.stk.pmo.awards
 
+import com.jcabi.aspects.Tv
 import com.jcabi.xml.XML
-import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
-import com.zerocracy.kpi.KpiMetrics
-import com.zerocracy.kpi.KpiOf
-import com.zerocracy.kpi.Metric
-import com.zerocracy.pmo.Catalog
+import com.zerocracy.pmo.Awards
 import com.zerocracy.pmo.People
-import org.cactoos.list.ListOf
 
-/**
- * Collect KPI metrics.
- *
- * @param project Project
- * @param xml Claim
- */
 def exec(Project pmo, XML xml) {
-  new Assume(pmo, xml).type('Ping daily').isPmo()
-  Farm farm = binding.variables.farm
-  KpiMetrics kpi = new KpiOf(farm)
-  Catalog catalog = new Catalog(farm).bootstrap()
-  People people = new People(farm).bootstrap()
-  new ListOf<Metric>(
-    new Metric.S(
-      'active_projects', catalog.active().size()
-    ),
-    new Metric.S(
-      'active_users', people.hirep().size()
-    ),
-    new Metric.S(
-      'visible_users', people.visible().size()
-    ),
-    new Metric.S(
-      'total_reputation', people.totalReputation()
-    )
-  ).each { metric -> metric.send(kpi) }
+  new Assume(pmo, xml).isPmo().type('Ping daily')
+  People people = new People(pmo).bootstrap()
+  people.iterate().each { login ->
+    if (new Awards(pmo, login).bootstrap().awards(Tv.NINETY).empty) {
+      people.activate(login, false)
+    }
+  }
 }

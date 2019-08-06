@@ -817,15 +817,53 @@ public final class People {
     }
 
     /**
-     * Active users IDs (with reputation > 256).
+     * Users IDs with high reputation (> 256).
      * @return Active users IDs set
      * @throws IOException If fails
      */
-    public Set<String> active() throws IOException {
+    public Set<String> hirep() throws IOException {
         try (final Item item = this.item()) {
             return new HashSet<>(
                 new Xocument(item).xpath(
                     "/people/person[reputation > 256]/@id"
+                )
+            );
+        }
+    }
+
+    /**
+     * Change active flag for persons.
+     * @param login Login
+     * @param active True if active
+     * @throws IOException If fails
+     */
+    public void activate(final String login, final boolean active)
+        throws IOException {
+        try (final Item item = this.item()) {
+            new Xocument(item).modify(
+                new Directives()
+                    .xpath(String.format("/people/person[@id='%s']", login))
+                    .addIf("active")
+                    .set(active)
+            );
+        }
+    }
+
+    /**
+     * Change active flag for persons.
+     * @param login Login
+     * @return True if active
+     * @throws IOException If fails
+     */
+    public boolean active(final String login)
+        throws IOException {
+        try (final Item item = this.item()) {
+            return Boolean.parseBoolean(
+                new Xocument(item).xpath(
+                    String.format(
+                        "/people/person[@id='%s']/active/text()", login
+                    ),
+                    Boolean.toString(false)
                 )
             );
         }

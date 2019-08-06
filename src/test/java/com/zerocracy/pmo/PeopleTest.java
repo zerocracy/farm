@@ -515,7 +515,7 @@ public final class PeopleTest {
         people.invite(inactive, "0crat");
         people.reputation(inactive, 255);
         MatcherAssert.assertThat(
-            people.active(), Matchers.contains(active)
+            people.hirep(), Matchers.contains(active)
         );
     }
 
@@ -542,6 +542,24 @@ public final class PeopleTest {
         }
         MatcherAssert.assertThat(
             people.totalReputation(), Matchers.equalTo(45)
+        );
+    }
+
+    @Test
+    public void changeActiveFlag() throws Exception {
+        final People people = new People(new FkFarm()).bootstrap();
+        final String login = "theuser123";
+        people.touch(login);
+        MatcherAssert.assertThat(
+            "new user is not active",
+            people.active(login),
+            Matchers.is(true)
+        );
+        people.activate(login, false);
+        MatcherAssert.assertThat(
+            "flag didn't change",
+            people.active(login),
+            Matchers.is(false)
         );
     }
 }

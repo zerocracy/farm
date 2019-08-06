@@ -94,6 +94,7 @@ public final class TkTeamTest {
         final String inactive = "krzyk";
         people.touch(inactive);
         people.invite(inactive, "yegor256");
+        people.activate(inactive, false);
         new Awards(farm, inactive).bootstrap().add(
             new FkProject(), 2, "none", "reason2",
             new Date(Instant.now().minus(Duration.ofDays(91)).toEpochMilli())
