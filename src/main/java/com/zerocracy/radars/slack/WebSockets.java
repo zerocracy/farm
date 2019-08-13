@@ -16,34 +16,28 @@
  */
 package com.zerocracy.radars.slack;
 
-import com.ullink.slack.simpleslackapi.SlackTeam;
+import com.ullink.slack.simpleslackapi.WebSocketContainerProvider;
+import javax.websocket.WebSocketContainer;
+import org.cactoos.Scalar;
+import org.cactoos.scalar.SolidScalar;
+import org.cactoos.scalar.UncheckedScalar;
+import org.glassfish.tyrus.client.ClientManager;
 
 /**
- * Fake {@link SlackTeam}.
- * @since 0.28
+ * Slack session containers.
+ *
+ * @since 1.0
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
-public final class FkTeam extends SlackTeam {
+final class WebSockets implements WebSocketContainerProvider {
 
     /**
-     * Ctor.
+     * Single container for all sessions.
      */
-    public FkTeam() {
-        super("", "", "");
-    }
+    private static final Scalar<WebSocketContainer> CONTAINER =
+        new SolidScalar<>(ClientManager::createClient);
 
     @Override
-    public String getId() {
-        throw new IllegalStateException("Not implemented");
-    }
-
-    @Override
-    public String getName() {
-        throw new IllegalStateException("Not implemented");
-    }
-
-    @Override
-    public String getDomain() {
-        throw new IllegalStateException("Not implemented");
+    public WebSocketContainer getWebSocketContainer() {
+        return new UncheckedScalar<>(WebSockets.CONTAINER).value();
     }
 }

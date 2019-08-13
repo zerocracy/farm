@@ -80,7 +80,10 @@ public final class SlackRadar implements AutoCloseable {
                     )
                 )
             ),
-            SlackSessionFactory::createWebSocketSlackSession
+            tkn -> SlackSessionFactory.getSlackSessionBuilder(tkn)
+                .withCustomWebSocketContainer(new WebSockets())
+                .withAutoreconnectOnDisconnection(true)
+                .build()
         );
     }
 
@@ -98,7 +101,7 @@ public final class SlackRadar implements AutoCloseable {
             new ReInvite()
         );
         this.slackssess = new UncheckedFunc<>(
-            (token) -> new RealSkSession(sess.apply(token))
+            token -> new RealSkSession(sess.apply(token))
         );
     }
 

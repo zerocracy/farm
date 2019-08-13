@@ -136,13 +136,24 @@ SOFTWARE.
     <dependency>
       <groupId>com.ullink.slack</groupId>
       <artifactId>simpleslackapi</artifactId>
-      <version>1.0.0</version>
+      <version>1.2.0</version>
       <exclusions>
         <exclusion>
           <groupId>ch.qos.logback</groupId>
           <artifactId>logback-classic</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish.tyrus.bundles</groupId>
+      <artifactId>tyrus-standalone-client</artifactId>
+      <version>1.13.1</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.websocket</groupId>
+      <artifactId>javax.websocket-api</artifactId>
+      <version>1.1</version>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.quartz-scheduler</groupId>
@@ -351,7 +362,6 @@ SOFTWARE.
       <groupId>org.glassfish.tyrus.bundles</groupId>
       <artifactId>tyrus-standalone-client</artifactId>
       <version>1.13.1</version>
-      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.glassfish.jersey.core</groupId>
@@ -559,7 +569,7 @@ SOFTWARE.
                       <limit>
                         <counter>CLASS</counter>
                         <value>MISSEDCOUNT</value>
-                        <maximum>109</maximum>
+                        <maximum>111</maximum>
                       </limit>
                     </limits>
                   </rule>
