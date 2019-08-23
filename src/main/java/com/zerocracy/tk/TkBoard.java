@@ -99,7 +99,8 @@ public final class TkBoard implements Take {
             "project",
             new XeAppend(
                 "sandbox",
-                Boolean.toString(!node.nodes("sandbox").isEmpty())
+                node.xpath("sandbox/text()").stream()
+                    .findFirst().orElse(Boolean.toString(false))
             ),
             new XeAppend("id", pid),
             new XeAppend(
