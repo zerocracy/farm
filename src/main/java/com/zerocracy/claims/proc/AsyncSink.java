@@ -23,11 +23,14 @@ import com.zerocracy.shutdown.ShutdownFarm;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.Proc;
 import org.cactoos.scalar.And;
 import org.cactoos.scalar.IoCheckedScalar;
+import org.xembly.Directive;
+import org.xembly.Directives;
 
 /**
  * Proc to execute origin proc asynchronously.
@@ -53,16 +56,24 @@ public final class AsyncSink {
     private final AtomicInteger count;
 
     /**
+     * Claim statuses.
+     */
+    private final Map<String, Map<String, String>> statuses;
+
+    /**
      * Ctor.
      *
      * @param origin Origin proc
      * @param shutdown Shutdown hook
+     * @param statuses Claim statuses
      * @checkstyle ParameterNumberCheck (3 lines)
      */
     public AsyncSink(final Proc<Message> origin,
-        final ShutdownFarm.Hook shutdown) {
+        final ShutdownFarm.Hook shutdown, final Map<String,
+        Map<String, String>> statuses) {
         this.origin = origin;
         this.shutdown = shutdown;
+        this.statuses = statuses;
         this.count = new AtomicInteger();
     }
 
@@ -102,6 +113,35 @@ public final class AsyncSink {
      */
     public int tasks() {
         return this.count.get();
+    }
+
+    /**
+     * Guts of the sink.
+     *
+     * @return Xembly dirs
+     */
+    public Iterable<Directive> guts() {
+        final Directives dirs = new Directives();
+        dirs.add("stakeholders");
+        for (final Map.Entry<String, Map<String, String>> status
+            : this.statuses.entrySet()) {
+            dirs.add("claim")
+                .attr("cid", status.getKey());
+            for (final Map.Entry<String, String> stk
+                : status.getValue().entrySet()) {
+                final String value = stk.getValue();
+                if (value.isEmpty()) {
+                    continue;
+                }
+                dirs.add("stakeholder")
+                    .add("name").set(stk.getKey()).up()
+                    .add("status").set(value).up()
+                    .up();
+            }
+            dirs.up();
+        }
+        dirs.up();
+        return dirs;
     }
 
     /**

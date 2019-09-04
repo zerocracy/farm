@@ -92,6 +92,29 @@ SOFTWARE.
       <xsl:text>.</xsl:text>
     </p>
   </xsl:template>
+  <xsl:template match="farm[@id='MessageSink']">
+    <p>
+      <xsl:text>Stakeholder statuses:</xsl:text>
+      <ul>
+        <xsl:for-each select="stakeholders/claim">
+          <li>
+            <xsl:text>Running stakeholders for </xsl:text>
+            <xsl:value-of select="@cid"/>
+            <xsl:text> claim:</xsl:text>
+            <ul>
+              <xsl:for-each select="stakeholder">
+                <li>
+                  <xsl:value-of select="name"/>
+                  <xsl:text> : </xsl:text>
+                  <xsl:value-of select="status"/>
+                </li>
+              </xsl:for-each>
+            </ul>
+          </li>
+        </xsl:for-each>
+      </ul>
+    </p>
+  </xsl:template>
   <xsl:template match="farm[@id='ClaimsFarm']">
     <p>
       <xsl:text>Claim queues: </xsl:text>

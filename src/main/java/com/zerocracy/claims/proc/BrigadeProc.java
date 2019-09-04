@@ -60,8 +60,10 @@ public final class BrigadeProc implements Proc<Message> {
      * Ctor.
      *
      * @param farm Farm
+     * @param statuses Stakeholder statuses
      */
-    public BrigadeProc(final Farm farm) {
+    public BrigadeProc(final Farm farm,
+        final Map<String, Map<String, String>> statuses) {
         this(
             new Brigade(
                 new Mapped<>(
@@ -74,7 +76,8 @@ public final class BrigadeProc implements Proc<Message> {
                                 cls.getSimpleName(),
                                 Duration.ofMinutes(1L)
                             ),
-                            cls.getName()
+                            cls.getName(),
+                            statuses
                         )
                     ),
                     new Reflections(

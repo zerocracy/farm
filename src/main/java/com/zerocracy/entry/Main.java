@@ -121,7 +121,7 @@ public final class Main {
         final ClaimGuts cgts = new ClaimGuts();
         try (
             final S3Farm origin = new S3Farm(new ExtBucket().value(), temp);
-            final Farm farm = new ShutdownFarm(
+            final MessageSink sink = new MessageSink(
                 new ClaimsFarm(
                     new SmartFarm(
                         origin, new TestLocks()
@@ -130,11 +130,12 @@ public final class Main {
                 ),
                 shutdown
             );
+            final Farm farm = new ShutdownFarm(sink, shutdown);
             final SlackRadar radar = new SlackRadar(farm);
             final ClaimsRoutine claims = new ClaimsRoutine(farm)
         ) {
             new ExtMongobee(farm).apply();
-            new MessageSink(farm, shutdown).start(claims.messages());
+            sink.start(claims.messages());
             cgts.add(claims.messages());
             claims.start(shutdown);
             new AsyncFunc<>(

@@ -20,6 +20,7 @@ import com.amazonaws.services.sqs.model.Message;
 import com.jcabi.aspects.Tv;
 import com.jcabi.log.Logger;
 import com.zerocracy.Farm;
+import com.zerocracy.Project;
 import com.zerocracy.claims.proc.AsyncSink;
 import com.zerocracy.claims.proc.BrigadeProc;
 import com.zerocracy.claims.proc.CountingProc;
@@ -27,10 +28,15 @@ import com.zerocracy.claims.proc.ExpiryProc;
 import com.zerocracy.claims.proc.FootprintProc;
 import com.zerocracy.claims.proc.MessageMonitorProc;
 import com.zerocracy.claims.proc.SentryProc;
+import com.zerocracy.farm.guts.Guts;
 import com.zerocracy.shutdown.ShutdownFarm;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.xembly.Directives;
 
 /**
  * Claims message sink.
@@ -42,7 +48,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-public final class MessageSink {
+public final class MessageSink implements Farm {
 
     /**
      * Async sink.
@@ -50,11 +56,27 @@ public final class MessageSink {
     private final AsyncSink asynk;
 
     /**
+     * Origin farm.
+     */
+    private final Farm farm;
+
+    /**
      * Ctor.
      * @param farm Farm
      * @param shutdown Shutdown
      */
     public MessageSink(final Farm farm, final ShutdownFarm.Hook shutdown) {
+        this(farm, shutdown, new HashMap<>(1));
+    }
+
+    /**
+     * Primary ctr.
+     * @param farm Farm
+     * @param shutdown Shutdown
+     * @param statuses Statuses
+     */
+    private MessageSink(final Farm farm, final ShutdownFarm.Hook shutdown,
+        final Map<String, Map<String, String>> statuses) {
         this.asynk = new AsyncSink(
             new MessageMonitorProc(
                 farm,
@@ -64,7 +86,7 @@ public final class MessageSink {
                         new FootprintProc(
                             farm,
                             new CountingProc(
-                                new BrigadeProc(farm),
+                                new BrigadeProc(farm, statuses),
                                 new AtomicInteger()
                             )
                         )
@@ -72,8 +94,10 @@ public final class MessageSink {
                 ),
                 shutdown
             ),
-            shutdown
+            shutdown,
+            statuses
         );
+        this.farm = farm;
     }
 
     /**
@@ -109,5 +133,23 @@ public final class MessageSink {
         thread.setDaemon(true);
         thread.setName(this.getClass().getSimpleName());
         thread.start();
+    }
+
+    @Override
+    public Iterable<Project> find(final String xpath) throws IOException {
+        return new Guts(
+            this.farm,
+            () -> this.farm.find(xpath),
+            () -> new Directives()
+                .xpath("/guts")
+                .add("farm")
+                .attr("id", this.getClass().getSimpleName())
+                .append(this.asynk.guts())
+        ).apply(xpath);
+    }
+
+    @Override
+    public void close() throws IOException {
+        this.farm.close();
     }
 }
