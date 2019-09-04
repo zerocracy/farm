@@ -86,6 +86,11 @@ public final class StkVerbose implements Stakeholder {
             this.origin.process(project, xml);
         } finally {
             status.remove(this.name);
+            if (status.values().isEmpty()) {
+                synchronized (this.statuses) {
+                    this.statuses.remove(claim.cid());
+                }
+            }
         }
         Logger.info(
             this,
