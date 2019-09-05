@@ -174,6 +174,18 @@ public final class PeopleTest {
     }
 
     @Test
+    public void updateProjectsCount() throws Exception {
+        final People people = new People(new FkFarm()).bootstrap();
+        final String user = "user31461";
+        final int count = 1024;
+        people.touch(user);
+        people.projects(user, count);
+        MatcherAssert.assertThat(
+            people.projects(user), Matchers.equalTo(count)
+        );
+    }
+
+    @Test
     public void mentorTest() throws Exception {
         final FkFarm farm = new FkFarm(new FkProject());
         final People people = new People(farm).bootstrap();
@@ -535,13 +547,15 @@ public final class PeopleTest {
     @Test
     public void totalReputation() throws Exception {
         final People people = new People(new FkFarm()).bootstrap();
-        for (int num = 0; num < 10; ++num) {
+        final int total = 10;
+        for (int num = 0; num < total; ++num) {
             final String login = String.format("user%d", num);
             people.invite(login, "0crat");
             people.reputation(login, num);
         }
+        final int rep = 45;
         MatcherAssert.assertThat(
-            people.totalReputation(), Matchers.equalTo(45)
+            people.totalReputation(), Matchers.equalTo(rep)
         );
     }
 

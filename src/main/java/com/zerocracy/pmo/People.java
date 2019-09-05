@@ -901,6 +901,40 @@ public final class People {
     }
 
     /**
+     * Change projects count.
+     * @param uid User id
+     * @param count Project count
+     * @throws IOException If fails
+     */
+    public void projects(final String uid, final int count) throws IOException {
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                People.start(uid)
+                    .addIf("projects")
+                    .set(count)
+            );
+        }
+    }
+
+    /**
+     * Projects count.
+     * @param uid User id
+     * @return Project count
+     * @throws IOException If fails
+     */
+    public int projects(final String uid) throws IOException {
+        try (final Item item = this.item()) {
+            return Integer.parseInt(
+                new Xocument(item.path()).xpath(
+                    String.format(
+                        "/people/person[@id='%s']/projects/text()", uid
+                    )
+                ).get(0)
+            );
+        }
+    }
+
+    /**
      * The item.
      * @return Item
      * @throws IOException If fails
