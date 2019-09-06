@@ -20,6 +20,7 @@ import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.farm.guts.Guts;
 import java.io.IOException;
+import lombok.EqualsAndHashCode;
 import org.xembly.Directive;
 import org.xembly.Directives;
 
@@ -28,6 +29,7 @@ import org.xembly.Directives;
  *
  * @since 1.0
  */
+@EqualsAndHashCode(of = "farm")
 public final class ClaimsFarm implements Farm {
 
     /**

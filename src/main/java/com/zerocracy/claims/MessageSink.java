@@ -36,6 +36,7 @@ import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import lombok.EqualsAndHashCode;
 import org.xembly.Directives;
 
 /**
@@ -48,6 +49,7 @@ import org.xembly.Directives;
  * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@EqualsAndHashCode(of = "farm")
 public final class MessageSink implements Farm {
 
     /**

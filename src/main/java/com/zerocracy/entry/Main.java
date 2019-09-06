@@ -121,7 +121,7 @@ public final class Main {
         final ClaimGuts cgts = new ClaimGuts();
         try (
             final S3Farm origin = new S3Farm(new ExtBucket().value(), temp);
-            final MessageSink sink = new MessageSink(
+            final Farm farm = new ShutdownFarm(
                 new ClaimsFarm(
                     new SmartFarm(
                         origin, new TestLocks()
@@ -130,7 +130,7 @@ public final class Main {
                 ),
                 shutdown
             );
-            final Farm farm = new ShutdownFarm(sink, shutdown);
+            final MessageSink sink = new MessageSink(farm, shutdown);
             final SlackRadar radar = new SlackRadar(farm);
             final ClaimsRoutine claims = new ClaimsRoutine(farm)
         ) {
