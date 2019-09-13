@@ -54,6 +54,6 @@ public final class TestLocks implements Locks {
     @Override
     public Lock lock(final Project pkt, final String res) throws IOException {
         final String lid = String.format("%s:%s", pkt.pid(), "ANY");
-        return this.locks.computeIfAbsent(lid, key -> new ReentrantLock());
+        return this.locks.computeIfAbsent(lid, key -> new ReentrantLock(true));
     }
 }
