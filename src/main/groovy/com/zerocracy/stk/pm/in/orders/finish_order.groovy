@@ -80,6 +80,7 @@ def exec(Project project, XML xml) {
   int minutes = new Boosts(farm, project).bootstrap().factor(job) * 15 + speed
   Roles roles = new Roles(project).bootstrap()
   List<String> qa = roles.findByRole('QA')
+  boolean review = false
   if (qa.empty || roles.hasRole(performer, 'ARC', 'PO')) {
     List<String> complaints = new JobAudit(farm, project).review(job)
     if (complaints.empty) {
@@ -110,6 +111,7 @@ def exec(Project project, XML xml) {
     } else {
       bonus = price.mul(new Policy().get('31.bonus', 16)) / 100
     }
+    review = true
     claim.copy()
       .type('Start QA review')
       .param('login', performer)
@@ -123,5 +125,6 @@ def exec(Project project, XML xml) {
     .type('Order was finished')
     .param('login', performer)
     .param('age', velocity / TimeUnit.MINUTES.toMillis(1L) as long)
+    .param('review', review)
     .postTo(new ClaimsOf(farm, project))
 }

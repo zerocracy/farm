@@ -25,9 +25,13 @@ import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pmo.Agenda
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Order was finished', 'Order was canceled')
+  new Assume(project, xml).notPmo().type('Order was finished', 'Order was canceled')
   ClaimIn claim = new ClaimIn(xml)
+  if (Boolean.parseBoolean(claim.param('review', Boolean.FALSE.toString()))) {
+    // Don't remove jobs from agenda until QA review completed,
+    // see `finish_order` and `complete_qa_review`.
+    return
+  }
   String job = claim.param('job')
   String login = claim.param('login')
   Farm farm = binding.variables.farm
