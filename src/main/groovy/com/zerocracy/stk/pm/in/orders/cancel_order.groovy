@@ -27,14 +27,23 @@ import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.staff.Roles
 
+import java.time.Instant
+import java.util.concurrent.TimeUnit
+
 def exec(Project project, XML xml) {
-  new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Cancel order')
+  new Assume(project, xml).notPmo().type('Cancel order')
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
   Orders orders = new Orders(farm, project).bootstrap()
   String performer = orders.performer(job)
   Roles roles = new Roles(project).bootstrap()
+  Instant closed
+  if (claim.hasParam('closed')) {
+    closed = Instant.parse(claim.param('closed'))
+  } else {
+    closed = Instant.now()
+  }
+  long velocity = closed.toEpochMilli() - orders.startTime(job).time
   if (claim.hasAuthor() && !roles.hasRole(claim.author(), 'PO', 'ARC')
     && claim.author() != performer) {
     throw new SoftException(
@@ -61,5 +70,6 @@ def exec(Project project, XML xml) {
     .type('Order was canceled')
     .param('voluntarily', claim.hasAuthor() && claim.author() == performer)
     .param('login', performer)
+    .param('age', velocity / TimeUnit.MINUTES.toMillis(1L) as long)
     .postTo(new ClaimsOf(farm, project))
 }

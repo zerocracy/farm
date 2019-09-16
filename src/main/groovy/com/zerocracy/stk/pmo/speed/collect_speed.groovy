@@ -26,8 +26,7 @@ import com.zerocracy.pmo.Speed
 import java.time.Instant
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Order was finished')
-  new Assume(project, xml).notPmo()
+  new Assume(project, xml).notPmo().type('Order was finished', 'Order was canceled')
   Farm farm = binding.variables.farm
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
