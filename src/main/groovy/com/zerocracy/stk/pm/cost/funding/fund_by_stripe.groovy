@@ -91,20 +91,34 @@ def exec(Project project, XML xml) {
     //  to calculate the payment with `Par` objects.
     Cash bonus = amount.mul(4) / 100
     String adviser = catalog.adviser(project.pid())
-    new ClaimOut()
-      .type('Make payment')
-      .param('login', adviser)
-      .param('job', 'none')
-      .param('cash', bonus)
-      .param(
-      'reason',
+    if (catalog.fee(project.pid()).empty) {
+      new ClaimOut()
+        .type('Notify user')
+        .token("user;${adviser}")
+        .param(
+          'message',
+          new Par(
+            farm,
+            'We just funded the project %s for %s.',
+            'You would get an adviser bonus of %s if this project was not free'
+          ).say(project.pid(), amount, bonus)
+        )
+    } else {
+      new ClaimOut()
+        .type('Make payment')
+        .param('login', adviser)
+        .param('job', 'none')
+        .param('cash', bonus)
+        .param(
+        'reason',
         new Par(farm, 'Adviser payment for @%s project (%s)')
           .say(project.pid(), pid)
       ).postTo(new ClaimsOf(farm))
-    new ClaimOut().type('Notify PMO').param(
-      'message',
-      new Par(farm, 'We just send adviser payment of %s for %s to %s').say(bonus, project.pid(), adviser)
-    ).postTo(new ClaimsOf(farm))
+      new ClaimOut().type('Notify PMO').param(
+        'message',
+        new Par(farm, 'We just send adviser payment of %s for %s to %s').say(bonus, project.pid(), adviser)
+      ).postTo(new ClaimsOf(farm))
+    }
   }
   if (catalog.sandbox(project.pid()) && claim.hasAuthor()) {
     claim.copy().type('Send zold')
