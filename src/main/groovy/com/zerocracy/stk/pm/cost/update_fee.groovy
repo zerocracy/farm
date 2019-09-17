@@ -28,57 +28,58 @@ import com.zerocracy.cash.Cash
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
-import com.zerocracy.claims.ClaimIn
 import com.zerocracy.gh.License
-import com.zerocracy.gh.LicenseKey
 import com.zerocracy.pmo.Catalog
+import com.zerocracy.radars.github.Quota
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).notPmo()
-  new Assume(project, xml)
-    .type('Project link was added', 'Project link was removed', 'Repo visibility changed')
-  ClaimIn claim = new ClaimIn(xml)
+  new Assume(project, xml).notPmo().type('Ping daily')
   Farm farm = binding.variables.farm
   Catalog catalog = new Catalog(farm).bootstrap()
   Github github = new ExtGithub(farm).value()
-  boolean free = true
-  for (String pair : catalog.links(project.pid())) {
-    String[] parts = pair.split(':', 2)
-    if (parts[0] == 'github') {
-      Repo.Smart repo = new Repo.Smart(
-        github.repos().get(new Coordinates.Simple(parts[1]))
-      )
-      free = repo.exists() && !repo.private && new License(new LicenseKey(repo)).oss()
-      if (!free) {
-        break
+  catalog.active().each { pid ->
+    if (!new Quota(github).quiet()) {
+      return
+    }
+    boolean free = true
+    for (String pair : catalog.links(project.pid())) {
+      String[] parts = pair.split(':', 2)
+      if (parts[0] == 'github') {
+        Repo.Smart repo = new Repo.Smart(
+          github.repos().get(new Coordinates.Simple(parts[1]))
+        )
+        free = repo.exists() && !repo.private && new License(repo).oss()
+        if (!free) {
+          break
+        }
       }
     }
-  }
-  if (free && catalog.fee(project.pid()) != Cash.ZERO) {
-    catalog.fee(project.pid(), Cash.ZERO)
-    claim.copy()
-      .type('Notify project')
-      .param(
-        'message',
-        new Par(
-          'You don\'t have any private GitHub repositories any more,',
-          'the management fee is waived, see §23'
-        ).say()
-      )
-      .postTo(new ClaimsOf(farm, project))
-  }
-  if (!free && catalog.fee(project.pid()) == Cash.ZERO) {
-    Cash fee = new Policy().get('23.fee', Cash.ZERO)
-    catalog.fee(project.pid(), fee)
-    claim.copy()
-      .type('Notify project')
-      .param(
-        'message',
-        new Par(
-          'Since now you have a private GitHub repository,',
-          'the management fee %s is applied, see §23'
-        ).say(fee)
-      )
-      .postTo(new ClaimsOf(farm, project))
+    if (free && catalog.fee(project.pid()) != Cash.ZERO) {
+      catalog.fee(project.pid(), Cash.ZERO)
+      claim.copy()
+        .type('Notify project')
+        .param(
+          'message',
+          new Par(
+            'You don\'t have any private GitHub repositories any more,',
+            'the management fee is waived, see §23'
+          ).say()
+        )
+        .postTo(new ClaimsOf(farm, project))
+    }
+    if (!free && catalog.fee(project.pid()) == Cash.ZERO) {
+      Cash fee = new Policy().get('23.fee', Cash.ZERO)
+      catalog.fee(project.pid(), fee)
+      claim.copy()
+        .type('Notify project')
+        .param(
+          'message',
+          new Par(
+            'Since now you have a private GitHub repository,',
+            'the management fee %s is applied, see §23'
+          ).say(fee)
+        )
+        .postTo(new ClaimsOf(farm, project))
+    }
   }
 }
