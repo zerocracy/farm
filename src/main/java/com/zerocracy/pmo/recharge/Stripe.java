@@ -66,7 +66,8 @@ public final class Stripe {
     }
 
     /**
-     * Register a customer.
+     * Register a customer and pay to project.
+     *
      * @param token Token from HTML front
      * @param email Email of the customer
      * @param amount How much to charge
