@@ -32,9 +32,12 @@ import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.qa.JobAudit
 import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.pm.staff.Roles
+import com.zerocracy.pmo.People
+
 import java.time.Duration
 import java.time.Instant
 import java.util.concurrent.TimeUnit
+import java.util.stream.Collectors
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
@@ -79,7 +82,11 @@ def exec(Project project, XML xml) {
   }
   int minutes = new Boosts(farm, project).bootstrap().factor(job) * 15 + speed
   Roles roles = new Roles(project).bootstrap()
+  People ppl = new People(farm).bootstrap()
   List<String> qa = roles.findByRole('QA')
+    .stream()
+    .filter {login -> !ppl.vacation(login)}
+    .collect(Collectors.toList())
   boolean review = false
   if (qa.empty || roles.hasRole(performer, 'ARC', 'PO')) {
     List<String> complaints = new JobAudit(farm, project).review(job)
