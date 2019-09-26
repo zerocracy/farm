@@ -76,7 +76,7 @@ def exec(Project project, XML xml) {
     .type('Make payment')
     .param('login', inspector)
     .param('reason', 'Quality review completed')
-    .param('estimated', 'true')
+    .param('estimated', 'false')
     .param('minutes', new Policy().get('30.price', 8))
     .postTo(new ClaimsOf(farm, project))
   new Agenda(farm, performer).bootstrap().with {

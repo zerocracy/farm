@@ -18,14 +18,19 @@ package com.zerocracy.stk.pm.cost
 
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
+import com.zerocracy.Par
 import com.zerocracy.Project
+import com.zerocracy.SoftException
 import com.zerocracy.cash.Cash
 import com.zerocracy.claims.ClaimIn
+import com.zerocracy.claims.ClaimOut
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.cost.Estimates
 import com.zerocracy.pm.cost.Ledger
 import com.zerocracy.pm.cost.Rates
+
+import java.time.Duration
 
 /**
  * Make payment is payment dispatcher stakeholder.
@@ -66,8 +71,37 @@ def exec(Project project, XML xml) {
     }
     price = rate.mul(minutes) / 60
   }
+  boolean estimated = Boolean.parseBoolean(claim.param('estimated', Boolean.FALSE.toString()))
+  int attempt = Integer.parseInt(claim.param('attempt', '0'))
+  if (attempt > 7) {
+    throw new SoftException(
+      new Par(
+        'We failed to pay in %d attempts'
+      ).say(attempt)
+    )
+  }
+  if (!canPay(farm, project, estimated, price)) {
+    new ClaimOut()
+      .type('Recharge project')
+      .param('triggered_by', new ClaimIn(xml).cid())
+      .param('force', true)
+      .unique('recharge')
+      .postTo(new ClaimsOf(farm, project))
+    claim.copy()
+      .param('attempt', attempt + 1)
+      .author(claim.author())
+      .token(claim.token())
+      .until(Duration.ofMinutes(10))
+      .postTo(new ClaimsOf(farm, project))
+    throw new SoftException(
+      new Par(
+        'The project is under-funded, you can\'t do it now, see §49',
+        'We just triggered recharge and will retry to make payment in 10 minutes (%d/8).'
+      ).say(attempt)
+    )
+  }
   Cash cash = price
-  if (!canPay(farm, project, claim.hasParam('estimated'), price)) {
+  if (!canPay(farm, project, estimated, price)) {
     cash = Cash.ZERO
   }
   if (!cash.empty) {
@@ -85,6 +119,9 @@ def exec(Project project, XML xml) {
 }
 
 static canPay(Farm farm, Project project, boolean est, Cash price) {
+  if (price.empty) {
+    return true
+  }
   if (project.pid() == 'PMO') {
     return true
   }
