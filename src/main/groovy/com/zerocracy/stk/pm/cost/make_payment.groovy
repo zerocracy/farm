@@ -87,12 +87,16 @@ def exec(Project project, XML xml) {
       .param('force', true)
       .unique('recharge')
       .postTo(new ClaimsOf(farm, project))
-    claim.copy()
+    ClaimOut copy = claim.copy()
       .param('attempt', attempt + 1)
-      .author(claim.author())
-      .token(claim.token())
       .until(Duration.ofMinutes(10))
-      .postTo(new ClaimsOf(farm, project))
+    if (claim.hasAuthor()) {
+      copy = copy.author(claim.author())
+    }
+    if (claim.hasToken()) {
+      copy = copy.token(claim.token())
+    }
+    copy.postTo(new ClaimsOf(farm, project))
     throw new SoftException(
       new Par(
         'The project is under-funded, you can\'t do it now, see §49',
