@@ -218,4 +218,19 @@ SOFTWARE.
       </opt>
     </opts>
   </cmd>
+  <cmd>
+    <code>Add to sandbox</code>
+    <regex>sandbox</regex>
+    <label>sandbox</label>
+    <help>Add or remove project to the list of sandbox projects</help>
+    <invited>true</invited>
+    <opts>
+      <opt>
+        <name>flag</name>
+        <regex>(on|off)</regex>
+        <help>Either 'on' or 'off'</help>
+        <optional>true</optional>
+      </opt>
+    </opts>
+  </cmd>
 </question>

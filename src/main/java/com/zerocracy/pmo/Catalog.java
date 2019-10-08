@@ -46,10 +46,6 @@ import org.xembly.Directives;
  *  be used). Be careful to ensure Groovy classes are properly updated since
  *  typing is sometimes dodgy in there. There is a lot of classes to change so
  *  try to find a good small cluster of related classes that can be updated.
- * @todo #1453:30min Add new command to handle `sandbox on|off` command
- *  in q-project.xml and stakeholder to change sandbox in catalog.xml
- *  via Catalog.sandbox(...) methods. This stakeholder should allow to change
- *  sandbox flag only to users with role in PMO.
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings(
