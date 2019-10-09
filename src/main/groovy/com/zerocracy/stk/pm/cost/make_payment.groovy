@@ -89,7 +89,7 @@ def exec(Project project, XML xml) {
         .param('force', true)
         .unique('recharge')
         .postTo(new ClaimsOf(farm, project))
-      ClaimOut copy = claim.copy()
+      ClaimOut copy = claim.copy(false)
         .param('attempt', attempt + 1)
         .until(Duration.ofMinutes(10))
       if (claim.hasAuthor()) {

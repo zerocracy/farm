@@ -77,10 +77,19 @@ public final class ClaimIn {
     }
 
     /**
-     * Make a copy.
+     * Make a copy building flow.
      * @return OutClaim
      */
     public ClaimOut copy() {
+        return this.copy(true);
+    }
+
+    /**
+     * Make a copy.
+     * @param flw Append flow metadata
+     * @return OutClaim
+     */
+    public ClaimOut copy(final boolean flw) {
         final ClaimOut out = new ClaimOut();
         out.type(this.type());
         if (this.hasToken()) {
@@ -92,12 +101,19 @@ public final class ClaimIn {
             "_parent_sig",
             new UncheckedText(new ClaimSignature(this.xml)).asString()
         );
-        final StringBuilder flow = new StringBuilder("");
-        if (this.params().containsKey("flow")) {
-            flow.append(this.param("flow")).append("; ");
+        if (flw) {
+            final StringBuilder flow = new StringBuilder("");
+            if (this.params().containsKey("flow")) {
+                flow.append(this.param("flow")).append("; ");
+            }
+            flow.append(this.type());
+            out.param("flow", flow.toString());
+            if (this.hasParam("noflow")) {
+                out.param("noflow", false);
+            }
+        } else {
+            out.param("noflow", true);
         }
-        flow.append(this.type());
-        out.param("flow", flow.toString());
         return out;
     }
 
