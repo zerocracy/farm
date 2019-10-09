@@ -17,7 +17,7 @@
 package com.zerocracy.claims.proc;
 
 import com.amazonaws.services.sqs.model.Message;
-import com.zerocracy.claims.MsgPriority;
+import com.jcabi.log.VerboseThreads;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import org.cactoos.Scalar;
@@ -35,22 +35,15 @@ final class ExecFor implements Scalar<ExecutorService> {
     /**
      * Lazy services.
      */
-    private static final UncheckedFunc<MsgPriority, ExecutorService> SERVICES =
+    private static final UncheckedFunc<String, ExecutorService> SERVICES =
         new UncheckedFunc<>(
             new SolidFunc<>(
-                prt -> {
-                    final ExecutorService exec;
-                    final int procs = Runtime.getRuntime()
-                        .availableProcessors();
-                    if (prt == MsgPriority.HIGH) {
-                        exec = Executors.newCachedThreadPool();
-                    } else if (prt == MsgPriority.NORMAL) {
-                        exec = Executors.newFixedThreadPool(procs);
-                    } else {
-                        exec = Executors.newFixedThreadPool(procs);
-                    }
-                    return exec;
-                }
+                pid -> Executors.newSingleThreadExecutor(
+                    new VerboseThreads(
+                        String.format("FARM-PROJ-%s", pid),
+                        false, Thread.NORM_PRIORITY
+                    )
+                )
             )
         );
 
@@ -66,7 +59,11 @@ final class ExecFor implements Scalar<ExecutorService> {
      */
     ExecFor(final Message msg) {
         this.origin = new UncheckedScalar<>(
-            () -> ExecFor.SERVICES.apply(MsgPriority.from(msg))
+            () -> ExecFor.SERVICES.apply(
+                msg.getMessageAttributes()
+                    .get("project")
+                    .getStringValue()
+            )
         );
     }
 
