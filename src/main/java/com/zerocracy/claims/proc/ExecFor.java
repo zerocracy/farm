@@ -29,7 +29,7 @@ import org.cactoos.scalar.UncheckedScalar;
  * Executor service for message.
  *
  * @since 1.0
- * @todo #2150 - Lets introduce new `Farm`, `Project` and `Item` implementation
+ * @todo #2150:30min - Lets introduce new `Farm`, `Project` and `Item` implementation
  *  which should check that `project.acq()` and `item.close()` are called on
  *  proper project thread (see this class for thread name pattern), then
  *  replace `SyncProject` with new implementation. It will trigger some
