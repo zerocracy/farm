@@ -31,6 +31,9 @@ def exec(Project project, XML xml) {
   if (!claim.hasParam('minutes')) {
     return
   }
+  if (claim.hasParam('attempt')) {
+    return
+  }
   String job = claim.param('job')
   String login = claim.param('login')
   int minutes = Integer.parseInt(claim.param('minutes'))

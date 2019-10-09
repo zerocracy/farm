@@ -29,6 +29,7 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.pm.cost.Estimates
 import com.zerocracy.pm.cost.Ledger
 import com.zerocracy.pm.cost.Rates
+import com.zerocracy.pmo.recharge.Recharge
 
 import java.time.Duration
 
@@ -80,23 +81,24 @@ def exec(Project project, XML xml) {
       ).say(attempt)
     )
   }
-  if (!canPay(farm, project, estimated, price)) {
-    new ClaimOut()
-      .type('Recharge project')
-      .param('triggered_by', new ClaimIn(xml).cid())
-      .param('force', true)
-      .unique('recharge')
-      .postTo(new ClaimsOf(farm, project))
-    ClaimOut copy = claim.copy()
-      .param('attempt', attempt + 1)
-      .until(Duration.ofMinutes(10))
-    if (claim.hasAuthor()) {
-      copy = copy.author(claim.author())
-    }
-    if (claim.hasToken()) {
-      copy = copy.token(claim.token())
-    }
-    copy.postTo(new ClaimsOf(farm, project))
+  boolean canRecharge = new Recharge(farm, project).exists()
+  if (canRecharge && !canPay(farm, project, estimated, price)) {
+      new ClaimOut()
+        .type('Recharge project')
+        .param('triggered_by', new ClaimIn(xml).cid())
+        .param('force', true)
+        .unique('recharge')
+        .postTo(new ClaimsOf(farm, project))
+      ClaimOut copy = claim.copy()
+        .param('attempt', attempt + 1)
+        .until(Duration.ofMinutes(10))
+      if (claim.hasAuthor()) {
+        copy = copy.author(claim.author())
+      }
+      if (claim.hasToken()) {
+        copy = copy.token(claim.token())
+      }
+      copy.postTo(new ClaimsOf(farm, project))
     throw new SoftException(
       new Par(
         'The project is under-funded, you can\'t do it now, see §49',
