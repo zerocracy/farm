@@ -22,7 +22,7 @@ import com.zerocracy.farm.Assume
 
 def exec(Project pmo, XML xml) {
   new Assume(pmo, xml).isPmo()
-  new Assume(pmo, xml).type('Ping daily')
+  new Assume(pmo, xml).type('Ping nightly')
   /**
    * @todo #559:30min Create a method People.oldestSkillsUpdate to retrieve the
    *  login of the user that needs theirs skills updated and fetch all

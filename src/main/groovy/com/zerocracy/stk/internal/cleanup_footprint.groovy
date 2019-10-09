@@ -25,7 +25,7 @@ import com.zerocracy.farm.props.Props
 import com.zerocracy.claims.Footprint
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Ping daily')
+  new Assume(project, xml).type('Ping nightly')
   Farm farm = binding.variables.farm
   if (new Props(farm).has('//testing')) {
     Logger.info(this, 'skip in testing mode')

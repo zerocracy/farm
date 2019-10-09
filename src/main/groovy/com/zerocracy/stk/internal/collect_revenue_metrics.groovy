@@ -39,7 +39,7 @@ import java.time.Instant
  * @param xml Claim
  */
 def exec(Project pmo, XML xml) {
-  new Assume(pmo, xml).type('Ping daily').isPmo()
+  new Assume(pmo, xml).type('Ping nightly').isPmo()
   Farm farm = binding.variables.farm
   if (new Props(farm).has('//testing')) {
     Logger.info('collect_revenue_metrics', 'Skipping in testing mode')

@@ -35,7 +35,7 @@ import com.zerocracy.pmo.Catalog
 import com.zerocracy.pmo.Pmo
 
 def exec(Project pkt, XML xml) {
-  new Assume(pkt, xml).notPmo().type('Ping daily')
+  new Assume(pkt, xml).notPmo().type('Ping nightly')
   Farm farm = binding.variables.farm
   Ledger ledger = new Ledger(farm, pkt).bootstrap()
   Wbs wbs = new Wbs(pkt).bootstrap()

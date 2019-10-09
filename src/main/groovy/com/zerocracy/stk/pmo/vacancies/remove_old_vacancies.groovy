@@ -30,7 +30,7 @@ import java.time.Instant
 
 def exec(Project pmo, XML xml) {
   new Assume(pmo, xml).isPmo()
-  new Assume(pmo, xml).type('Ping daily')
+  new Assume(pmo, xml).type('Ping nightly')
   ClaimIn claim = new ClaimIn(xml)
   Instant timestamp = claim.created().toInstant()
   Farm farm = binding.variables.farm

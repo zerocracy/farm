@@ -30,7 +30,7 @@ import java.time.Instant
 
 def exec(Project pmo, XML xml) {
   new Assume(pmo, xml).isPmo()
-  new Assume(pmo, xml).type('Ping daily')
+  new Assume(pmo, xml).type('Ping nightly')
   ClaimIn claim = new ClaimIn(xml)
   Instant expiration = claim.created().toInstant() -
     Duration.ofDays(new Policy().get('41.days', 32))

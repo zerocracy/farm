@@ -31,7 +31,7 @@ import com.zerocracy.radars.github.Quota
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Ping daily')
+  new Assume(project, xml).type('Ping nightly')
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
   Orders orders = new Orders(farm, project).bootstrap()

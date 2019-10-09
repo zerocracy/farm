@@ -31,7 +31,7 @@ import org.cactoos.collection.Filtered
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Ping daily')
+  new Assume(project, xml).type('Ping nightly')
   Farm farm = binding.variables.farm
   new Roles(project).bootstrap().findByRole('QA').each { login ->
     List<String> reviews = new Reviews(project).bootstrap().findByInspector(login)

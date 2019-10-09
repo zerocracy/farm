@@ -119,8 +119,12 @@ public final class Pings {
         this.start(
             "day",
             "Ping daily",
-            // @checkstyle MagicNumberCheck (1 line)
-            SimpleScheduleBuilder.repeatHourlyForever(24)
+            CronScheduleBuilder.cronSchedule("0 0 12 1/1 * ?")
+        );
+        this.start(
+            "night",
+            "Ping nightly",
+            CronScheduleBuilder.cronSchedule("0 0 0 1/1 * ?")
         );
         this.start(
             "2weeks",

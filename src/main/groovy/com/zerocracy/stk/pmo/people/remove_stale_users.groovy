@@ -33,7 +33,7 @@ import java.util.concurrent.TimeUnit
 
 def exec(Project pmo, XML xml) {
   new Assume(pmo, xml).isPmo()
-  new Assume(pmo, xml).type('Ping daily')
+  new Assume(pmo, xml).type('Ping nightly')
   Farm farm = binding.variables.farm
   People people = new People(farm).bootstrap()
   ClaimIn claim = new ClaimIn(xml)

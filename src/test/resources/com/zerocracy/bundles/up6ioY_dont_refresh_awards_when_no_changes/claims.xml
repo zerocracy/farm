@@ -17,7 +17,7 @@ SOFTWARE.
 -->
 <claims xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" updated="2018-09-07T06:54:17Z" version="0.62.5" xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.62.5/xsd/pm/claims.xsd">
   <claim id="1">
-    <type>Ping daily</type>
+    <type>Ping nightly</type>
     <author>0crat</author>
     <created>2018-05-15T01:00:00.000Z</created>
   </claim>

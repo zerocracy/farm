@@ -29,7 +29,7 @@ import java.time.Duration
 import java.time.Instant
 
 def exec(Project pmo, XML xml) {
-  new Assume(pmo, xml).isPmo().type('Ping daily')
+  new Assume(pmo, xml).isPmo().type('Ping nightly')
   ClaimIn claim = new ClaimIn(xml)
   Farm farm = binding.variables.farm
   Instant expiration = claim.created().toInstant() -

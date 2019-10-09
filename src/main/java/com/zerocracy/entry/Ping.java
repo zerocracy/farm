@@ -50,7 +50,8 @@ public final class Ping implements Job {
             ping -> {
                 final Duration dur;
                 if ("ping 2weeks".equalsIgnoreCase(ping)
-                    || "ping daily".equalsIgnoreCase(ping)) {
+                    || "ping daily".equalsIgnoreCase(ping)
+                    || "ping nightly".equalsIgnoreCase(ping)) {
                     dur = Duration.ofHours((long) Tv.TEN);
                 } else if ("ping hourly".equalsIgnoreCase(ping)) {
                     dur = Duration.ofHours(1L);

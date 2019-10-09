@@ -28,13 +28,13 @@ import com.zerocracy.pmo.People
 import org.cactoos.list.ListOf
 
 /**
- * Collect KPI metrics.
+ * Collect KPI metrics for daily report.
  *
  * @param project Project
  * @param xml Claim
  */
 def exec(Project pmo, XML xml) {
-  new Assume(pmo, xml).type('Ping daily').isPmo()
+  new Assume(pmo, xml).type('Ping nightly').isPmo()
   Farm farm = binding.variables.farm
   KpiMetrics kpi = new KpiOf(farm)
   Catalog catalog = new Catalog(farm).bootstrap()

@@ -24,7 +24,7 @@ import com.zerocracy.pmo.Awards
 import com.zerocracy.pmo.People
 
 def exec(Project pmo, XML xml) {
-  new Assume(pmo, xml).isPmo().type('Ping daily')
+  new Assume(pmo, xml).isPmo().type('Ping nightly')
   People people = new People(pmo).bootstrap()
   people.iterate().each { login ->
     if (new Awards(pmo, login).bootstrap().awards(Tv.NINETY).empty) {

@@ -25,7 +25,7 @@ import com.zerocracy.pmo.People
 import com.zerocracy.pmo.Projects
 
 def exec(Project pmo, XML xml) {
-  new Assume(pmo, xml).isPmo().type('Ping daily', 'Update user projects')
+  new Assume(pmo, xml).isPmo().type('Ping nightly', 'Update user projects')
 
   Farm farm = binding.variables.farm
   People people = new People(farm).bootstrap()
