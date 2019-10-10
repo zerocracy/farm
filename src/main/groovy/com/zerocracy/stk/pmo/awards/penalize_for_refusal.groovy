@@ -16,31 +16,57 @@
  */
 package com.zerocracy.stk.pmo.awards
 
+
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Policy
 import com.zerocracy.Project
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
-import com.zerocracy.claims.ClaimIn
+
+import java.time.Duration
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Order was canceled')
+  new Assume(project, xml).notPmo().type('Order was canceled')
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
   Farm farm = binding.variables.farm
   if (claim.hasParam('voluntarily') && claim.param('voluntarily') == 'true') {
-    claim.copy()
-      .type('Add award points')
-      .param('job', job)
-      .param('login', claim.param('login'))
-      .param(
+    Duration age
+    if (claim.hasParam('age')) {
+      age = Duration.ofMinutes(Integer.parseInt(claim.param('age')))
+    } else {
+      claim.reply('penalize_for_refusal: failed to determinate ticket age, using default (3 days)')
+        .postTo(new ClaimsOf(farm, project))
+      age = Duration.ofDays(2)
+    }
+    Policy policy = new Policy(farm)
+    int penalty
+    if (age <= Duration.ofDays(1)) {
+      penalty = 0
+    } else if (age <= Duration.ofDays(3)) {
+      penalty = policy.get('6.penalty-3days', 10)
+    } else if (age <= Duration.ofDays(6)) {
+      penalty = policy.get('6.penalty-6days', 20)
+    } else {
+      penalty = policy.get('6.penalty-6days', 50)
+    }
+    if (penalty == 0) {
+      claim.reply(new Par(farm,'Job refused in %d hours - no penalty, see §6').say(age.toHours()))
+        .postTo(new ClaimsOf(farm, project))
+    } else {
+      claim.copy()
+        .type('Add award points')
+        .param('job', job)
+        .param('login', claim.param('login'))
+        .param(
         'reason',
-        new Par('Tasks refusal is discouraged, see §6').say()
-      )
-      .param('minutes', -new Policy().get('6.penalty', 15))
-      .postTo(new ClaimsOf(farm, project))
+          new Par(farm,'Tasks refusal is discouraged (job refused in %d hours), see §6').say(age.toHours())
+        )
+        .param('minutes', -penalty)
+        .postTo(new ClaimsOf(farm, project))
+    }
   }
 }
