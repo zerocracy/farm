@@ -84,6 +84,20 @@ def exec(Project pmo, XML xml) {
       'and you are the mentor, see §1',
     ).say(name)
   ).postTo(new ClaimsOf(farm))
+  if (resumes.examiner(login) != author) {
+      String examiner = resumes.examiner(login)
+      claim.copy()
+          .type('Notify user')
+          .token("user;${examiner}")
+          .param(
+            'message',
+            new Par(
+              'A resume for %s previously assigned to you',
+              'has been reviewed by someone else, as permitted in §1;',
+              'please stop reviewing it'
+            ).say(login)
+          ).postTo(new ClaimsOf(farm))
+  }
   claim.copy()
     .type('Notify user')
     .token("user;${login}")
