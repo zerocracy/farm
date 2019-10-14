@@ -167,6 +167,7 @@ public final class ProjectQueue {
             .add("name").set(this.thread.getName()).up()
             .add("state").set(this.thread.getState()).up()
             .up()
+            .add("size").set(this.size()).up()
             .add("items")
             .append(
                 new IoCheckedScalar<>(
@@ -180,6 +181,29 @@ public final class ProjectQueue {
                     )
                 ).value()
             ).up().up();
+    }
+
+    /**
+     * Repair current queue if broken.
+     * @return New queue if broken or current of OK
+     * @todo #2165:30min Some threads are getting terminated by someone
+     *  from outside. More often PQ-PMO thread is interrupted.
+     *  Most probably `Terminator` is the problem here. Let's fix this
+     *  issue and remove this dirty hack from this object.
+     */
+    public ProjectQueue repair() {
+        final ProjectQueue res;
+        if (this.thread.getState() == Thread.State.TERMINATED) {
+            Logger.warn(
+                this,
+                "Thread terminated, repairing queue: %s", this.pid
+            );
+            res = new ProjectQueue(this.msgs, this.pid, this.proc);
+            res.start();
+        } else {
+            res = this;
+        }
+        return res;
     }
 
     /**

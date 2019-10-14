@@ -86,7 +86,12 @@ public final class AsyncSink {
         }
         final String pid = msg.getMessageAttributes().get("project")
             .getStringValue();
-        this.queues.computeIfAbsent(pid, this::startedQueue).push(msg);
+        final ProjectQueue queue = this.queues.computeIfAbsent(
+            pid, this::startedQueue
+        );
+        final ProjectQueue repaired = queue.repair();
+        this.queues.replace(pid, queue, repaired);
+        repaired.push(msg);
     }
 
     /**

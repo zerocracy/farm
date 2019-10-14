@@ -100,7 +100,9 @@ SOFTWARE.
           <li>
             <xsl:text>Queue '</xsl:text>
             <xsl:value-of select="@pid"/>
-            <xsl:text>'</xsl:text>
+            <xsl:text>' (</xsl:text>
+            <xsl:value-of select="size"/>
+            <xsl:text> items):</xsl:text>
             <br/>
             <xsl:text>Thread </xsl:text>
             <xsl:value-of select="thread/name"/>
