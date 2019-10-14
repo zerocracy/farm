@@ -72,12 +72,14 @@ public final class Brigade implements BiFunc<Project, XML, Integer> {
      * @param xml XML to process
      * @return TRUE if this one was interested
      * @throws IOException If fails
+     * @throws InterruptedException If interrupted
      */
     private static boolean process(final Stakeholder stk, final Project project,
-        final XML xml) throws IOException {
+        final XML xml) throws IOException, InterruptedException {
         boolean done;
         try {
             stk.process(project, xml);
+            Thread.sleep(0L);
             done = true;
         } catch (final MismatchException ex) {
             done = false;
