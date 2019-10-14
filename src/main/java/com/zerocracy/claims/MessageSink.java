@@ -73,7 +73,7 @@ public final class MessageSink implements Farm {
                         new FootprintProc(
                             farm,
                             new CountingProc(
-                                new BrigadeProc(farm),
+                                new BrigadeProc(this),
                                 new AtomicInteger()
                             )
                         )
