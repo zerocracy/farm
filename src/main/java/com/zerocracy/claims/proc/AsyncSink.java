@@ -17,18 +17,15 @@
 package com.zerocracy.claims.proc;
 
 import com.amazonaws.services.sqs.model.Message;
+import com.jcabi.aspects.Tv;
 import com.jcabi.log.Logger;
-import com.jcabi.log.VerboseCallable;
 import com.zerocracy.shutdown.ShutdownFarm;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import org.cactoos.Proc;
-import org.cactoos.scalar.And;
 import org.cactoos.scalar.IoCheckedScalar;
+import org.cactoos.scalar.Reduced;
 import org.xembly.Directive;
 import org.xembly.Directives;
 
@@ -36,6 +33,13 @@ import org.xembly.Directives;
  * Proc to execute origin proc asynchronously.
  *
  * @since 1.0
+ * @todo #2165:30min - Lets introduce new `Farm`, `Project`
+ *  and `Item` implementation which should check that `project.acq()`
+ *  and `item.close()` are called on proper project thread
+ *  (see this class for thread name pattern), then
+ *  replace `SyncProject` with new implementation. It will trigger some
+ *  design issues (like some stakeholders may access resources of different
+ *  projects), so it should be solved before.
  */
 @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
 public final class AsyncSink {
@@ -51,30 +55,22 @@ public final class AsyncSink {
     private final ShutdownFarm.Hook shutdown;
 
     /**
-     * Counter.
+     * Queue per project map.
      */
-    private final AtomicInteger count;
-
-    /**
-     * Claim statuses.
-     */
-    private final Map<String, Map<String, String>> statuses;
+    private final ConcurrentMap<String, ProjectQueue> queues;
 
     /**
      * Ctor.
      *
      * @param origin Origin proc
      * @param shutdown Shutdown hook
-     * @param statuses Claim statuses
      * @checkstyle ParameterNumberCheck (3 lines)
      */
     public AsyncSink(final Proc<Message> origin,
-        final ShutdownFarm.Hook shutdown, final Map<String,
-        Map<String, String>> statuses) {
+        final ShutdownFarm.Hook shutdown) {
         this.origin = origin;
         this.shutdown = shutdown;
-        this.statuses = statuses;
-        this.count = new AtomicInteger();
+        this.queues = new ConcurrentHashMap<>(Tv.FIFTY);
     }
 
     /**
@@ -82,89 +78,36 @@ public final class AsyncSink {
      * @param msg Message to process
      */
     public void execAsync(final Message msg) {
-        try {
-            this.count.incrementAndGet();
-            new ExecFor(msg).value().submit(
-                new VerboseCallable<>(
-                    () -> {
-                        try {
-                            this.exec(msg);
-                        } catch (final IOException exx) {
-                            Logger.error(
-                                this,
-                                "Failed to process message: %[exception]s",
-                                exx
-                            );
-                        }
-                        return null;
-                    },
-                    true, true
-                )
-            );
-        } catch (final RejectedExecutionException err) {
-            this.count.decrementAndGet();
-            throw new IllegalStateException("Task was rejected", err);
+        if (this.shutdown.stopping()) {
+            Logger.info(this, "Shutdown requested, stopping all queues");
+            this.queues.values().forEach(ProjectQueue::stop);
+            this.queues.clear();
+            return;
         }
-    }
-
-    /**
-     * Amount of tasks processing right now.
-     * @return Count
-     */
-    public int tasks() {
-        return this.count.get();
+        final String pid = msg.getMessageAttributes().get("project")
+            .getStringValue();
+        this.queues.computeIfAbsent(
+            pid, key -> new ProjectQueue(pid, this.origin)
+        ).push(msg);
     }
 
     /**
      * Guts of the sink.
      *
      * @return Xembly dirs
-     */
-    public Iterable<Directive> guts() {
-        final Directives dirs = new Directives();
-        dirs.add("stakeholders");
-        for (final Map.Entry<String, Map<String, String>> status
-            : this.statuses.entrySet()) {
-            dirs.add("claim")
-                .attr("cid", status.getKey());
-            for (final Map.Entry<String, String> stk
-                : status.getValue().entrySet()) {
-                final String value = stk.getValue();
-                if (value.isEmpty()) {
-                    continue;
-                }
-                dirs.add("stakeholder")
-                    .add("name").set(stk.getKey()).up()
-                    .add("status").set(value).up()
-                    .up();
-            }
-            dirs.up();
-        }
-        dirs.up();
-        return dirs;
-    }
-
-    /**
-     * Exec a message.
-     * @param msg Message
      * @throws IOException If fails
      */
-    @SuppressWarnings("PMD.PrematureDeclaration")
-    private void exec(final Message msg) throws IOException {
-        final List<Message> input =
-            Collections.singletonList(msg);
-        try {
-            Logger.info(
-                this, "Processing a messages",
-                input.size()
-            );
-            new IoCheckedScalar<>(new And(this.origin, input)).value();
-        } finally {
-            if (this.count.decrementAndGet() == 0
-                && this.shutdown.stopping()) {
-                this.shutdown.complete();
-                Thread.currentThread().interrupt();
-            }
-        }
+    public Iterable<Directive> guts() throws IOException {
+        return new Directives()
+            .add("queues")
+            .append(
+                new IoCheckedScalar<>(
+                    new Reduced<>(
+                        new Directives(),
+                        (dirs, queue) -> dirs.append(queue.stats()),
+                        this.queues.values()
+                    )
+                ).value()
+            ).up();
     }
 }

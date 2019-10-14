@@ -772,7 +772,6 @@ SOFTWARE.
             <configuration>
               <excludes combine.children="append">
                 <exclude>checkstyle:.*/src/main/resources/png/.*</exclude>
-                <exclude>checkstyle:.*/src/main/java/com/zerocracy/claims/proc/ExecFor.java</exclude>
                 <exclude>checkstyle:.*/src/main/resources/com/zerocracy/tk/project/badge.sketch</exclude>
                 <exclude>checkstyle:.*/src/main/resources/com/zerocracy/tk/project/contrib-badge.sketch</exclude>
                 <exclude>findbugs:.*</exclude>

@@ -94,19 +94,26 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="farm[@id='MessageSink']">
     <p>
-      <xsl:text>Stakeholder statuses:</xsl:text>
+      <xsl:text>Project queues:</xsl:text>
       <ul>
-        <xsl:for-each select="stakeholders/claim">
+        <xsl:for-each select="queues/queue">
           <li>
-            <xsl:text>Running stakeholders for </xsl:text>
-            <xsl:value-of select="@cid"/>
-            <xsl:text> claim:</xsl:text>
+            <xsl:text>Queue '</xsl:text>
+            <xsl:value-of select="@pid"/>
+            <xsl:text>'</xsl:text>
+            <br/>
+            <xsl:text>Thread </xsl:text>
+            <xsl:value-of select="thread/name"/>
+            <xsl:text> state=</xsl:text>
+            <xsl:value-of select="thread/state"/>
+            <br/>
+            <xsl:text>Messages:</xsl:text>
             <ul>
-              <xsl:for-each select="stakeholder">
+              <xsl:for-each select="items/item">
                 <li>
-                  <xsl:value-of select="name"/>
+                  <xsl:value-of select="@id"/>
                   <xsl:text> : </xsl:text>
-                  <xsl:value-of select="status"/>
+                  <xsl:value-of select="body"/>
                 </li>
               </xsl:for-each>
             </ul>

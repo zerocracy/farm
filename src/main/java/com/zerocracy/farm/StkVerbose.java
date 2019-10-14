@@ -22,9 +22,6 @@ import com.zerocracy.Project;
 import com.zerocracy.Stakeholder;
 import com.zerocracy.claims.ClaimIn;
 import java.io.IOException;
-import java.time.Instant;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Verbose stakeholder.
@@ -44,21 +41,13 @@ public final class StkVerbose implements Stakeholder {
     private final String name;
 
     /**
-     * Stakeholder status.
-     */
-    private final Map<String, Map<String, String>> statuses;
-
-    /**
      * Ctor.
      *  @param origin Origin stakeholder
      * @param name Stakeholder name
-     * @param statuses Stakeholder statuses
      */
-    public StkVerbose(final Stakeholder origin, final String name,
-        final Map<String, Map<String, String>> statuses) {
+    public StkVerbose(final Stakeholder origin, final String name) {
         this.origin = origin;
         this.name = name;
-        this.statuses = statuses;
     }
 
     @Override
@@ -67,31 +56,7 @@ public final class StkVerbose implements Stakeholder {
         throws IOException {
         final long start = System.currentTimeMillis();
         final ClaimIn claim = new ClaimIn(xml);
-        if (!this.statuses.containsKey(claim.cid())) {
-            synchronized (this.statuses) {
-                if (!this.statuses.containsKey(claim.cid())) {
-                    this.statuses.put(claim.cid(), new HashMap<>(1));
-                }
-            }
-        }
-        final Map<String, String> status = this.statuses.get(claim.cid());
-        status.put(
-            this.name,
-            String.format(
-                "%s/'%s'/%s (%s)",
-                claim.cid(), claim.type(), project.pid(), Instant.now()
-            )
-        );
-        try {
-            this.origin.process(project, xml);
-        } finally {
-            status.remove(this.name);
-            if (status.values().isEmpty()) {
-                synchronized (this.statuses) {
-                    this.statuses.remove(claim.cid());
-                }
-            }
-        }
+        this.origin.process(project, xml);
         Logger.info(
             this,
             "Completed ['%s' in '%s' for claim '%s'] in %dms",
