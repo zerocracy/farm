@@ -90,7 +90,9 @@ public final class AsyncSink {
             pid, this::startedQueue
         );
         final ProjectQueue repaired = queue.repair();
-        this.queues.replace(pid, queue, repaired);
+        if (this.queues.replace(pid, queue, repaired)) {
+            Logger.warn(this, "%s was repaired", repaired);
+        }
         repaired.push(msg);
     }
 

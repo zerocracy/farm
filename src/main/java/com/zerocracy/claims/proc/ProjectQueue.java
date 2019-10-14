@@ -107,7 +107,7 @@ public final class ProjectQueue {
             this.msgs.put(msg);
             Logger.info(
                 this, "Pushed message (queue_size=%d, pri=%s): %s",
-                this.msgs.size(), MsgPriority.from(msg), msg
+                this.msgs.size(), MsgPriority.from(msg), msg.getMessageId()
             );
         } catch (final InterruptedException err) {
             Thread.currentThread().interrupt();
@@ -206,17 +206,23 @@ public final class ProjectQueue {
         return res;
     }
 
+    @Override
+    public String toString() {
+        return String.format("ProjectQueue(%s)", this.pid);
+    }
+
     /**
      * Runnable job.
      */
     private void run() {
         final IoCheckedProc<Message> rec = new IoCheckedProc<>(this.proc);
-        while (!Thread.currentThread().isInterrupted()) {
+        final Thread thr = Thread.currentThread();
+        while (!thr.isInterrupted()) {
             final Message msg;
             try {
                 msg = this.msgs.take();
             } catch (final InterruptedException err) {
-                Thread.currentThread().interrupt();
+                thr.interrupt();
                 Logger.info(
                     this,
                     "Project queue was interrupted: %[exception]s", err
@@ -226,7 +232,7 @@ public final class ProjectQueue {
             Logger.info(
                 this,
                 "Polled message (queue_size=%d, pri=%s): %s",
-                this.msgs.size(), MsgPriority.from(msg), msg
+                this.msgs.size(), MsgPriority.from(msg), msg.getMessageId()
             );
             try {
                 rec.exec(msg);
@@ -238,6 +244,10 @@ public final class ProjectQueue {
                 );
             }
         }
+        Logger.warn(
+            this, "Queue exited: interrupted?=%b state=%s",
+            thr.isInterrupted(), thr.getState()
+        );
     }
 
     /**
