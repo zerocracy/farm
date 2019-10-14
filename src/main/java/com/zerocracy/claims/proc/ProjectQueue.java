@@ -24,8 +24,8 @@ import java.io.IOException;
 import java.util.Comparator;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
+import lombok.EqualsAndHashCode;
 import org.cactoos.Proc;
-import org.cactoos.func.IoCheckedProc;
 import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.scalar.Reduced;
 import org.xembly.Directive;
@@ -36,6 +36,7 @@ import org.xembly.Directives;
  *
  * @since 1.0
  */
+@EqualsAndHashCode
 public final class ProjectQueue {
 
     /**
@@ -214,8 +215,8 @@ public final class ProjectQueue {
     /**
      * Runnable job.
      */
+    @SuppressWarnings({"PMD.AvoidCatchingThrowable", "OverlyBroadCatchBlock"})
     private void run() {
-        final IoCheckedProc<Message> rec = new IoCheckedProc<>(this.proc);
         final Thread thr = Thread.currentThread();
         while (!thr.isInterrupted()) {
             final Message msg;
@@ -235,8 +236,16 @@ public final class ProjectQueue {
                 this.msgs.size(), MsgPriority.from(msg), msg.getMessageId()
             );
             try {
-                rec.exec(msg);
-            } catch (final IOException err) {
+                this.proc.exec(msg);
+            } catch (final InterruptedException iex) {
+                thr.interrupt();
+                Logger.warn(
+                    this,
+                    "Proc interrupted: %[exception]s", iex
+                );
+                break;
+                // @checkstyle IllegalCatch (1 line)
+            } catch (final Throwable err) {
                 Logger.error(
                     this,
                     "Proc failed for message %s: %[exception]s",
