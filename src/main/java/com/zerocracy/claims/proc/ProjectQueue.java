@@ -237,6 +237,7 @@ public final class ProjectQueue {
             );
             try {
                 this.proc.exec(msg);
+                Thread.sleep(0L);
             } catch (final InterruptedException iex) {
                 thr.interrupt();
                 Logger.warn(
