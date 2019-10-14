@@ -42,7 +42,7 @@ public final class ProjectQueue {
      * Queue order comparator.
      */
     private static final Comparator<Message> CMP =
-        Comparator.comparing(MsgPriority::from);
+        Comparator.comparing(MsgPriority::from).reversed();
 
     /**
      * Message queue.
@@ -95,10 +95,10 @@ public final class ProjectQueue {
      * @param msg Message to push
      */
     public void push(final Message msg) {
-        if (!this.thread.isAlive()) {
+        if (this.thread.isInterrupted()) {
             throw new IllegalStateException(
                 String.format(
-                    "Thread %s is not alive but %s",
+                    "Thread %s was interrupted, state=%s",
                     this.thread.getName(), this.thread.getState()
                 )
             );
@@ -136,7 +136,7 @@ public final class ProjectQueue {
         Logger.info(this, "Stopping queue %s", this.pid);
         this.thread.interrupt();
         try {
-            this.thread.wait();
+            this.thread.join();
         } catch (final InterruptedException err) {
             Logger.info(
                 this,

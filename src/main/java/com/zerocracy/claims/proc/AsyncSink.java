@@ -86,9 +86,7 @@ public final class AsyncSink {
         }
         final String pid = msg.getMessageAttributes().get("project")
             .getStringValue();
-        this.queues.computeIfAbsent(
-            pid, key -> new ProjectQueue(pid, this.origin)
-        ).push(msg);
+        this.queues.computeIfAbsent(pid, this::startedQueue).push(msg);
     }
 
     /**
@@ -109,5 +107,16 @@ public final class AsyncSink {
                     )
                 ).value()
             ).up();
+    }
+
+    /**
+     * Create new project queue and start it.
+     * @param pid Project id
+     * @return Queue
+     */
+    private ProjectQueue startedQueue(final String pid) {
+        final ProjectQueue queue = new ProjectQueue(pid, this.origin);
+        queue.start();
+        return queue;
     }
 }
