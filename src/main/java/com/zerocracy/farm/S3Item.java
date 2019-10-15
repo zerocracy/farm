@@ -20,7 +20,6 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.jcabi.log.Logger;
 import com.jcabi.s3.Ocket;
 import com.zerocracy.Item;
-import com.zerocracy.Project;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -59,42 +58,23 @@ final class S3Item implements Item {
     private final AtomicBoolean open;
 
     /**
-     * Access mode.
-     */
-    private final Project.Mode mode;
-
-    /**
      * Ctor.
      * @param okt Ocket
      * @throws IOException If fails
      */
     S3Item(final Ocket okt) throws IOException {
-        this(
-            okt, Files.createTempDirectory("").resolve(okt.key()),
-            Project.Mode.READ_WRITE
-        );
-    }
-
-    /**
-     * Ctor for RW mode.
-     * @param okt Ocket
-     * @param path Path
-     */
-    S3Item(final Ocket okt, final Path path) {
-        this(okt, path, Project.Mode.READ_WRITE);
+        this(okt, Files.createTempDirectory("").resolve(okt.key()));
     }
 
     /**
      * Ctor.
      * @param okt Ocket
      * @param tmp Path
-     * @param mode Access mode
      */
-    S3Item(final Ocket okt, final Path tmp, final Project.Mode mode) {
+    S3Item(final Ocket okt, final Path tmp) {
         this.ocket = okt;
         this.temp = tmp;
         this.open = new AtomicBoolean(false);
-        this.mode = mode;
     }
 
     @Override
@@ -150,9 +130,8 @@ final class S3Item implements Item {
 
     @Override
     public void close() throws IOException {
-        final boolean update = this.mode == Project.Mode.READ_WRITE
-            && this.open.get() && this.temp.toFile().exists();
-        if (update && (!this.ocket.exists() || this.dirty())) {
+        if (this.open.get() && this.temp.toFile().exists()
+            && (!this.ocket.exists() || this.dirty())) {
             final ObjectMetadata meta = new ObjectMetadata();
             final long start = System.currentTimeMillis();
             meta.setContentLength(this.temp.toFile().length());

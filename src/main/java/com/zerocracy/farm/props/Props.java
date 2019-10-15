@@ -132,6 +132,7 @@ public final class Props {
      * @throws IOException If fails
      */
     private Item item() throws IOException {
-        return this.project.acq("_props.xml", Project.Mode.READ_ONLY);
+        return this.project.acq("_props.xml");
     }
+
 }

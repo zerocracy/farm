@@ -65,8 +65,7 @@ public final class SqsProject implements Project {
         return this.scalar.value().pid();
     }
     @Override
-    public Item acq(final String file, final Project.Mode mode)
-        throws IOException {
-        return this.scalar.value().acq(file, mode);
+    public Item acq(final String file) throws IOException {
+        return this.scalar.value().acq(file);
     }
 }

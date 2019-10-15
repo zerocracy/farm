@@ -48,9 +48,8 @@ final class RdProject implements Project {
     }
 
     @Override
-    public Item acq(final String file, final Project.Mode mode)
-        throws IOException {
-        Item item = this.origin.acq(file, mode);
+    public Item acq(final String file) throws IOException {
+        Item item = this.origin.acq(file);
         if (!"claims.xml".equals(file)
             && file.charAt(0) != '_'
             && file.endsWith(".xml")) {

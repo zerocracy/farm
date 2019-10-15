@@ -19,7 +19,6 @@ package com.zerocracy.tk;
 import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
 import com.zerocracy.Item;
-import com.zerocracy.Project;
 import com.zerocracy.Xocument;
 import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
@@ -67,7 +66,7 @@ public final class TkBoard implements Take {
             () -> {
                 final String user = new RqUser(this.farm, req, false).value();
                 final Collection<XeSource> sources = new LinkedList<>();
-                try (final Item item = new Pmo(this.farm).acq("catalog.xml", Project.Mode.READ_ONLY)) {
+                try (final Item item = new Pmo(this.farm).acq("catalog.xml")) {
                     new And(
                         new FuncOf<>(
                             input -> sources.add(

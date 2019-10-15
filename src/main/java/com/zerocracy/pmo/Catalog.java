@@ -87,7 +87,7 @@ public final class Catalog {
      * @throws IOException If fails
      */
     public Catalog bootstrap() throws IOException {
-        try (final Item team = this.item(Project.Mode.READ_WRITE)) {
+        try (final Item team = this.item()) {
             new Xocument(team).bootstrap("pmo/catalog");
         }
         return this;
@@ -100,7 +100,7 @@ public final class Catalog {
      */
     public void delete(final String pid) throws IOException {
         this.checkExist(pid);
-        try (final Item item = this.item(Project.Mode.READ_WRITE)) {
+        try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives().xpath(
                     String.format("/catalog/project[@id='%s'] ", pid)
@@ -121,7 +121,7 @@ public final class Catalog {
                 new Par("Project %s already exists").say(pid)
             );
         }
-        try (final Item item = this.item(Project.Mode.READ_WRITE)) {
+        try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives()
                     .xpath("/catalog")
@@ -153,7 +153,7 @@ public final class Catalog {
      */
     public String architect(final String pid) throws IOException {
         this.checkExist(pid);
-        try (final Item item = this.item(Project.Mode.READ_ONLY)) {
+        try (final Item item = this.item()) {
             return new Xocument(item.path())
                 .xpath(
                     String.format(
@@ -173,7 +173,7 @@ public final class Catalog {
     public void architect(final String pid, final String arc)
         throws IOException {
         this.checkExist(pid);
-        try (final Item item = this.item(Project.Mode.READ_WRITE)) {
+        try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives()
                     .xpath(String.format("/catalog/project[@id =  '%s']", pid))
@@ -192,7 +192,7 @@ public final class Catalog {
      */
     public int jobs(final String pid) throws IOException {
         this.checkExist(pid);
-        try (final Item item = this.item(Project.Mode.READ_ONLY)) {
+        try (final Item item = this.item()) {
             return Integer.parseInt(
                 new Xocument(item.path())
                     .xpath(
@@ -214,7 +214,7 @@ public final class Catalog {
     public void jobs(final String pid, final int cnt)
         throws IOException {
         this.checkExist(pid);
-        try (final Item item = this.item(Project.Mode.READ_WRITE)) {
+        try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives()
                     .xpath(String.format("/catalog/project[@id =  '%s']", pid))
@@ -233,7 +233,7 @@ public final class Catalog {
      */
     public int orders(final String pid) throws IOException {
         this.checkExist(pid);
-        try (final Item item = this.item(Project.Mode.READ_ONLY)) {
+        try (final Item item = this.item()) {
             return Integer.parseInt(
                 new Xocument(item.path())
                     .xpath(
@@ -255,7 +255,7 @@ public final class Catalog {
     public void orders(final String pid, final int cnt)
         throws IOException {
         this.checkExist(pid);
-        try (final Item item = this.item(Project.Mode.READ_WRITE)) {
+        try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives()
                     .xpath(String.format("/catalog/project[@id =  '%s']", pid))
@@ -274,7 +274,7 @@ public final class Catalog {
      */
     public boolean deficit(final String pid) throws IOException {
         this.checkExist(pid);
-        try (final Item item = this.item(Project.Mode.READ_WRITE)) {
+        try (final Item item = this.item()) {
             return Boolean.parseBoolean(
                 new Xocument(item.path())
                     .xpath(
@@ -295,7 +295,7 @@ public final class Catalog {
      */
     public Cash cash(final String pid) throws IOException {
         this.checkExist(pid);
-        try (final Item item = this.item(Project.Mode.READ_ONLY)) {
+        try (final Item item = this.item()) {
             return new Cash.S(
                 new Xocument(item.path())
                     .xpath(
@@ -318,7 +318,7 @@ public final class Catalog {
     public void cash(final String pid, final Cash cash, final boolean deficit)
         throws IOException {
         this.checkExist(pid);
-        try (final Item item = this.item(Project.Mode.READ_WRITE)) {
+        try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives()
                     .xpath(String.format("/catalog/project[@id =  '%s']", pid))
@@ -342,7 +342,7 @@ public final class Catalog {
      */
     public Collection<String> members(final String pid) throws IOException {
         this.checkExist(pid);
-        try (final Item item = this.item(Project.Mode.READ_ONLY)) {
+        try (final Item item = this.item()) {
             return new Xocument(item.path()).xpath(
                 String.format(
                     "/catalog/project[@id='%s']/members/member/text()",
@@ -361,7 +361,7 @@ public final class Catalog {
     public void members(final String pid, final Iterable<String> members)
         throws IOException {
         this.checkExist(pid);
-        try (final Item item = this.item(Project.Mode.READ_WRITE)) {
+        try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives()
                     .xpath(String.format("/catalog/project[@id =  '%s']", pid))
@@ -395,7 +395,7 @@ public final class Catalog {
      */
     public Set<String> languages(final String pid) throws IOException {
         this.checkExist(pid);
-        try (final Item item = this.item(Project.Mode.READ_ONLY)) {
+        try (final Item item = this.item()) {
             return new HashSet<>(
                 new ListOf<>(
                     new Xocument(item.path()).xpath(
@@ -418,7 +418,7 @@ public final class Catalog {
     public void languages(final String pid, final Set<String> langs)
         throws IOException {
         this.checkExist(pid);
-        try (final Item item = this.item(Project.Mode.READ_WRITE)) {
+        try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives()
                     .xpath(String.format("/catalog/project[@id =  '%s']", pid))
@@ -436,7 +436,7 @@ public final class Catalog {
      * @throws IOException If fails
      */
     public boolean exists(final String pid) throws IOException {
-        try (final Item item = this.item(Project.Mode.READ_ONLY)) {
+        try (final Item item = this.item()) {
             return !new Xocument(item).nodes(
                 String.format("//project[@id  ='%s']", pid)
             ).isEmpty();
@@ -455,7 +455,7 @@ public final class Catalog {
         if (!term.isEmpty()) {
             term = String.format("[%s]", term);
         }
-        try (final Item item = this.item(Project.Mode.READ_ONLY)) {
+        try (final Item item = this.item()) {
             return new Xocument(item).xpath(
                 String.format("//project%s/prefix/text()", term)
             );
@@ -470,7 +470,7 @@ public final class Catalog {
      */
     public boolean pause(final String pid) throws IOException {
         this.checkExist(pid);
-        try (final Item item = this.item(Project.Mode.READ_ONLY)) {
+        try (final Item item = this.item()) {
             return !Boolean.parseBoolean(
                 new Xocument(item.path()).xpath(
                     String.format(
@@ -491,7 +491,7 @@ public final class Catalog {
     public void pause(final String pid,
         final boolean pause) throws IOException {
         this.checkExist(pid);
-        try (final Item item = this.item(Project.Mode.READ_WRITE)) {
+        try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives().xpath(
                     String.format("/catalog/project[@id='%s']/alive", pid)
@@ -508,7 +508,7 @@ public final class Catalog {
      */
     public Cash fee(final String pid) throws IOException {
         this.checkExist(pid);
-        try (final Item item = this.item(Project.Mode.READ_ONLY)) {
+        try (final Item item = this.item()) {
             final Iterator<String> fees = new Xocument(item.path()).xpath(
                 String.format("/catalog/project[@id='%s']/fee/text()", pid)
             ).iterator();
@@ -530,7 +530,7 @@ public final class Catalog {
      */
     public void fee(final String pid, final Cash fee) throws IOException {
         this.checkExist(pid);
-        try (final Item item = this.item(Project.Mode.READ_WRITE)) {
+        try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives().xpath(
                     String.format("/catalog/project[@id='%s']/fee", pid)
@@ -556,7 +556,7 @@ public final class Catalog {
                 ).say(pid)
             );
         }
-        try (final Item item = this.item(Project.Mode.READ_WRITE)) {
+        try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives().xpath(
                     String.format("/catalog/project[@id='%s']/publish", pid)
@@ -573,7 +573,7 @@ public final class Catalog {
      */
     public boolean published(final String pid) throws IOException {
         this.checkExist(pid);
-        try (final Item item = this.item(Project.Mode.READ_ONLY)) {
+        try (final Item item = this.item()) {
             return Boolean.parseBoolean(
                 new Xocument(item).xpath(
                     String.format(
@@ -609,7 +609,7 @@ public final class Catalog {
                 ).say(rel, href)
             );
         }
-        try (final Item item = this.item(Project.Mode.READ_WRITE)) {
+        try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives()
                     .xpath(String.format("/catalog/project[@id='%s']", pid))
@@ -632,7 +632,7 @@ public final class Catalog {
     public void unlink(final String pid, final String rel, final String href)
         throws IOException {
         this.checkExist(pid);
-        try (final Item item = this.item(Project.Mode.READ_WRITE)) {
+        try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives()
                     .xpath(String.format("/catalog/project[@id=  '%s']", pid))
@@ -657,7 +657,7 @@ public final class Catalog {
      */
     public Collection<String> links(final String pid) throws IOException {
         this.checkExist(pid);
-        try (final Item item = this.item(Project.Mode.READ_ONLY)) {
+        try (final Item item = this.item()) {
             return new SolidList<>(
                 new Mapped<>(
                     xml -> String.format(
@@ -686,7 +686,7 @@ public final class Catalog {
     public Collection<String> links(final String pid, final String rel)
         throws IOException {
         this.checkExist(pid);
-        try (final Item item = this.item(Project.Mode.READ_ONLY)) {
+        try (final Item item = this.item()) {
             return new Xocument(item).xpath(
                 String.format(
                     "/catalog/project[@id='%s']/links/link[@rel='%s']/@href",
@@ -707,7 +707,7 @@ public final class Catalog {
     public boolean hasLink(final String pid, final String rel,
         final String href) throws IOException {
         this.checkExist(pid);
-        try (final Item item = this.item(Project.Mode.READ_ONLY)) {
+        try (final Item item = this.item()) {
             return !new Xocument(item.path()).nodes(
                 String.format(
                     // @checkstyle LineLength (1 line)
@@ -727,7 +727,7 @@ public final class Catalog {
      */
     public boolean linkExists(final String rel, final String href)
         throws IOException {
-        try (final Item item = this.item(Project.Mode.READ_ONLY)) {
+        try (final Item item = this.item()) {
             return !new Xocument(item.path()).nodes(
                 String.format(
                     "/catalog/project/links/link[@rel='%s' and @href='%s']",
@@ -746,7 +746,7 @@ public final class Catalog {
     public void title(final String pid, final String title)
         throws IOException {
         this.checkExist(pid);
-        try (final Item item = this.item(Project.Mode.READ_WRITE)) {
+        try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives()
                     .xpath(String.format("/catalog/project[@id =  '%s']", pid))
@@ -765,7 +765,7 @@ public final class Catalog {
      */
     public String title(final String pid) throws IOException {
         this.checkExist(pid);
-        try (final Item item = this.item(Project.Mode.READ_ONLY)) {
+        try (final Item item = this.item()) {
             final Iterator<String> items = new Xocument(item.path())
                 .xpath(
                     String.format(
@@ -790,7 +790,7 @@ public final class Catalog {
      */
     public boolean hasAdviser(final String pid) throws IOException {
         this.checkExist(pid);
-        try (final Item item = this.item(Project.Mode.READ_ONLY)) {
+        try (final Item item = this.item()) {
             final List<String> xpath = new Xocument(item.path()).xpath(
                 String.format(
                     "/catalog/project[@id = '%s']/adviser/text()",
@@ -809,7 +809,7 @@ public final class Catalog {
      */
     public String adviser(final String pid) throws IOException {
         this.checkExist(pid);
-        try (final Item item = this.item(Project.Mode.READ_ONLY)) {
+        try (final Item item = this.item()) {
             return new Xocument(item.path()).xpath(
                 String.format(
                     "/catalog/project[@id = '%s']/adviser/text()",
@@ -828,7 +828,7 @@ public final class Catalog {
     public void adviser(final String pid, final String adviser)
         throws IOException {
         this.checkExist(pid);
-        try (final Item item = this.item(Project.Mode.READ_WRITE)) {
+        try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives().xpath(
                     String.format(
@@ -848,7 +848,7 @@ public final class Catalog {
      */
     public boolean sandbox(final String pid) throws IOException {
         this.checkExist(pid);
-        try (final Item item = this.item(Project.Mode.READ_ONLY)) {
+        try (final Item item = this.item()) {
             return !new Xocument(item).nodes(
                 String.format(
                     "/catalog/project[@id='%s' and sandbox='true']", pid
@@ -866,7 +866,7 @@ public final class Catalog {
     public void sandbox(final String pid, final boolean sbx)
         throws IOException {
         this.checkExist(pid);
-        try (final Item item = this.item(Project.Mode.READ_WRITE)) {
+        try (final Item item = this.item()) {
             new Xocument(item).modify(
                 new Directives()
                     .xpath(String.format("/catalog/project[@id='%s']", pid))
@@ -882,7 +882,7 @@ public final class Catalog {
      * @throws IOException If fails
      */
     public Set<String> active() throws IOException {
-        try (final Item item = this.item(Project.Mode.READ_ONLY)) {
+        try (final Item item = this.item()) {
             return new HashSet<>(
                 new Xocument(item).xpath(
                     "/catalog/project[alive = 'true']/@id"
@@ -908,11 +908,10 @@ public final class Catalog {
 
     /**
      * The item.
-     * @param mode Access mode
      * @return Item
      * @throws IOException If fails
      */
-    private Item item(final Project.Mode mode) throws IOException {
-        return this.pmo.acq("catalog.xml", mode);
+    private Item item() throws IOException {
+        return this.pmo.acq("catalog.xml");
     }
 }

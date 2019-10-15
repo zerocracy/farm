@@ -122,12 +122,12 @@ final class RdItem implements Item {
             final String dirty = this.dirty();
             if (!dirty.isEmpty()) {
                 final Path tmp = this.temp.value();
-                final Project proxy = (file, mode) -> {
+                final Project proxy = file -> {
                     final Item item;
                     if (this.name.equals(file)) {
                         item = new FkItem(tmp);
                     } else {
-                        item = this.project.acq(file, mode);
+                        item = this.project.acq(file);
                     }
                     return item;
                 };

@@ -34,17 +34,14 @@ import org.cactoos.scalar.IoCheckedScalar;
  * @since 1.0
  */
 public final class Txn implements Project, Closeable {
-
     /**
      * Origin project.
      */
     private final Project origin;
-
     /**
      * Committed flag.
      */
     private final AtomicBoolean committed;
-
     /**
      * Acquired items.
      */
@@ -67,8 +64,7 @@ public final class Txn implements Project, Closeable {
         }
         )
     @Override
-    public Item acq(final String file, final Project.Mode mode)
-        throws IOException {
+    public Item acq(final String file) throws IOException {
         final Txn.TxnItem item;
         if (this.items.containsKey(file)) {
             item = this.items.get(file);
@@ -77,7 +73,7 @@ public final class Txn implements Project, Closeable {
                 if (this.items.containsKey(file)) {
                     item = this.items.get(file);
                 } else {
-                    item = this.item(file, mode);
+                    item = this.item(file);
                     this.items.put(file, item);
                 }
             }
@@ -116,14 +112,12 @@ public final class Txn implements Project, Closeable {
     /**
      * Create new item.
      * @param file Source file.
-     * @param mode Access mode
      * @return New TxnItem
      * @throws IOException If fails
      */
-    private Txn.TxnItem item(final String file, final Project.Mode mode)
-        throws IOException {
+    private Txn.TxnItem item(final String file) throws IOException {
         final File tmp = File.createTempFile("txn_", ".tmp");
-        final Item src = this.origin.acq(file, mode);
+        final Item src = this.origin.acq(file);
         if (src.path().toFile().exists()) {
             Files.copy(
                 src.path(),
@@ -131,46 +125,35 @@ public final class Txn implements Project, Closeable {
                 StandardCopyOption.REPLACE_EXISTING
             );
         }
-        return new Txn.TxnItem(src, tmp, mode);
+        return new Txn.TxnItem(src, tmp);
     }
 
     /**
      * Transaction item.
      */
     private static final class TxnItem implements Item {
-
         /**
          * Origin item.
          */
         private final Item origin;
-
         /**
          * Temporary file.
          */
         private final File tmp;
-
         /**
          * Committed flag.
          */
         private final AtomicBoolean commited;
 
         /**
-         * Access mode.
-         */
-        private final Project.Mode mode;
-
-        /**
          * Ctor.
          * @param origin Origin item
          * @param tmp Temp file
-         * @param mode Access mode
          */
-        private TxnItem(final Item origin, final File tmp,
-            final Project.Mode mode) {
+        private TxnItem(final Item origin, final File tmp) {
             this.origin = origin;
             this.tmp = tmp;
             this.commited = new AtomicBoolean();
-            this.mode = mode;
         }
 
         @Override
@@ -200,15 +183,11 @@ public final class Txn implements Project, Closeable {
          */
         public void close(final boolean force) throws IOException {
             if (this.commited.get()) {
-                if (this.mode == Project.Mode.READ_WRITE) {
-                    Files.move(
-                        this.tmp.toPath(),
-                        this.origin.path(),
-                        StandardCopyOption.REPLACE_EXISTING
-                    );
-                } else {
-                    Files.delete(this.tmp.toPath());
-                }
+                Files.move(
+                    this.tmp.toPath(),
+                    this.origin.path(),
+                    StandardCopyOption.REPLACE_EXISTING
+                );
             }
             if (force) {
                 this.origin.close();
