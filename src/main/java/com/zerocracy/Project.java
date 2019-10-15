@@ -28,6 +28,25 @@ import java.io.IOException;
 public interface Project {
 
     /**
+     * Item access mode.
+     * @todo #2177:30min Continue replacing `project.acq(file)`
+     *  with explicit `project.acq(file, mode)`. When done, remove
+     *  `default acq(file)` method from interface. Also, find a way to
+     *  avoid unnecessary bootstrap on each access, since it's expensive
+     *  read-write locking operation.
+     */
+    enum Mode {
+        /**
+         * Read only mode.
+         */
+        READ_ONLY,
+        /**
+         * Read and write mode.
+         */
+        READ_WRITE
+    }
+
+    /**
      * Project ID.
      * @return PID
      * @throws IOException If fails on I/O
@@ -37,6 +56,16 @@ public interface Project {
         throw new UnsupportedOperationException(
             "pid() is not implemented"
         );
+    }
+
+    /**
+     * Acquire read write.
+     * @param file File name
+     * @return Item
+     * @throws IOException If fails
+     */
+    default Item acq(final String file) throws IOException {
+        return this.acq(file, Project.Mode.READ_WRITE);
     }
 
     /**
@@ -53,9 +82,10 @@ public interface Project {
      * }}</pre>
      *
      * @param file File name in the project
+     * @param mode Item access mode
      * @return Item acquired
      * @throws IOException If fails on I/O
      */
-    Item acq(String file) throws IOException;
+    Item acq(String file, Project.Mode mode) throws IOException;
 
 }

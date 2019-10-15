@@ -33,12 +33,4 @@ public interface Item extends Closeable {
      * @throws IOException If fails on I/O
      */
     Path path() throws IOException;
-
-    @Override
-    default void close() throws IOException {
-        throw new UnsupportedOperationException(
-            "close() is not implemented, can't close this item."
-        );
-    }
-
 }

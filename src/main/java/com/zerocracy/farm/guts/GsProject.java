@@ -91,14 +91,15 @@ final class GsProject implements Project {
     }
 
     @Override
-    public Item acq(final String file) throws IOException {
+    public Item acq(final String file, final Project.Mode mode)
+        throws IOException {
         final Path temp = Files.createTempFile("farm", ".xml");
         final Iterator<Project> pkts = this.farm.find(this.query).iterator();
         XML before = new XMLDocument(
             new Xembler(GsProject.start()).xmlQuietly()
         );
         if (pkts.hasNext()) {
-            try (final Item item = pkts.next().acq(file)) {
+            try (final Item item = pkts.next().acq(file, mode)) {
                 final Path path = item.path();
                 if (path.toFile().exists()
                     && path.toFile().length() != 0L) {

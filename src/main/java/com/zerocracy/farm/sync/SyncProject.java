@@ -22,6 +22,7 @@ import com.zerocracy.Project;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
 import lombok.EqualsAndHashCode;
 
 /**
@@ -66,9 +67,16 @@ final class SyncProject implements Project {
     }
 
     @Override
-    public Item acq(final String file) throws IOException {
+    public Item acq(final String file, final Project.Mode mode)
+        throws IOException {
         final long start = System.currentTimeMillis();
-        final Lock lock = this.locks.lock(this, file);
+        final ReadWriteLock rwl = this.locks.lock(this, file);
+        final Lock lock;
+        if (mode == Project.Mode.READ_ONLY) {
+            lock = rwl.readLock();
+        } else {
+            lock = rwl.writeLock();
+        }
         try {
             // @checkstyle MagicNumber (1 line)
             if (!lock.tryLock(2L, TimeUnit.MINUTES)) {
