@@ -109,6 +109,8 @@ SOFTWARE.
             <xsl:text> state=</xsl:text>
             <xsl:value-of select="thread/state"/>
             <br/>
+            <xsl:value-of select="stats"/>
+            <br/>
             <xsl:text>Messages:</xsl:text>
             <ul>
               <xsl:for-each select="items/item">

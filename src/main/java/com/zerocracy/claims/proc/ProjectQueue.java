@@ -109,6 +109,7 @@ public final class ProjectQueue {
             next -> Objects.equals(next.getMessageId(), msg.getMessageId())
         );
         try {
+            new QueueStats.Ext(this.pid).value().add(msg);
             this.msgs.put(msg);
             Logger.info(
                 this, "Pushed message (queue_size=%d, pri=%s): %s",
@@ -173,6 +174,7 @@ public final class ProjectQueue {
             .add("state").set(this.thread.getState()).up()
             .up()
             .add("size").set(this.size()).up()
+            .add("stats").set(new QueueStats.Ext(this.pid).value()).up()
             .add("items")
             .append(
                 new IoCheckedScalar<>(
@@ -222,6 +224,7 @@ public final class ProjectQueue {
     @SuppressWarnings({"PMD.AvoidCatchingThrowable", "OverlyBroadCatchBlock"})
     private void run() {
         final Thread thr = Thread.currentThread();
+        final QueueStats stats = new QueueStats.Ext(this.pid).value();
         while (!thr.isInterrupted()) {
             final Message msg;
             try {
@@ -240,7 +243,7 @@ public final class ProjectQueue {
                 this.msgs.size(), MsgPriority.from(msg), msg.getMessageId()
             );
             try {
-                this.proc.exec(msg);
+                stats.runBrigade(this.proc, msg);
                 Thread.sleep(0L);
             } catch (final InterruptedException iex) {
                 thr.interrupt();
