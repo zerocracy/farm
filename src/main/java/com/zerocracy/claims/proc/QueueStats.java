@@ -122,7 +122,9 @@ public final class QueueStats {
                 .findFirst()
                 // @checkstyle LineLengthCheck (1 line)
                 .ifPresent(time -> this.delays.put(msg, Duration.between(time, now)));
-            proc.exec(msg);
+        }
+        proc.exec(msg);
+        synchronized (this.msgs) {
             this.brigades.put(msg, Duration.between(now, Instant.now()));
         }
     }
