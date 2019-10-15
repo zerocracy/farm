@@ -22,6 +22,7 @@ import com.jcabi.log.Logger;
 import com.zerocracy.claims.MsgPriority;
 import java.io.IOException;
 import java.util.Comparator;
+import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 import lombok.EqualsAndHashCode;
@@ -104,6 +105,9 @@ public final class ProjectQueue {
                 )
             );
         }
+        this.msgs.removeIf(
+            next -> Objects.equals(next.getMessageId(), msg.getMessageId())
+        );
         try {
             this.msgs.put(msg);
             Logger.info(

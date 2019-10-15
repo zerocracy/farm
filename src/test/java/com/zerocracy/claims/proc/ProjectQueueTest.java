@@ -23,6 +23,8 @@ import com.zerocracy.claims.MsgPriority;
 import com.zerocracy.farm.fake.FkProject;
 import java.util.LinkedList;
 import java.util.List;
+import org.cactoos.Proc;
+import org.cactoos.iterable.Mapped;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -37,24 +39,29 @@ public final class ProjectQueueTest {
 
     @Test
     public void takeByPriorityOrder() throws Exception {
-        final List<String> out = new LinkedList<>();
-        final ProjectQueue queue = new ProjectQueue(
-            new FkProject().pid(), msg -> out.add(msg.getMessageId())
-        );
+        final ProjectQueueTest.TestProc out = new ProjectQueueTest.TestProc();
+        final ProjectQueue queue =
+            new ProjectQueue(new FkProject().pid(), out);
         final String first = "first";
         queue.push(ProjectQueueTest.msg(first, MsgPriority.NORMAL));
         final String second = "second";
         queue.push(ProjectQueueTest.msg(second, MsgPriority.LOW));
         final String third = "third";
         queue.push(ProjectQueueTest.msg(third, MsgPriority.HIGH));
-        queue.start();
-        while (queue.size() != 0) {
-            Thread.sleep((long) Tv.HUNDRED);
-        }
-        queue.stop();
-        MatcherAssert.assertThat(
-            out, Matchers.contains(third, first, second)
-        );
+        ProjectQueueTest.queueRun(queue);
+        out.assertIds(third, first, second);
+    }
+
+    @Test
+    public void removeDuplicates()throws Exception {
+        final ProjectQueueTest.TestProc out = new ProjectQueueTest.TestProc();
+        final ProjectQueue queue =
+            new ProjectQueue(new FkProject().pid(), out);
+        final String mid = "message-id";
+        queue.push(ProjectQueueTest.msg(mid, MsgPriority.NORMAL));
+        queue.push(ProjectQueueTest.msg(mid, MsgPriority.NORMAL));
+        ProjectQueueTest.queueRun(queue);
+        out.assertIds(mid);
     }
 
     private static Message msg(final String mid, final MsgPriority pri) {
@@ -67,5 +74,61 @@ public final class ProjectQueueTest {
                 .withStringValue(pri.toString())
         );
         return msg;
+    }
+
+    /**
+     * Full queue cycle: start, wait, stop.
+     * @param queue Queue to run
+     * @throws InterruptedException If interrupted
+     */
+    private static void queueRun(final ProjectQueue queue)
+        throws InterruptedException {
+        queue.start();
+        while (queue.size() != 0) {
+            Thread.sleep((long) Tv.HUNDRED);
+        }
+        queue.stop();
+    }
+
+    /**
+     * Test proc to make some assertions.
+     */
+    private static final class TestProc implements Proc<Message> {
+
+        /**
+         * Message messages.
+         */
+        private final List<Message> messages;
+
+        /**
+         * Ctor.
+         */
+        TestProc() {
+            this(new LinkedList<>());
+        }
+
+        /**
+         * Ctor.
+         * @param messages Message list
+         */
+        TestProc(final List<Message> messages) {
+            this.messages = messages;
+        }
+
+        @Override
+        public void exec(final Message input) {
+            this.messages.add(input);
+        }
+
+        /**
+         * Assert messages with messages.
+         * @param ids Message messages
+         */
+        public void assertIds(final String... ids) {
+            MatcherAssert.assertThat(
+                new Mapped<>(Message::getMessageId, this.messages),
+                Matchers.contains(ids)
+            );
+        }
     }
 }
