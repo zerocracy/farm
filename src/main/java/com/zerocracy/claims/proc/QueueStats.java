@@ -68,17 +68,17 @@ public final class QueueStats {
     /**
      * Messages by timestamp.
      */
-    private final Map<Instant, Message> msgs;
+    private final Map<String, Instant> msgs;
 
     /**
      * Message delays.
      */
-    private final Map<Message, Duration> delays;
+    private final Map<String, Duration> delays;
 
     /**
      * Brigade times.
      */
-    private final Map<Message, Duration> brigades;
+    private final Map<String, Duration> brigades;
 
     /**
      * Ctor.
@@ -86,9 +86,9 @@ public final class QueueStats {
      * @param delays Delays
      * @param brigades Brigades
      */
-    private QueueStats(final Map<Instant, Message> msgs,
-        final Map<Message, Duration> delays,
-        final Map<Message, Duration> brigades) {
+    private QueueStats(final Map<String, Instant> msgs,
+        final Map<String, Duration> delays,
+        final Map<String, Duration> brigades) {
         this.msgs = msgs;
         this.delays = delays;
         this.brigades = brigades;
@@ -101,7 +101,7 @@ public final class QueueStats {
     public void add(final Message msg) {
         synchronized (this.msgs) {
             this.cleanup();
-            this.msgs.put(Instant.now(), msg);
+            this.msgs.put(msg.getMessageId(), Instant.now());
         }
     }
 
@@ -113,19 +113,17 @@ public final class QueueStats {
      */
     public void runBrigade(final Proc<Message> proc, final Message msg)
         throws Exception {
-        final Instant now = Instant.now();
+        final String mid = msg.getMessageId();
+        final Instant before = Instant.now();
         synchronized (this.msgs) {
             this.cleanup();
-            this.msgs.entrySet().stream()
-                .filter(kv -> kv.getValue().equals(msg))
-                .map(Map.Entry::getKey)
-                .findFirst()
-                // @checkstyle LineLengthCheck (1 line)
-                .ifPresent(time -> this.delays.put(msg, Duration.between(time, now)));
+            this.delays.put(mid, Duration.between(this.msgs.get(mid), before));
         }
         proc.exec(msg);
+        final Instant after = Instant.now();
         synchronized (this.msgs) {
-            this.brigades.put(msg, Duration.between(now, Instant.now()));
+            this.brigades.put(mid, Duration.between(before, after));
+            this.cleanup();
         }
     }
 
@@ -159,14 +157,15 @@ public final class QueueStats {
     private void cleanup() {
         synchronized (this.msgs) {
             final Instant start = Instant.now().minus(Duration.ofHours(1L));
-            final List<Instant> keys = this.msgs.keySet().stream()
-                .filter(time -> time.isBefore(start))
+            final List<String> keys = this.msgs.entrySet().stream()
+                .filter(kv -> kv.getValue().isBefore(start))
+                .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
             keys.forEach(
                 expired -> {
-                    final Message msg = this.msgs.remove(expired);
-                    this.delays.remove(msg);
-                    this.brigades.remove(msg);
+                    this.msgs.remove(expired);
+                    this.delays.remove(expired);
+                    this.brigades.remove(expired);
                 }
             );
         }
