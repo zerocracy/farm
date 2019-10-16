@@ -19,6 +19,8 @@ package com.zerocracy.claims;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.model.MessageAttributeValue;
 import com.amazonaws.services.sqs.model.SendMessageRequest;
+import com.amazonaws.services.sqs.model.SendMessageResult;
+import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.zerocracy.Project;
 import java.io.IOException;
@@ -127,7 +129,14 @@ public final class ClaimsSqs implements Claims {
             )
         );
         msg.setMessageAttributes(attrs);
-        this.sqs.sendMessage(msg);
+        final SendMessageResult res = this.sqs.sendMessage(msg);
+        Logger.info(
+            this,
+            "Claim '%s' (%s) was send: mid=%s",
+            claim.xpath("/claim/@id").get(0),
+            claim.xpath("/claim/type/text()"),
+            res.getMessageId()
+        );
     }
 
     @Override
