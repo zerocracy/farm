@@ -135,7 +135,7 @@ public final class ClaimsSqs implements Claims {
             "Claim '%s' (%s) was send: mid=%s",
             claim.xpath("/claim/@id").get(0),
             claim.xpath("/claim/type/text()"),
-            res.getMessageId()
+            res
         );
     }
 
