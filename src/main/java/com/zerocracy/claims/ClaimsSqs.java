@@ -129,6 +129,7 @@ public final class ClaimsSqs implements Claims {
             )
         );
         msg.setMessageAttributes(attrs);
+        Logger.debug(this, "sending message: %s", msg);
         final SendMessageResult res = this.sqs.sendMessage(msg);
         Logger.info(
             this,
