@@ -19,8 +19,10 @@ package com.zerocracy.claims;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.model.AmazonSQSException;
 import com.amazonaws.services.sqs.model.DeleteMessageRequest;
+import com.amazonaws.services.sqs.model.GetQueueAttributesRequest;
 import com.amazonaws.services.sqs.model.Message;
 import com.amazonaws.services.sqs.model.MessageAttributeValue;
+import com.amazonaws.services.sqs.model.QueueAttributeName;
 import com.amazonaws.services.sqs.model.ReceiveMessageRequest;
 import com.jcabi.aspects.Tv;
 import com.jcabi.log.Logger;
@@ -83,7 +85,7 @@ public final class ClaimsRoutine implements Runnable, Closeable {
     /**
      * Messages limit.
      */
-    private static final int LIMIT = 8;
+    private static final int LIMIT = 10;
 
     /**
      * Max size of local message queue.
@@ -93,7 +95,7 @@ public final class ClaimsRoutine implements Runnable, Closeable {
     /**
      * Delay to fetch claims.
      */
-    private static final long DELAY = 12L;
+    private static final long DELAY = 1L;
 
     /**
      * Scheduled service.
@@ -175,11 +177,21 @@ public final class ClaimsRoutine implements Runnable, Closeable {
                 )
                 .withVisibilityTimeout(
                     (int) Duration.ofMinutes(2L).getSeconds()
-                )
+                ).withWaitTimeSeconds(Tv.TEN)
                 .withMaxNumberOfMessages(ClaimsRoutine.LIMIT)
         ).getMessages();
+        final String mnum = sqs.getQueueAttributes(
+            new GetQueueAttributesRequest(url).withAttributeNames(
+                QueueAttributeName.ApproximateNumberOfMessages
+            )
+        ).getAttributes()
+            .get(QueueAttributeName.ApproximateNumberOfMessages.toString());
+        Logger.info(
+            this,
+            "received %d messages, sqs has %s",
+            messages.size(), mnum
+        );
         int queued = 0;
-        Logger.info(this, "received %d messages", messages.size());
         for (final Message message : messages) {
             Logger.debug(this, "received message: %s", message);
             final Map<String, MessageAttributeValue> attr =
