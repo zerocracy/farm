@@ -84,7 +84,7 @@ def exec(Project pmo, XML xml) {
       'and you are the mentor, see §1',
     ).say(name)
   ).postTo(new ClaimsOf(farm))
-  if (resumes.examiner(login) != author) {
+  if (resumes.exists(login) && resumes.examiner(login) != author) {
       String examiner = resumes.examiner(login)
       claim.copy()
           .type('Notify user')
