@@ -17,7 +17,6 @@
 package com.zerocracy.claims;
 
 import com.amazonaws.services.sqs.model.Message;
-import com.jcabi.aspects.Tv;
 import com.jcabi.log.Logger;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
@@ -31,10 +30,7 @@ import com.zerocracy.claims.proc.SentryProc;
 import com.zerocracy.farm.guts.Guts;
 import com.zerocracy.shutdown.ShutdownFarm;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import lombok.EqualsAndHashCode;
 import org.xembly.Directives;
@@ -63,22 +59,11 @@ public final class MessageSink implements Farm {
     private final Farm farm;
 
     /**
-     * Ctor.
+     * Primary ctr.
      * @param farm Farm
      * @param shutdown Shutdown
      */
     public MessageSink(final Farm farm, final ShutdownFarm.Hook shutdown) {
-        this(farm, shutdown, new HashMap<>(1));
-    }
-
-    /**
-     * Primary ctr.
-     * @param farm Farm
-     * @param shutdown Shutdown
-     * @param statuses Statuses
-     */
-    private MessageSink(final Farm farm, final ShutdownFarm.Hook shutdown,
-        final Map<String, Map<String, String>> statuses) {
         this.asynk = new AsyncSink(
             new MessageMonitorProc(
                 farm,
@@ -88,7 +73,7 @@ public final class MessageSink implements Farm {
                         new FootprintProc(
                             farm,
                             new CountingProc(
-                                new BrigadeProc(farm, statuses),
+                                new BrigadeProc(this),
                                 new AtomicInteger()
                             )
                         )
@@ -96,8 +81,7 @@ public final class MessageSink implements Farm {
                 ),
                 shutdown
             ),
-            shutdown,
-            statuses
+            shutdown
         );
         this.farm = farm;
     }
@@ -117,15 +101,7 @@ public final class MessageSink implements Farm {
             () -> {
                 while (!Thread.currentThread().isInterrupted()) {
                     try {
-                        final Message msg = queue.take();
-                        final boolean important = MsgPriority.from(msg).value()
-                            <= MsgPriority.NORMAL.value();
-                        if (!important) {
-                            while (this.asynk.tasks() >= Tv.TEN) {
-                                TimeUnit.SECONDS.sleep(1L);
-                            }
-                        }
-                        this.asynk.execAsync(msg);
+                        this.asynk.execAsync(queue.take());
                     } catch (final InterruptedException ignore) {
                         Thread.currentThread().interrupt();
                     }

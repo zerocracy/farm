@@ -162,6 +162,11 @@ public final class ClaimsRoutine implements Runnable, Closeable {
         final String url =
             new UncheckedText(new ClaimsQueueUrl(this.farm))
                 .asString();
+        Logger.debug(
+            this,
+            "receiving messages: limit=%d; timout=2m",
+            ClaimsRoutine.LIMIT
+        );
         final List<Message> messages = sqs.receiveMessage(
             new ReceiveMessageRequest(url)
                 .withMessageAttributeNames(
@@ -174,7 +179,9 @@ public final class ClaimsRoutine implements Runnable, Closeable {
                 .withMaxNumberOfMessages(ClaimsRoutine.LIMIT)
         ).getMessages();
         int queued = 0;
+        Logger.info(this, "received %d messages", messages.size());
         for (final Message message : messages) {
+            Logger.debug(this, "received message: %s", message);
             final Map<String, MessageAttributeValue> attr =
                 message.getMessageAttributes();
             if (new MsgExpired(message).value()) {

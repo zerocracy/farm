@@ -100,7 +100,7 @@ public final class ExtMongo implements Scalar<MongoClient> {
      * @checkstyle MagicNumberCheck (1 lines)
      */
     private static final int DEFAULT_TIMEOUT =
-        (int) TimeUnit.SECONDS.toMillis(15L);
+        (int) TimeUnit.SECONDS.toMillis(25L);
 
     /**
      * Thread with Mongodb.

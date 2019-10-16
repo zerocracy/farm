@@ -18,7 +18,6 @@ package com.zerocracy.entry;
 
 import com.jcabi.aspects.Loggable;
 import com.jcabi.log.Logger;
-import com.zerocracy.Farm;
 import com.zerocracy.claims.ClaimGuts;
 import com.zerocracy.claims.ClaimsFarm;
 import com.zerocracy.claims.ClaimsRoutine;
@@ -120,22 +119,24 @@ public final class Main {
         final ShutdownFarm.Hook shutdown = new ShutdownFarm.Hook();
         final ClaimGuts cgts = new ClaimGuts();
         try (
-            final S3Farm origin = new S3Farm(new ExtBucket().value(), temp);
-            final Farm farm = new ShutdownFarm(
-                new ClaimsFarm(
-                    new SmartFarm(
-                        origin, new TestLocks()
+            final MessageSink farm = new MessageSink(
+                new ShutdownFarm(
+                    new ClaimsFarm(
+                        new SmartFarm(
+                            new S3Farm(new ExtBucket().value(), temp),
+                            new TestLocks()
+                        ),
+                        cgts
                     ),
-                    cgts
+                    shutdown
                 ),
                 shutdown
             );
-            final MessageSink sink = new MessageSink(farm, shutdown);
             final SlackRadar radar = new SlackRadar(farm);
             final ClaimsRoutine claims = new ClaimsRoutine(farm)
         ) {
             new ExtMongobee(farm).apply();
-            sink.start(claims.messages());
+            farm.start(claims.messages());
             cgts.add(claims.messages());
             claims.start(shutdown);
             new AsyncFunc<>(

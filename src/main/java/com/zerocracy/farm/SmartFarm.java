@@ -19,7 +19,6 @@ package com.zerocracy.farm;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.entry.ExtFarm;
-import com.zerocracy.farm.footprint.FtFarm;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.farm.ruled.RdFarm;
 import com.zerocracy.farm.strict.StrictFarm;
@@ -63,12 +62,10 @@ public final class SmartFarm implements Farm {
         this.self = new IoCheckedScalar<>(
             new SolidScalar<>(
                 () -> new RdFarm(
-                    new FtFarm(
-                        new ExtFarm(
-                            new StrictFarm(
-                                new PropsFarm(
-                                    new SyncFarm(farm, locks)
-                                )
+                    new ExtFarm(
+                        new StrictFarm(
+                            new PropsFarm(
+                                new SyncFarm(farm, locks)
                             )
                         )
                     )

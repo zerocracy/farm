@@ -27,6 +27,7 @@ import com.zerocracy.farm.StkSafe;
 import com.zerocracy.farm.StkTimed;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
+import com.zerocracy.farm.footprint.FtFarm;
 import com.zerocracy.farm.reactive.Brigade;
 import com.zerocracy.farm.reactive.StkGroovy;
 import com.zerocracy.farm.reactive.StkRuntime;
@@ -236,12 +237,14 @@ public final class BundlesTest {
 
     @Test
     public void oneBundleWorksFine() throws Exception {
-        try (final Farm farm = new SmartFarm(
-            new FkFarm(
-                (Func<String, Project>) pid -> new FkProject(
-                    this.home.resolve(pid), pid
-                ),
-                this.home.toString()
+        try (final Farm farm = new FtFarm(
+            new SmartFarm(
+                new FkFarm(
+                    (Func<String, Project>) pid -> new FkProject(
+                        this.home.resolve(pid), pid
+                    ),
+                    this.home.toString()
+                )
             )
         )) {
             final XML setup = new XMLDocument(
