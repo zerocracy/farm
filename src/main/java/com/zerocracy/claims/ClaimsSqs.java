@@ -71,10 +71,10 @@ public final class ClaimsSqs implements Claims {
     @Override
     public void submit(final XML claim, final Instant expires)
         throws IOException {
+        final String cid = claim.xpath("/claim/@id").get(0);
         final SendMessageRequest msg = new SendMessageRequest(
-            this.queue,
-            claim.toString()
-        ).withMessageGroupId(this.project.pid());
+            this.queue, claim.toString()
+        ).withMessageGroupId(String.format("claim:%s", cid));
         final Map<String, MessageAttributeValue> attrs = new HashMap<>(1);
         final String signature = new ClaimSignature(
             claim.nodes("//claim").get(0)
@@ -134,9 +134,7 @@ public final class ClaimsSqs implements Claims {
         Logger.info(
             this,
             "Claim '%s' (%s) was send: mid=%s",
-            claim.xpath("/claim/@id").get(0),
-            claim.xpath("/claim/type/text()"),
-            res
+            cid, claim.xpath("/claim/type/text()"), res
         );
     }
 
