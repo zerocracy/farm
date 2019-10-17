@@ -18,6 +18,7 @@ package com.zerocracy.claims.proc;
 
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.model.ChangeMessageVisibilityBatchRequestEntry;
+import com.amazonaws.services.sqs.model.ChangeMessageVisibilityBatchResult;
 import com.amazonaws.services.sqs.model.DeleteMessageRequest;
 import com.amazonaws.services.sqs.model.Message;
 import com.jcabi.log.Logger;
@@ -50,6 +51,7 @@ import org.cactoos.text.UncheckedText;
  * @checkstyle ClassDataAbstractionCoupling (2 lines)
  */
 public final class MessageMonitorProc implements Proc<Message> {
+
     /**
      * Maximum batch size of Amazon SQS change message visibility request.
      * @see https://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_ChangeMessageVisibilityBatch.html
@@ -163,7 +165,7 @@ public final class MessageMonitorProc implements Proc<Message> {
             );
             this.messages.remove(input);
             Logger.info(
-                this, "Message %s was deleted", input.getMessageId()
+                this, "message %s was deleted", input.getMessageId()
             );
         }
     }
@@ -197,6 +199,11 @@ public final class MessageMonitorProc implements Proc<Message> {
             new ArrayList<>(msgs.size());
         int num = 0;
         for (final Message msg : msgs) {
+            Logger.debug(
+                this,
+                "changing visibility for %s to %d sec",
+                msg.getMessageId(), this.duration
+            );
             entries.add(
                 new ChangeMessageVisibilityBatchRequestEntry(
                     String.format("msg_%d", num),
@@ -205,6 +212,19 @@ public final class MessageMonitorProc implements Proc<Message> {
             );
             num += 1;
         }
-        this.sqs.value().changeMessageVisibilityBatch(this.queue, entries);
+        final ChangeMessageVisibilityBatchResult res =
+            this.sqs.value().changeMessageVisibilityBatch(this.queue, entries);
+        res.getSuccessful().forEach(
+            entry -> Logger.debug(
+                this,
+                "successfully changed visibility for %s", entry.getId()
+            )
+        );
+        res.getFailed().forEach(
+            entry -> Logger.warn(
+                this,
+                "failed to change visibility for %s", entry.getId()
+            )
+        );
     }
 }
