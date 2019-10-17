@@ -119,6 +119,7 @@ public final class AsyncSink {
                 this, "message %s was released",
                 msg.getMessageId()
             );
+            return;
         }
         repaired.push(msg);
     }
