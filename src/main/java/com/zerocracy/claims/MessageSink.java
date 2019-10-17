@@ -110,12 +110,14 @@ public final class MessageSink implements Farm {
                             ++rejects;
                         }
                         final long wait = (long) Math.min(rejects, Tv.THIRTY);
-                        Logger.info(
-                            this,
-                            "message rejected %d times, sleeping %d sec",
-                            rejects, wait
-                        );
-                        Thread.sleep(wait * (long) Tv.THOUSAND);
+                        if (wait > 0L) {
+                            Logger.info(
+                                this,
+                                "message rejected %d times, sleeping %d sec",
+                                rejects, wait
+                            );
+                            Thread.sleep(wait * (long) Tv.THOUSAND);
+                        }
                     } catch (final IOException err) {
                         Logger.error(
                             this, "async sink failed: %[exception]s",

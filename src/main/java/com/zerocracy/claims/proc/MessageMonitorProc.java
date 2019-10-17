@@ -31,6 +31,7 @@ import com.zerocracy.entry.ExtSqs;
 import com.zerocracy.shutdown.ShutdownFarm;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -151,7 +152,10 @@ public final class MessageMonitorProc implements Proc<Message> {
             this.messages.add(input);
         }
         try {
-            this.origin.exec(input);
+            final List<Message> btch = Collections.singletonList(input);
+            if (this.sendMessageVisibilityBatch(btch)) {
+                this.origin.exec(input);
+            }
         } finally {
             synchronized (this.messages) {
                 this.messages.remove(input);
@@ -193,10 +197,11 @@ public final class MessageMonitorProc implements Proc<Message> {
 
     /**
      * Send change message visibility timeout batch request.
+     * @return True if all processed
      * @param msgs Messages
      */
     @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
-    private void sendMessageVisibilityBatch(final List<Message> msgs) {
+    private boolean sendMessageVisibilityBatch(final List<Message> msgs) {
         final List<ChangeMessageVisibilityBatchRequestEntry> entries =
             new ArrayList<>(msgs.size());
         int num = 0;
@@ -237,5 +242,6 @@ public final class MessageMonitorProc implements Proc<Message> {
                 entry.getId(), entry.getCode(), entry.getMessage()
             )
         );
+        return res.getFailed().isEmpty();
     }
 }
