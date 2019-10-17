@@ -22,10 +22,12 @@ import com.amazonaws.services.sqs.model.SendMessageRequest;
 import com.amazonaws.services.sqs.model.SendMessageResult;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
+import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import org.cactoos.scalar.And;
 import org.cactoos.scalar.IoCheckedScalar;
@@ -38,6 +40,11 @@ import org.cactoos.scalar.IoCheckedScalar;
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class ClaimsSqs implements Claims {
+
+    /**
+     * Farm.
+     */
+    private final Farm farm;
 
     /**
      * SQS client.
@@ -57,24 +64,36 @@ public final class ClaimsSqs implements Claims {
     /**
      * Ctor.
      *
+     * @param farm Farm
      * @param sqs SQS client
      * @param queue Queue url
      * @param project Project
+     * @checkstyle ParameterNumberCheck (5 lines)
      */
-    public ClaimsSqs(final AmazonSQS sqs, final String queue,
+    public ClaimsSqs(final Farm farm,
+        final AmazonSQS sqs, final String queue,
         final Project project) {
         this.sqs = sqs;
         this.queue = queue;
         this.project = project;
+        this.farm = farm;
     }
 
     @Override
     public void submit(final XML claim, final Instant expires)
         throws IOException {
-        final String cid = claim.xpath("/claim/@id").get(0);
+        final String type = claim.xpath("/claim/type/text()").get(0);
+        if (this.skip(claim)) {
+            Logger.info(
+                this,
+                "claims queue is too big, skipping claim %s",
+                type
+            );
+            return;
+        }
         final SendMessageRequest msg = new SendMessageRequest(
             this.queue, claim.toString()
-        ).withMessageGroupId(String.format("claim:%s", cid));
+        ).withMessageGroupId(this.group(claim));
         final Map<String, MessageAttributeValue> attrs = new HashMap<>(1);
         final String signature = new ClaimSignature(
             claim.nodes("//claim").get(0)
@@ -134,12 +153,48 @@ public final class ClaimsSqs implements Claims {
         Logger.info(
             this,
             "Claim '%s' (%s) was send: mid=%s",
-            cid, claim.xpath("/claim/type/text()"), res
+            claim.xpath("/claim/@id").get(0),
+            type, res
         );
     }
 
     @Override
     public void submit(final XML claim) throws IOException {
         this.submit(claim, Instant.MAX);
+    }
+
+    /**
+     * Message group id.
+     * @param claim Claim XML
+     * @return Group ID string
+     * @throws IOException If fals
+     */
+    private String group(final XML claim) throws IOException {
+        final String group;
+        final String type = claim.xpath("/claim/type/text()").get(0);
+        if (type.toLowerCase(Locale.US).startsWith("ping")) {
+            group = String.format("pings:%s", this.project.pid());
+        } else {
+            final String cid = claim.xpath("/claim/@id").get(0);
+            group = String.format("claim:%s", cid);
+        }
+        return group;
+    }
+
+    /**
+     * Can we skip this claim.
+     * @param claim Claim
+     * @return True if skip
+     * @throws IOException If fails
+     */
+    private boolean skip(final XML claim) throws IOException {
+        final long size = new IoCheckedScalar<>(
+            new IoCheckedScalar<>(new SqsQueueSize(this.farm))
+        ).value();
+        final String type = claim.xpath("/claim/type/text()").get(0);
+        // @checkstyle MagicNumberCheck (1 line)
+        return size > 256L
+            // @checkstyle LineLengthCheck (1 line)
+            && ("ping".equalsIgnoreCase(type) || "ping hourly".equalsIgnoreCase(type));
     }
 }

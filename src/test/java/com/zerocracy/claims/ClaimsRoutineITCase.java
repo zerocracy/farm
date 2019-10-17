@@ -60,7 +60,7 @@ public final class ClaimsRoutineITCase {
         final Farm farm = new PropsFarm(new FkFarm(project));
         final AmazonSQS sqs = new ExtSqs(farm).value();
         final String queue = new ClaimsQueueUrl(farm).asString();
-        final ClaimsSqs claims = new ClaimsSqs(sqs, queue, project);
+        final ClaimsSqs claims = new ClaimsSqs(farm, sqs, queue, project);
         final ClaimsRoutine routine = new ClaimsRoutine(farm);
         routine.start(new ShutdownFarm.Hook());
         TimeUnit.SECONDS.sleep((long) Tv.FIVE);

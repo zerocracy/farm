@@ -49,6 +49,7 @@ public final class ClaimsOf implements Claims {
                     final Claims claims;
                     if (props.has("//sqs")) {
                         claims = new ClaimsSqs(
+                            farm,
                             new ExtSqs(farm).value(),
                             new ClaimsQueueUrl(farm).asString(),
                             project

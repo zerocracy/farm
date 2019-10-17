@@ -104,8 +104,11 @@ public final class AsyncSink {
             pid, this::startedQueue
         );
         final ProjectQueue repaired = queue.repair();
-        if (repaired.size() > Tv.EIGHT
-            && MsgPriority.from(msg) == MsgPriority.LOW) {
+        final boolean process = repaired.size() < Tv.EIGHT
+            || MsgPriority.from(msg) == MsgPriority.LOW;
+        if (process) {
+            repaired.push(msg);
+        } else {
             Logger.info(
                 this, "project queue %s is full, releasing message",
                 repaired.toString()
@@ -121,9 +124,7 @@ public final class AsyncSink {
                 this, "message %s was released",
                 msg.getMessageId()
             );
-            return;
         }
-        repaired.push(msg);
     }
 
     /**

@@ -19,10 +19,8 @@ package com.zerocracy.claims;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.model.AmazonSQSException;
 import com.amazonaws.services.sqs.model.DeleteMessageRequest;
-import com.amazonaws.services.sqs.model.GetQueueAttributesRequest;
 import com.amazonaws.services.sqs.model.Message;
 import com.amazonaws.services.sqs.model.MessageAttributeValue;
-import com.amazonaws.services.sqs.model.QueueAttributeName;
 import com.amazonaws.services.sqs.model.ReceiveMessageRequest;
 import com.jcabi.aspects.Tv;
 import com.jcabi.log.Logger;
@@ -180,16 +178,11 @@ public final class ClaimsRoutine implements Runnable, Closeable {
                 ).withWaitTimeSeconds(Tv.TEN)
                 .withMaxNumberOfMessages(ClaimsRoutine.LIMIT)
         ).getMessages();
-        final String mnum = sqs.getQueueAttributes(
-            new GetQueueAttributesRequest(url).withAttributeNames(
-                QueueAttributeName.ApproximateNumberOfMessages
-            )
-        ).getAttributes()
-            .get(QueueAttributeName.ApproximateNumberOfMessages.toString());
         Logger.info(
             this,
             "received %d messages, sqs has %s",
-            messages.size(), mnum
+            messages.size(),
+            new UncheckedScalar<>(new SqsQueueSize(this.farm)).value()
         );
         int queued = 0;
         for (final Message message : messages) {

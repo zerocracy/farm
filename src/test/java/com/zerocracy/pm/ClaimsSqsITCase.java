@@ -30,6 +30,7 @@ import com.zerocracy.claims.Claims;
 import com.zerocracy.claims.ClaimsSqs;
 import com.zerocracy.claims.MsgPriority;
 import com.zerocracy.entry.PropsAwsCredentials;
+import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.farm.props.PropsFarm;
@@ -125,7 +126,7 @@ public final class ClaimsSqsITCase {
     @Test
     public void sendAndReceiveClaim() throws Exception {
         final Claims claims = new ClaimsSqs(
-            this.client, this.queue, new FkProject()
+            new FkFarm(), this.client, this.queue, new FkProject()
         );
         final String type = "test1";
         new ClaimOut()
@@ -144,7 +145,7 @@ public final class ClaimsSqsITCase {
     @Test
     public void ignoresDuplicateClaims() throws Exception {
         final Claims claims = new ClaimsSqs(
-            this.client, this.queue, new FkProject()
+            new FkFarm(), this.client, this.queue, new FkProject()
         );
         final int limit = 10;
         final ClaimOut claim = new ClaimOut().type("duplicates");
@@ -164,7 +165,7 @@ public final class ClaimsSqsITCase {
     @Test
     public void sendMultiple() throws Exception {
         final Claims claims = new ClaimsSqs(
-            this.client, this.queue, new FkProject()
+            new FkFarm(), this.client, this.queue, new FkProject()
         );
         final int limit = 10;
         final ClaimOut claim = new ClaimOut().type("test2");
@@ -184,7 +185,7 @@ public final class ClaimsSqsITCase {
     @Test
     public void submitWithDelay() throws Exception {
         final Claims claims = new ClaimsSqs(
-            this.client, this.queue, new FkProject()
+            new FkFarm(), this.client, this.queue, new FkProject()
         );
         final Duration delay = Duration.ofSeconds((long) Tv.THIRTY);
         new ClaimOut()
@@ -211,7 +212,7 @@ public final class ClaimsSqsITCase {
     @Test
     public void submitWithExpiry() throws Exception {
         final Claims claims = new ClaimsSqs(
-            this.client, this.queue, new FkProject()
+            new FkFarm(), this.client, this.queue, new FkProject()
         );
         final Instant expire = Instant.now().plus(Duration.ofDays(1));
         new ClaimOut()
@@ -237,7 +238,7 @@ public final class ClaimsSqsITCase {
     @Test
     public void submitWithPriority() throws Exception {
         final Claims claims = new ClaimsSqs(
-            this.client, this.queue, new FkProject()
+            new FkFarm(), this.client, this.queue, new FkProject()
         );
         final String prt = "priority";
         new ClaimOut()
