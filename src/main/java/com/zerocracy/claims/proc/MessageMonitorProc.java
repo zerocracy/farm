@@ -223,7 +223,8 @@ public final class MessageMonitorProc implements Proc<Message> {
         res.getFailed().forEach(
             entry -> Logger.warn(
                 this,
-                "failed to change visibility for %s", entry.getId()
+                "failed to change visibility for %s (%s - %s)",
+                entry.getId(), entry.getCode(), entry.getMessage()
             )
         );
     }
