@@ -17,6 +17,7 @@
 package com.zerocracy.claims;
 
 import com.amazonaws.services.sqs.model.Message;
+import com.jcabi.aspects.Tv;
 import com.jcabi.log.Logger;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
@@ -100,9 +101,21 @@ public final class MessageSink implements Farm {
         );
         final Thread thread = new Thread(
             () -> {
+                int rejects = 0;
                 while (!Thread.currentThread().isInterrupted()) {
                     try {
-                        this.asynk.execAsync(queue.take());
+                        if (this.asynk.exec(queue.take())) {
+                            rejects = 0;
+                        } else {
+                            ++rejects;
+                        }
+                        final long wait = (long) Math.min(rejects, Tv.THIRTY);
+                        Logger.info(
+                            this,
+                            "message rejected %d times, sleeping %d sec",
+                            rejects, wait
+                        );
+                        Thread.sleep(wait * (long) Tv.THOUSAND);
                     } catch (final IOException err) {
                         Logger.error(
                             this, "async sink failed: %[exception]s",

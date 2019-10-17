@@ -87,16 +87,17 @@ public final class AsyncSink {
     }
 
     /**
-     * Monitor a queue.
+     * Process a message.
      * @param msg Message to process
+     * @return True if was executed
      * @throws IOException If fails
      */
-    public void execAsync(final Message msg) throws IOException {
+    public boolean exec(final Message msg) throws IOException {
         if (this.shutdown.stopping()) {
             Logger.info(this, "Shutdown requested, stopping all queues");
             this.queues.values().forEach(ProjectQueue::stop);
             this.queues.clear();
-            return;
+            throw new IOException("Shutting down");
         }
         final String pid = msg.getMessageAttributes().get("project")
             .getStringValue();
@@ -125,6 +126,7 @@ public final class AsyncSink {
                 msg.getMessageId()
             );
         }
+        return process;
     }
 
     /**
