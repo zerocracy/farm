@@ -22,6 +22,7 @@ import com.jcabi.aspects.Tv;
 import com.jcabi.log.Logger;
 import com.zerocracy.Farm;
 import com.zerocracy.claims.ClaimsQueueUrl;
+import com.zerocracy.claims.MsgPriority;
 import com.zerocracy.entry.ExtSqs;
 import com.zerocracy.shutdown.ShutdownFarm;
 import java.io.IOException;
@@ -103,7 +104,8 @@ public final class AsyncSink {
             pid, this::startedQueue
         );
         final ProjectQueue repaired = queue.repair();
-        if (repaired.size() > Tv.EIGHT) {
+        if (repaired.size() > Tv.EIGHT
+            && MsgPriority.from(msg) == MsgPriority.LOW) {
             Logger.info(
                 this, "project queue %s is full, releasing message",
                 repaired.toString()
