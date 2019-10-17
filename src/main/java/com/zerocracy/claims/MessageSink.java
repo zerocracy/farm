@@ -65,9 +65,9 @@ public final class MessageSink implements Farm {
      */
     public MessageSink(final Farm farm, final ShutdownFarm.Hook shutdown) {
         this.asynk = new AsyncSink(
-            new MessageMonitorProc(
-                farm,
-                new ExpiryProc(
+            new ExpiryProc(
+                new MessageMonitorProc(
+                    farm,
                     new SentryProc(
                         farm,
                         new FootprintProc(
@@ -77,11 +77,12 @@ public final class MessageSink implements Farm {
                                 new AtomicInteger()
                             )
                         )
-                    )
-                ),
-                shutdown
+                    ),
+                    shutdown
+                )
             ),
-            shutdown
+            shutdown,
+            farm
         );
         this.farm = farm;
     }
@@ -102,6 +103,11 @@ public final class MessageSink implements Farm {
                 while (!Thread.currentThread().isInterrupted()) {
                     try {
                         this.asynk.execAsync(queue.take());
+                    } catch (final IOException err) {
+                        Logger.error(
+                            this, "async sink failed: %[exception]s",
+                            err
+                        );
                     } catch (final InterruptedException ignore) {
                         Thread.currentThread().interrupt();
                     }

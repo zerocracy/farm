@@ -21,6 +21,7 @@ import com.amazonaws.services.sqs.model.ChangeMessageVisibilityBatchRequestEntry
 import com.amazonaws.services.sqs.model.ChangeMessageVisibilityBatchResult;
 import com.amazonaws.services.sqs.model.DeleteMessageRequest;
 import com.amazonaws.services.sqs.model.Message;
+import com.jcabi.aspects.Tv;
 import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseRunnable;
 import com.jcabi.log.VerboseThreads;
@@ -38,8 +39,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import org.cactoos.Proc;
-import org.cactoos.Scalar;
 import org.cactoos.iterable.Partitioned;
+import org.cactoos.list.ListOf;
 import org.cactoos.scalar.SolidScalar;
 import org.cactoos.scalar.UncheckedScalar;
 import org.cactoos.text.UncheckedText;
@@ -59,14 +60,14 @@ public final class MessageMonitorProc implements Proc<Message> {
     public static final int VIS_BATCH_MAX = 10;
 
     /**
-     * SQS client.
-     */
-    private final UncheckedScalar<AmazonSQS> sqs;
-
-    /**
      * Origin.
      */
     private final Proc<Message> origin;
+
+    /**
+     * Farm.
+     */
+    private final Farm farm;
 
     /**
      * Monitor thread.
@@ -77,11 +78,6 @@ public final class MessageMonitorProc implements Proc<Message> {
      * Messages to queue.
      */
     private final Set<Message> messages;
-
-    /**
-     * Queue name.
-     */
-    private final String queue;
 
     /**
      * Duration of message validity.
@@ -104,10 +100,9 @@ public final class MessageMonitorProc implements Proc<Message> {
         final ShutdownFarm.Hook shutdown) {
         this(
             origin,
-            new ExtSqs(farm),
-            new UncheckedText(new ClaimsQueueUrl(farm)).asString(),
-            (int) Duration.ofMinutes(1).getSeconds(),
-            (int) Duration.ofMinutes(2).getSeconds(),
+            farm,
+            (long) Tv.TEN,
+            (int) Duration.ofMinutes((long) Tv.FIVE).getSeconds(),
             shutdown
         );
     }
@@ -116,20 +111,18 @@ public final class MessageMonitorProc implements Proc<Message> {
      * Ctor.
      *
      * @param origin Origin
-     * @param sqs SQS
-     * @param queue Queue name
+     * @param farm Farm
      * @param interval Refresh interval
      * @param duration Duration of extension
      * @param shutdown Shutdown
      * @checkstyle ParameterNumber (4 lines)
      */
     public MessageMonitorProc(final Proc<Message> origin,
-        final Scalar<AmazonSQS> sqs, final String queue,
-        final int interval, final int duration,
+        final Farm farm,
+        final long interval, final int duration,
         final ShutdownFarm.Hook shutdown) {
         this.origin = origin;
-        this.sqs = new UncheckedScalar<>(sqs);
-        this.queue = queue;
+        this.farm = farm;
         this.duration = duration;
         this.shutdown = shutdown;
         this.messages = ConcurrentHashMap.newKeySet();
@@ -154,16 +147,20 @@ public final class MessageMonitorProc implements Proc<Message> {
 
     @Override
     public void exec(final Message input) throws Exception {
-        this.messages.add(input);
+        synchronized (this.messages) {
+            this.messages.add(input);
+        }
         try {
             this.origin.exec(input);
         } finally {
-            this.sqs.value().deleteMessage(
+            synchronized (this.messages) {
+                this.messages.remove(input);
+            }
+            new ExtSqs(this.farm).value().deleteMessage(
                 new DeleteMessageRequest()
-                    .withQueueUrl(this.queue)
+                    .withQueueUrl(new ClaimsQueueUrl(this.farm).asString())
                     .withReceiptHandle(input.getReceiptHandle())
             );
-            this.messages.remove(input);
             Logger.info(
                 this, "message %s was deleted", input.getMessageId()
             );
@@ -175,13 +172,18 @@ public final class MessageMonitorProc implements Proc<Message> {
      */
     private void refreshMessageValidity() {
         if (this.shutdown.check()) {
-            for (
-                final List<Message> msgs
-                    : new Partitioned<>(
-                        MessageMonitorProc.VIS_BATCH_MAX,
-                        this.messages
+            final List<List<Message>> parts;
+            synchronized (this.messages) {
+                parts = new ArrayList<>(
+                    new ListOf<>(
+                        new Partitioned<>(
+                            MessageMonitorProc.VIS_BATCH_MAX,
+                            this.messages
+                        )
                     )
-            ) {
+                );
+            }
+            for (final List<Message> msgs : parts) {
                 this.sendMessageVisibilityBatch(msgs);
             }
         } else {
@@ -198,7 +200,16 @@ public final class MessageMonitorProc implements Proc<Message> {
         final List<ChangeMessageVisibilityBatchRequestEntry> entries =
             new ArrayList<>(msgs.size());
         int num = 0;
+        final AmazonSQS sqs = new UncheckedScalar<>(new ExtSqs(this.farm))
+            .value();
+        final String queue = new UncheckedText(new ClaimsQueueUrl(this.farm))
+            .asString();
         for (final Message msg : msgs) {
+            synchronized (this.messages) {
+                if (!this.messages.contains(msg)) {
+                    continue;
+                }
+            }
             Logger.debug(
                 this,
                 "changing visibility for %s to %d sec",
@@ -213,7 +224,7 @@ public final class MessageMonitorProc implements Proc<Message> {
             num += 1;
         }
         final ChangeMessageVisibilityBatchResult res =
-            this.sqs.value().changeMessageVisibilityBatch(this.queue, entries);
+            sqs.changeMessageVisibilityBatch(queue, entries);
         res.getSuccessful().forEach(
             entry -> Logger.debug(
                 this,

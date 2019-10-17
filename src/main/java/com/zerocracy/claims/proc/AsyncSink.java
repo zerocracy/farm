@@ -16,9 +16,13 @@
  */
 package com.zerocracy.claims.proc;
 
+import com.amazonaws.services.sqs.model.ChangeMessageVisibilityRequest;
 import com.amazonaws.services.sqs.model.Message;
 import com.jcabi.aspects.Tv;
 import com.jcabi.log.Logger;
+import com.zerocracy.Farm;
+import com.zerocracy.claims.ClaimsQueueUrl;
+import com.zerocracy.entry.ExtSqs;
 import com.zerocracy.shutdown.ShutdownFarm;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
@@ -40,6 +44,7 @@ import org.xembly.Directives;
  *  replace `SyncProject` with new implementation. It will trigger some
  *  design issues (like some stakeholders may access resources of different
  *  projects), so it should be solved before.
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
 public final class AsyncSink {
@@ -60,24 +65,32 @@ public final class AsyncSink {
     private final ConcurrentMap<String, ProjectQueue> queues;
 
     /**
+     * Farm.
+     */
+    private final Farm farm;
+
+    /**
      * Ctor.
      *
      * @param origin Origin proc
      * @param shutdown Shutdown hook
+     * @param farm Farm
      * @checkstyle ParameterNumberCheck (3 lines)
      */
     public AsyncSink(final Proc<Message> origin,
-        final ShutdownFarm.Hook shutdown) {
+        final ShutdownFarm.Hook shutdown, final Farm farm) {
         this.origin = origin;
         this.shutdown = shutdown;
+        this.farm = farm;
         this.queues = new ConcurrentHashMap<>(Tv.FIFTY);
     }
 
     /**
      * Monitor a queue.
      * @param msg Message to process
+     * @throws IOException If fails
      */
-    public void execAsync(final Message msg) {
+    public void execAsync(final Message msg) throws IOException {
         if (this.shutdown.stopping()) {
             Logger.info(this, "Shutdown requested, stopping all queues");
             this.queues.values().forEach(ProjectQueue::stop);
@@ -90,8 +103,22 @@ public final class AsyncSink {
             pid, this::startedQueue
         );
         final ProjectQueue repaired = queue.repair();
-        if (this.queues.replace(pid, queue, repaired)) {
-            Logger.warn(this, "%s was repaired", repaired);
+        if (repaired.size() > Tv.EIGHT) {
+            Logger.info(
+                this, "project queue %s is full, releasing message",
+                repaired.toString()
+            );
+            new IoCheckedScalar<>(new ExtSqs(this.farm)).value()
+                .changeMessageVisibility(
+                    new ChangeMessageVisibilityRequest()
+                        .withQueueUrl(new ClaimsQueueUrl(this.farm).asString())
+                        .withVisibilityTimeout(0)
+                        .withReceiptHandle(msg.getReceiptHandle())
+                );
+            Logger.info(
+                this, "message %s was released",
+                msg.getMessageId()
+            );
         }
         repaired.push(msg);
     }
