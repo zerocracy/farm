@@ -204,17 +204,17 @@ public final class MessageMonitorProc implements Proc<Message> {
             .value();
         final String queue = new UncheckedText(new ClaimsQueueUrl(this.farm))
             .asString();
+        Logger.debug(
+            this,
+            "changing visibility for %d messages to %d sec",
+            this.messages.size(), this.duration
+        );
         for (final Message msg : msgs) {
             synchronized (this.messages) {
                 if (!this.messages.contains(msg)) {
                     continue;
                 }
             }
-            Logger.debug(
-                this,
-                "changing visibility for %s to %d sec",
-                msg.getMessageId(), this.duration
-            );
             entries.add(
                 new ChangeMessageVisibilityBatchRequestEntry(
                     String.format("msg_%d", num),
@@ -225,11 +225,10 @@ public final class MessageMonitorProc implements Proc<Message> {
         }
         final ChangeMessageVisibilityBatchResult res =
             sqs.changeMessageVisibilityBatch(queue, entries);
-        res.getSuccessful().forEach(
-            entry -> Logger.debug(
-                this,
-                "successfully changed visibility for %s", entry.getId()
-            )
+        Logger.debug(
+            this,
+            "successfully changed visibility for %d messages",
+            res.getSuccessful().size()
         );
         res.getFailed().forEach(
             entry -> Logger.warn(
