@@ -125,6 +125,18 @@ SOFTWARE.
         </xsl:for-each>
       </ul>
     </p>
+    <p>
+      <xsl:text>Proc messages:</xsl:text>
+      <ul>
+        <xsl:for-each select="messages/message">
+          <li>
+            <xsl:value-of select="@id"/>
+            <xsl:text> : </xsl:text>
+            <xsl:value-of select="text()"/>
+          </li>
+        </xsl:for-each>
+      </ul>
+    </p>
   </xsl:template>
   <xsl:template match="farm[@id='ClaimsFarm']">
     <p>

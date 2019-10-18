@@ -27,6 +27,7 @@ import com.zerocracy.claims.proc.CountingProc;
 import com.zerocracy.claims.proc.ExpiryProc;
 import com.zerocracy.claims.proc.FootprintProc;
 import com.zerocracy.claims.proc.MessageMonitorProc;
+import com.zerocracy.claims.proc.ProcGuts;
 import com.zerocracy.claims.proc.SentryProc;
 import com.zerocracy.farm.guts.Guts;
 import com.zerocracy.shutdown.ShutdownFarm;
@@ -34,6 +35,7 @@ import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import lombok.EqualsAndHashCode;
+import org.xembly.Directive;
 import org.xembly.Directives;
 
 /**
@@ -60,31 +62,37 @@ public final class MessageSink implements Farm {
     private final Farm farm;
 
     /**
+     * Proc guts.
+     */
+    private final Iterable<Directive> pguts;
+
+    /**
      * Primary ctr.
      * @param farm Farm
      * @param shutdown Shutdown
      */
+    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public MessageSink(final Farm farm, final ShutdownFarm.Hook shutdown) {
+        final ProcGuts proc = new ProcGuts(
+            new FootprintProc(
+                farm,
+                new CountingProc(
+                    new BrigadeProc(this),
+                    new AtomicInteger()
+                )
+            )
+        );
         this.asynk = new AsyncSink(
             new ExpiryProc(
                 new MessageMonitorProc(
-                    farm,
-                    new SentryProc(
-                        farm,
-                        new FootprintProc(
-                            farm,
-                            new CountingProc(
-                                new BrigadeProc(this),
-                                new AtomicInteger()
-                            )
-                        )
-                    ),
+                    farm, new SentryProc(farm, proc),
                     shutdown
                 )
             ),
             shutdown,
             farm
         );
+        this.pguts = proc;
         this.farm = farm;
     }
 
@@ -144,6 +152,7 @@ public final class MessageSink implements Farm {
                 .add("farm")
                 .attr("id", this.getClass().getSimpleName())
                 .append(this.asynk.guts())
+                .append(this.pguts)
         ).apply(xpath);
     }
 
