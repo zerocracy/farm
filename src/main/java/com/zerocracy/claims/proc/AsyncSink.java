@@ -106,7 +106,7 @@ public final class AsyncSink {
         );
         final ProjectQueue repaired = queue.repair();
         final boolean process = repaired.size() < Tv.EIGHT
-            || MsgPriority.from(msg) == MsgPriority.LOW;
+            || MsgPriority.from(msg).value() > MsgPriority.LOW.value();
         if (process) {
             repaired.push(msg);
         } else {
