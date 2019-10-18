@@ -102,8 +102,8 @@ public final class MessageMonitorProc implements Proc<Message> {
         this(
             origin,
             farm,
-            (long) Tv.TEN,
-            (int) Duration.ofMinutes((long) Tv.FIVE).getSeconds(),
+            (long) Tv.SIXTY,
+            (int) Duration.ofMinutes(2L).getSeconds(),
             shutdown
         );
     }
