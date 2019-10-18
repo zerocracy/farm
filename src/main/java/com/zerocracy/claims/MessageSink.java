@@ -100,6 +100,7 @@ public final class MessageSink implements Farm {
      * Start sink.
      * @param queue Message queue
      */
+    @SuppressWarnings("PMD.AvoidCatchingThrowable")
     public void start(final BlockingQueue<Message> queue) {
         final int processors = Runtime.getRuntime().availableProcessors();
         Logger.info(
@@ -126,13 +127,14 @@ public final class MessageSink implements Farm {
                             );
                             Thread.sleep(wait * (long) Tv.THOUSAND);
                         }
-                    } catch (final IOException err) {
+                    } catch (final InterruptedException ignore) {
+                        Thread.currentThread().interrupt();
+                        // @checkstyle IllegalCatchCheck (1 line)
+                    } catch (final Throwable err) {
                         Logger.error(
                             this, "async sink failed: %[exception]s",
                             err
                         );
-                    } catch (final InterruptedException ignore) {
-                        Thread.currentThread().interrupt();
                     }
                 }
             }
