@@ -73,7 +73,7 @@ public final class ClaimsRoutine implements Runnable, Closeable {
      * Message by priority comparator.
      */
     private static final Comparator<Message> BY_PRIORITY =
-        Comparator.comparingInt(msg -> MsgPriority.from(msg).value());
+        Comparator.comparing(MsgPriority::from).reversed();
 
     /**
      * Until attribute.
@@ -93,7 +93,7 @@ public final class ClaimsRoutine implements Runnable, Closeable {
     /**
      * Delay to fetch claims.
      */
-    private static final long DELAY = 1L;
+    private static final long DELAY = 11L;
 
     /**
      * Scheduled service.
@@ -151,7 +151,8 @@ public final class ClaimsRoutine implements Runnable, Closeable {
         {
             "PMD.AvoidInstantiatingObjectsInLoops",
             "PMD.ConfusingTernary",
-            "PMD.AvoidCatchingGenericException"
+            "PMD.AvoidCatchingGenericException",
+            "PMD.CyclomaticComplexity"
         }
     )
     public void run() {
@@ -162,6 +163,14 @@ public final class ClaimsRoutine implements Runnable, Closeable {
         final String url =
             new UncheckedText(new ClaimsQueueUrl(this.farm))
                 .asString();
+        if (full) {
+            Logger.info(
+                this, "Queue is full (%s), skipping",
+                this.queue.size()
+            );
+            this.sanitize(sqs, url);
+            return;
+        }
         Logger.debug(
             this,
             "receiving messages: limit=%d; timout=2m",
@@ -200,10 +209,6 @@ public final class ClaimsRoutine implements Runnable, Closeable {
                     "Removed expired message: %s",
                     message.getMessageId()
                 );
-                continue;
-            }
-            if (full && MsgPriority.from(message).value()
-                > MsgPriority.NORMAL.value()) {
                 continue;
             }
             attr.put(
