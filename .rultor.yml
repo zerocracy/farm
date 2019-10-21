@@ -35,7 +35,7 @@ release:
     git commit -am "${tag}"
     cp ../settings.xml settings.xml
     mvn clean package -Pqulice,codenarc,zc-farm --errors --batch-mode --quiet --settings ../settings.xml
-    git remote add heroku git@heroku.com:zerocrat.git
+    git remote add dokku dokku@dokku.zerocracy.com:zerocrat
     mkdir ~/.ssh
     mv ../id_rsa ../id_rsa.pub ~/.ssh
     chmod -R 600 ~/.ssh/*
@@ -45,7 +45,7 @@ release:
     mvn initialize -Pshutdown --settings settings.xml
     mvn liquibase:update -Pliquibase --errors --settings settings.xml
     git commit -m 'settings.xml'; trap "git reset HEAD~1" EXIT
-    git push -f heroku $(git symbolic-ref --short HEAD):master
+    git push -f dokku $(git symbolic-ref --short HEAD):master
     rm -rf settings.xml
     curl -f --connect-timeout 15 --retry 5 --retry-delay 30 https://www.0crat.com > /dev/null
 merge:
