@@ -1177,7 +1177,7 @@ SOFTWARE.
               <configuration>
                 <changeLogFile>${basedir}/src/main/resources/liquibase/master.xml</changeLogFile>
                 <driver>org.postgresql.Driver</driver>
-                <url>jdbc:postgresql://${pgsql.host}:${pgsql.port}/${pgsql.database}?ssl=false</url>
+                <url>jdbc:postgresql://${pgsql.host}:${pgsql.port}/${pgsql.database}</url>
                 <username>${pgsql.user}</username>
                 <password>${pgsql.password}</password>
                 <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
