@@ -47,7 +47,7 @@ public final class ExtDataSource implements Scalar<DataSource> {
                     if (props.has("//testing")) {
                         dsrc.setUrl(
                             String.format(
-                                "jdbc:postgresql://localhost:%s/test?sslMode=disable",
+                                "jdbc:postgresql://localhost:%s/test",
                                 System.getProperty("pgsql.port")
                             )
                         );
@@ -56,7 +56,7 @@ public final class ExtDataSource implements Scalar<DataSource> {
                     } else {
                         dsrc.setUrl(
                             String.format(
-                                "jdbc:postgresql://%s:%s/%s?sslMode=disable",
+                                "jdbc:postgresql://%s:%s/%s",
                                 props.get("//pgsql//host"),
                                 props.get("//pgsql/port"),
                                 props.get("//pgsql/database")
@@ -66,6 +66,7 @@ public final class ExtDataSource implements Scalar<DataSource> {
                         dsrc.setPassword(props.get("//pgsql/password"));
                         dsrc.setMinIdle(Tv.TEN);
                         dsrc.setMaxIdle(Tv.TWENTY);
+                        dsrc.setConnectionProperties("sslMode=disable");
                     }
                     return dsrc;
                 }
