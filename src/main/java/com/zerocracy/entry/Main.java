@@ -88,6 +88,9 @@ public final class Main {
         }
         final long start = System.currentTimeMillis();
         try {
+            Runtime.getRuntime()
+                .exec("ping -c1 data.0crat.com.s3.amazonaws.com")
+                .waitFor();
             new Main(args).exec();
         } catch (final Throwable ex) {
             new SafeSentry(new PropsFarm()).capture(ex);
