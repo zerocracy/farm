@@ -24,6 +24,7 @@ import com.zerocracy.claims.Footprint
 import com.zerocracy.pm.staff.Roles
 import org.cactoos.text.JoinedText
 import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers
 import org.hamcrest.collection.IsEmptyIterable
 import org.hamcrest.core.IsCollectionContaining
 import org.hamcrest.core.IsEqual
@@ -97,7 +98,6 @@ def exec(Project project, XML xml) {
       new IsEmptyIterable()
     )
   )
-
   MatcherAssert.assertThat(
     'DEV role was assigned to anonymous',
     roles.allRoles('anonymous'),
