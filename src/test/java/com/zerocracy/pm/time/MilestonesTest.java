@@ -21,6 +21,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -43,6 +44,31 @@ public final class MilestonesTest {
         MatcherAssert.assertThat(
             milestones.iterate(),
             Matchers.hasItem(Matchers.equalTo(target))
+        );
+    }
+
+    /**
+     * Puzzle from Issue #2051: unrecoverable failure Type: "Job milestoned"
+     * @todo #2051:30m/DEV Adding milestones which doesn't match the pattern
+     *  '[a-z]{2}:[A-Z0-9a-z.\-#/]+' fail with exception on XML validation
+     *  Validation happens inside com.jcabi.xml.StrictXML constructor,
+     *  outside of this project's codebase. Un-ignore this test and remove
+     *  comment after impediments are resolved.
+     */
+    @Test
+    @Ignore
+    public void addMilestoneWithSpace() throws Exception {
+        final Milestones milestones = new Milestones(new FkProject())
+                .bootstrap();
+        final String target = "gh:V 1.1";
+        milestones.add(
+                target,
+                // @checkstyle MagicNumber (1 line)
+                LocalDate.of(2018, Month.JANUARY, 23)
+        );
+        MatcherAssert.assertThat(
+                milestones.iterate(),
+                Matchers.hasItem(Matchers.equalTo(target))
         );
     }
 }
