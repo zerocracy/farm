@@ -48,7 +48,7 @@ public final class MilestonesTest {
     }
 
     /**
-     * Puzzle from Issue #2051: unrecoverable failure Type: "Job milestoned"
+     * Puzzle from Issue #2051: unrecoverable failure Type: "Job milestoned".
      * @todo #2051:30m/DEV Adding milestones which doesn't match the pattern
      *  '[a-z]{2}:[A-Z0-9a-z.\-#/]+' fail with exception on XML validation
      *  Validation happens inside com.jcabi.xml.StrictXML constructor,
@@ -59,16 +59,16 @@ public final class MilestonesTest {
     @Ignore
     public void addMilestoneWithSpace() throws Exception {
         final Milestones milestones = new Milestones(new FkProject())
-                .bootstrap();
+            .bootstrap();
         final String target = "gh:V 1.1";
         milestones.add(
-                target,
-                // @checkstyle MagicNumber (1 line)
-                LocalDate.of(2018, Month.JANUARY, 23)
+            target,
+            // @checkstyle MagicNumber (1 line)
+            LocalDate.of(2018, Month.JANUARY, 23)
         );
         MatcherAssert.assertThat(
-                milestones.iterate(),
-                Matchers.hasItem(Matchers.equalTo(target))
+            milestones.iterate(),
+            Matchers.hasItem(Matchers.equalTo(target))
         );
     }
 }
