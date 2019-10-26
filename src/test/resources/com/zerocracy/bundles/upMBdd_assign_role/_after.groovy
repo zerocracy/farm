@@ -101,6 +101,6 @@ def exec(Project project, XML xml) {
   MatcherAssert.assertThat(
     'DEV role was assigned to anonymous',
     roles.allRoles('anonymous'),
-    new IsEmptyIterable<>()
+    new IsEmptyIterable()
   )
 }
