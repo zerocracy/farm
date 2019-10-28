@@ -569,7 +569,7 @@ SOFTWARE.
                       <limit>
                         <counter>CLASS</counter>
                         <value>MISSEDCOUNT</value>
-                        <maximum>111</maximum>
+                        <maximum>114</maximum>
                       </limit>
                     </limits>
                   </rule>
