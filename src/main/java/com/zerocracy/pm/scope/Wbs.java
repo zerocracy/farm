@@ -39,9 +39,6 @@ import org.xembly.Directives;
  * project scope statement.
  *
  * @since 1.0
- * @todo #1159:30min Modify add method to accept user that created the given
- *  Wbs item and use it in stakeholders (and tests). All Wbs items should have
- *  an author (see zerocracy/datum#383).
  */
 @SuppressWarnings("PMD.TooManyMethods")
 public final class Wbs {
@@ -93,6 +90,16 @@ public final class Wbs {
                     .add("created").set(new DateAsText().asString())
             );
         }
+    }
+
+    /**
+     * Add job to WBS with an author.
+     * @param job The job to add
+     * @param author the job author
+     * @throws IOException If fails
+     */
+    public void add(final String job, final String author) throws IOException {
+        throw new UnsupportedOperationException("Not implemented");
     }
 
     /**
@@ -195,6 +202,16 @@ public final class Wbs {
                 ).get(0)
             ).value();
         }
+    }
+
+    /**
+     * Get job author.
+     * @param job The job to get the author
+     * @return The author that added it to the WBS
+     * @throws IOException If fails
+     */
+    public String author(final String job) throws IOException {
+        throw new UnsupportedOperationException("Method not implemented");
     }
 
     /**

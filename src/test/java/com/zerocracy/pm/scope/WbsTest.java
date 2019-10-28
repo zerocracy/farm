@@ -19,12 +19,19 @@ package com.zerocracy.pm.scope;
 import com.zerocracy.farm.fake.FkProject;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.hamcrest.core.IsCollectionContaining;
+import org.hamcrest.core.IsEqual;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * Test case for {@link Wbs}.
  * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
+ * @todo #1640:30min Implement wbs.add(job, author) and wbs.author(job) methods to change
+ *  wbs.add() method behavior (every wbs item should have an author). After this, remove
+ *  addsAndRemovesJobs() test and replace it by addsAndRemovesJobWithAuthor() removing its ignore
+ *  annotation.
  */
 public final class WbsTest {
 
@@ -37,6 +44,28 @@ public final class WbsTest {
         wbs.remove(job);
         MatcherAssert.assertThat(
             wbs.iterate(), Matchers.not(Matchers.hasItem(job))
+        );
+    }
+
+    @Test
+    @Ignore
+    public void addsAndRemovesJobWithAuthor() throws Exception {
+        final Wbs wbs = new Wbs(new FkProject()).bootstrap();
+        final String job = "gh:yegor256/0pdd#1";
+        final String author = "author";
+        wbs.add(job, author);
+        MatcherAssert.assertThat(
+            "Couldn't add job with author",
+            wbs.author(job),
+            new IsEqual<>(author)
+        );
+        wbs.remove(job);
+        MatcherAssert.assertThat(
+            "Couldn't remove job with author",
+            wbs.iterate(),
+            new IsCollectionContaining<>(
+                new IsEqual<>(job)
+            )
         );
     }
 
