@@ -24,6 +24,7 @@ import com.zerocracy.Xocument;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
+import org.cactoos.scalar.NumberOf;
 import org.cactoos.time.DateAsText;
 import org.cactoos.time.DateOf;
 import org.xembly.Directives;
@@ -198,6 +199,19 @@ public final class Wbs {
     }
 
     /**
+     * WBS size.
+     * @return Size if WBS
+     * @throws IOException If faisls
+     */
+    public int size() throws IOException {
+        try (final Item wbs = this.item()) {
+            return new NumberOf(
+                new Xocument(wbs.path()).xpath("count(/wbs/job)").get(0)
+            ).intValue();
+        }
+    }
+
+    /**
      * XPath to find a job.
      * @param job The job
      * @return XPath
@@ -214,5 +228,4 @@ public final class Wbs {
     private Item item() throws IOException {
         return this.project.acq("wbs.xml");
     }
-
 }
