@@ -48,7 +48,7 @@ public final class MilestonesTest {
     }
 
     /**
-     * Puzzle from Issue #2051: unrecoverable failure Type: "Job milestoned".
+     * Test if milestones with spaces can be added.
      * @todo #2051:30m/DEV Adding milestones which doesn't match the pattern
      *  '[a-z]{2}:[A-Z0-9a-z.\-#/]+' fail with exception on XML validation
      *  Validation happens inside com.jcabi.xml.StrictXML constructor,
