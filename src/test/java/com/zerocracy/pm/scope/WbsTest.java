@@ -51,4 +51,15 @@ public final class WbsTest {
         );
     }
 
+    @Test
+    public void calculatesSize() throws Exception {
+        final Wbs wbs = new Wbs(new FkProject()).bootstrap();
+        final int size = 100;
+        for (int job = 0; job < size; ++job) {
+            wbs.add(String.format("gh:test/test#job%d", job));
+        }
+        MatcherAssert.assertThat(
+            wbs.size(), Matchers.equalTo(size)
+        );
+    }
 }

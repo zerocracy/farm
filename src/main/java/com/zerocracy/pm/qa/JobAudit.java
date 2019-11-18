@@ -19,6 +19,7 @@ package com.zerocracy.pm.qa;
 import com.jcabi.github.Comment;
 import com.jcabi.github.Issue;
 import com.zerocracy.Farm;
+import com.zerocracy.Par;
 import com.zerocracy.Project;
 import com.zerocracy.entry.ExtGithub;
 import com.zerocracy.pm.in.Orders;
@@ -88,11 +89,23 @@ public final class JobAudit {
             final boolean seen = new IoCheckedScalar<>(
                 new Or(arcs::contains, authors)
             ).value();
-            if (!seen || !authors.contains(performer)) {
-                complaints.add("");
+            if (!seen) {
+                complaints.add(
+                    new Par(
+                        this.farm,
+                        "ARC didn't merge or close PR"
+                    ).say()
+                );
+            }
+            if (!authors.contains(performer)) {
+                complaints.add(
+                    new Par(
+                        this.farm,
+                        "performer @%s didn't make CR comments"
+                    ).say(performer)
+                );
             }
         }
         return complaints;
     }
-
 }

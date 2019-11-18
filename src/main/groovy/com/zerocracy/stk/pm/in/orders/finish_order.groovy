@@ -89,23 +89,27 @@ def exec(Project project, XML xml) {
     .collect(Collectors.toList())
   boolean review = false
   if (qa.empty || roles.hasRole(performer, 'ARC', 'PO')) {
+    claim.copy()
+      .type('Make payment')
+      .param('login', performer)
+      .param('reason', new Par('Order was finished').say())
+      .param('minutes', minutes)
+      .param('estimated', 'true')
+      .param('cash', price)
+      .postTo(new ClaimsOf(farm, project))
     List<String> complaints = new JobAudit(farm, project).review(job)
-    if (complaints.empty) {
-      claim.copy()
-        .type('Make payment')
-        .param('login', performer)
-        .param('reason', new Par('Order was finished').say())
-        .param('minutes', minutes)
-        .param('estimated', 'true')
-        .param('cash', price)
-        .postTo(new ClaimsOf(farm, project))
-    } else {
+    if (!complaints.empty) {
+      // @todo #2202:30min Fix JobAudit.
+      //  It may complain about not existing issues.
+      //  Most probably it counts only PR comments to find authors,
+      //  but CR comments can be different entities in Github.
+      //  After fix skip payment if any complaints exist.
       claim.copy()
         .type('Notify job')
         .token("job;${job}")
         .param(
           'message',
-          new Par('Quality is low, no payment, see §31: %s').say(
+          new Par('Job audit: %s').say(
             complaints.join(', ')
           )
         )

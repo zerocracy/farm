@@ -16,6 +16,7 @@
  */
 package com.zerocracy.stk.pm.staff.elections
 
+import com.jcabi.aspects.Tv
 import com.jcabi.github.Github
 import com.jcabi.log.Logger
 import com.jcabi.xml.XML
@@ -58,6 +59,14 @@ def exec(Project project, XML xml) {
   //  as a performer for few jobs and another project may elect same user
   //  before jobs from first project will be assigned to the performer.
   Wbs wbs = new Wbs(project).bootstrap()
+  if (wbs.size() > Tv.FIFTY) {
+    // @todo #2194:30min Election is disabled for huge WBS (> 50 items).
+    //  Analyze the bottleneck of election performance, most
+    //  probably it can be solved by caching some external resources,
+    //  such as Github labels etc.
+    //  Then optimize election process and enable it back.
+    return
+  }
   Collection<String> orders = new Orders(farm, project).bootstrap().iterate()
   Collection<String> reviews = new Reviews(project).bootstrap().iterate()
   Farm farm = binding.variables.farm
