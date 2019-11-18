@@ -292,6 +292,9 @@ Just fork it, make changes, run `mvn clean install -Pqulice,codenarc`,
 and submit a pull request. Read
 [this](http://www.yegor256.com/2014/04/15/github-guidelines.html), if lost.
 
+To validate XML, XSL and XSD issues use [xcop](https://github.com/yegor256/xcop):
+install it with `gem install xcop` and add to `PATH`.
+
 Keep in mind that you don't need to setup the server locally or start it. If you need to
 prove that a class is working - write a unit tests for it or integration tests if external API
 is involved (see `ClaimsSqsITCase` for instance).

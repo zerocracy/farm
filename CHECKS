@@ -1,1 +1,5 @@
+WAIT=60
+TIMEOUT=60
+ATTEMPTS=5
+
 / Zerocrat
