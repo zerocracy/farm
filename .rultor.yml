@@ -30,8 +30,8 @@ release:
     - settings.xml
   script: |
     [[ "${tag}" =~ ^[0-9]+(\.[0-9]+)*$ ]] || exit -1
-    mvn clean process-resources --quiet
-    mvn clean versions:set "-DnewVersion=${tag}" --quiet
+    mvn clean process-resources --settings=./no-settings.xml --quiet
+    mvn clean versions:set --settings=./no-settings.xml "-DnewVersion=${tag}" --quiet
     git commit -am "${tag}"
     cp ../settings.xml settings.xml
     mvn clean package -Pqulice,codenarc,zc-farm --errors --batch-mode --quiet --settings ../settings.xml
