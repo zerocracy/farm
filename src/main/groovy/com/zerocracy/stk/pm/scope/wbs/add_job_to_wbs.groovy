@@ -72,9 +72,6 @@ def exec(Project project, XML xml) {
   }
   wbs.add(job)
   wbs.role(job, role)
-  claim.reply(
-    new Par('Job %s is now in scope, role is %s').say(job, role)
-  ).postTo(new ClaimsOf(farm, project))
   claim.copy()
     .type('Job was added to WBS')
     .param('role', role)
