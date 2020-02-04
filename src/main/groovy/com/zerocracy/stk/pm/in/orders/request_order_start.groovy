@@ -30,6 +30,9 @@ import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.radars.github.Job
 
+import java.time.Instant
+import java.util.concurrent.TimeUnit
+
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Request order start')
@@ -71,16 +74,20 @@ def exec(Project project, XML xml) {
   if (orders.assigned(job)) {
     String performer = orders.performer(job)
     if (login == performer) {
-      throw new SoftException(
-        new Par(
-          'Job %s is already assigned to @%s'
-        ).say(job, login)
-      )
+      return
     }
+    Instant closed
+    if (claim.hasParam('closed')) {
+      closed = Instant.parse(claim.param('closed'))
+    } else {
+      closed = Instant.now()
+    }
+    long velocity = closed.toEpochMilli() - orders.startTime(job).time
     orders.resign(job)
     claim.copy()
       .type('Order was canceled')
       .param('login', performer)
+      .param('age', velocity / TimeUnit.MINUTES.toMillis(1L) as long)
       .postTo(new ClaimsOf(farm, project))
   }
   claim.copy()
