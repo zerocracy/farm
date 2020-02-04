@@ -44,9 +44,9 @@ import com.zerocracy.pmo.Pmo
 import org.cactoos.iterable.Mapped
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Ping')
+  new Assume(project, xml).notPmo().type('Ping', 'Elect performer')
   ClaimIn claim = new ClaimIn(xml)
+  Farm farm = binding.variables.farm
   boolean deficit = new Ledger(farm, project).bootstrap().deficit()
   Roles roles = new Roles(project).bootstrap()
   Rates rates = new Rates(project).bootstrap()
@@ -67,9 +67,15 @@ def exec(Project project, XML xml) {
     //  Then optimize election process and enable it back.
     return
   }
-  Collection<String> orders = new Orders(farm, project).bootstrap().iterate()
+  Orders ord = new Orders(farm, project).bootstrap()
+  Collection<String> orders
+  if (claim.hasParam('job')) {
+    new Assume(project, xml).roles('ARC', 'PO')
+    orders = Collections.singletonList(claim.param('job'))
+  } else {
+    orders = ord.iterate()
+  }
   Collection<String> reviews = new Reviews(project).bootstrap().iterate()
-  Farm farm = binding.variables.farm
   Pmo pmo = new Pmo(farm)
   Github github = new ExtGithub(farm).value()
   // @todo #1214:30min 0crat is assigning closed jobs. It happens when the
