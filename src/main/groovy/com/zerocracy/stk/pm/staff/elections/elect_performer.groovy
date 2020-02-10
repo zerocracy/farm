@@ -43,6 +43,7 @@ import com.zerocracy.pm.staff.votes.*
 import com.zerocracy.pmo.Pmo
 import org.cactoos.iterable.Mapped
 
+@SuppressWarnings('CyclomaticComplexity')
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo().type('Ping', 'Elect performer')
   ClaimIn claim = new ClaimIn(xml)
@@ -59,7 +60,7 @@ def exec(Project project, XML xml) {
   //  as a performer for few jobs and another project may elect same user
   //  before jobs from first project will be assigned to the performer.
   Wbs wbs = new Wbs(project).bootstrap()
-  if (wbs.size() > Tv.FIFTY) {
+  if (wbs.size() > Tv.FIFTY && !claim.hasParam('job')) {
     // @todo #2194:30min Election is disabled for huge WBS (> 50 items).
     //  Analyze the bottleneck of election performance, most
     //  probably it can be solved by caching some external resources,
@@ -70,7 +71,9 @@ def exec(Project project, XML xml) {
   Orders ord = new Orders(farm, project).bootstrap()
   Collection<String> orders
   if (claim.hasParam('job')) {
-    new Assume(project, xml).roles('ARC', 'PO')
+    if (!claim.param('reason', 'none') == 'start order') {
+      new Assume(project, xml).roles('ARC', 'PO')
+    }
     orders = Collections.singletonList(claim.param('job'))
   } else {
     orders = ord.iterate()

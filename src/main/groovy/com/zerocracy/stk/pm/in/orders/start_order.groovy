@@ -121,4 +121,10 @@ def exec(Project project, XML xml) {
     .param('reason', claim.cid())
     .param('estimate', cash)
     .postTo(new ClaimsOf(farm, project))
+    if (role == 'REV') {
+      claim.copy()
+        .type('Elect performer')
+        .param('reason', 'start order')
+        .postTo(new ClaimsOf(farm, project))
+    }
 }
