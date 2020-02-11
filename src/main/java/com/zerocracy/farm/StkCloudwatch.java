@@ -17,6 +17,7 @@
 
 package com.zerocracy.farm;
 
+import com.amazonaws.services.cloudwatch.model.Dimension;
 import com.amazonaws.services.cloudwatch.model.MetricDatum;
 import com.amazonaws.services.cloudwatch.model.PutMetricDataRequest;
 import com.amazonaws.services.cloudwatch.model.StandardUnit;
@@ -31,7 +32,9 @@ import java.io.IOException;
 /**
  * Stakeholder decorator which reports execution time with tags to cloudwatch.
  * @since 1.0
+ * @checkstyle LineLengthCheck (500 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class StkCloudwatch implements Stakeholder {
 
     /**
@@ -77,14 +80,26 @@ public final class StkCloudwatch implements Stakeholder {
                     new MetricDatum()
                         .withMetricName(String.format("stk:%s", this.name))
                         .withUnit(StandardUnit.Milliseconds)
+                        .withDimensions(
+                            new Dimension().withName("scope").withValue("performance"),
+                            new Dimension().withName("performance").withValue("stk")
+                        )
                         .withValue(value),
                     new MetricDatum()
                         .withMetricName(String.format("pkt:%s", project.pid()))
                         .withUnit(StandardUnit.Milliseconds)
+                        .withDimensions(
+                            new Dimension().withName("scope").withValue("performance"),
+                            new Dimension().withName("performance").withValue("project")
+                        )
                         .withValue(value),
                     new MetricDatum()
                         .withMetricName(String.format("claim:%s", claim.type()))
                         .withUnit(StandardUnit.Milliseconds)
+                        .withDimensions(
+                            new Dimension().withName("scope").withValue("performance"),
+                            new Dimension().withName("performance").withValue("claim")
+                        )
                         .withValue(value)
                 )
         );
