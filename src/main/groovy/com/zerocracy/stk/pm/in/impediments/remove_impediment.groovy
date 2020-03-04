@@ -24,6 +24,7 @@ import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pm.in.Impediments
+import com.zerocracy.pmo.Catalog
 
 /**
  * This stakeholder responds to 'Remove impediment' event, which is
@@ -44,8 +45,10 @@ def exec(Project project, XML xml) {
   new Impediments(farm, project)
     .bootstrap()
     .remove(job)
-  claim.reply(
-    new Par('@%s continued working on job %s').say(author, job)
-  ).postTo(new ClaimsOf(farm, project))
+  if (new Catalog(farm).bootstrap().verbose(project.pid())) {
+    claim.reply(
+      new Par('@%s continued working on job %s').say(author, job)
+    ).postTo(new ClaimsOf(farm, project))
+  }
   claim.copy().type('Impediment was removed').postTo(new ClaimsOf(farm, project))
 }

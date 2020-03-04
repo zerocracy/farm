@@ -27,6 +27,7 @@ import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.claims.ClaimIn
+import com.zerocracy.pmo.Catalog
 import com.zerocracy.pmo.People
 import com.zerocracy.radars.github.Job
 
@@ -53,7 +54,7 @@ def exec(Project project, XML xml) {
       .param('reason', new Par('Bug was reported, see §29').say())
       .param('minutes', new Policy().get('29.price', 15))
       .postTo(new ClaimsOf(farm, project))
-  } else if (author != '0pdd') {
+  } else if (author != '0pdd' && new Catalog(farm).bootstrap().verbose(project.pid())) {
     claim.reply(
       new Par(
         'Thanks for your contribution, @%s!',

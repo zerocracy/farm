@@ -24,6 +24,7 @@ import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pmo.Awards
+import com.zerocracy.pmo.Catalog
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
@@ -48,6 +49,9 @@ def exec(Project project, XML xml) {
     )
     .postTo(new ClaimsOf(farm, project))
   if (claim.hasParam('student')) {
+    return
+  }
+  if (!new Catalog(farm).bootstrap().verbose(project.pid())) {
     return
   }
   claim.copy()

@@ -23,6 +23,7 @@ import com.zerocracy.Project;
 import com.zerocracy.SoftException;
 import com.zerocracy.Xocument;
 import com.zerocracy.cash.Cash;
+import com.zerocracy.farm.props.Props;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
@@ -889,6 +890,17 @@ public final class Catalog {
                 )
             );
         }
+    }
+
+    /**
+     * Check if verbose mode on.
+     * @param pid Project id
+     * @return True if enabled
+     * @throws IOException On failure
+     */
+    public boolean verbose(final String pid) throws IOException {
+        return "C3NDPUA8L".equals(pid)
+            || new Props(this.pmo).has("//testing");
     }
 
     /**

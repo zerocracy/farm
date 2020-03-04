@@ -559,7 +559,7 @@ SOFTWARE.
                       <limit>
                         <counter>COMPLEXITY</counter>
                         <value>COVEREDRATIO</value>
-                        <minimum>0.44</minimum>
+                        <minimum>0.43</minimum>
                       </limit>
                       <limit>
                         <counter>METHOD</counter>
@@ -569,7 +569,7 @@ SOFTWARE.
                       <limit>
                         <counter>CLASS</counter>
                         <value>MISSEDCOUNT</value>
-                        <maximum>115</maximum>
+                        <maximum>118</maximum>
                       </limit>
                     </limits>
                   </rule>

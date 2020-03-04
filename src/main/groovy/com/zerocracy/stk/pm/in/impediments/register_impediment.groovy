@@ -27,6 +27,7 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.pm.in.Impediments
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.staff.Roles
+import com.zerocracy.pmo.Catalog
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo().type('Register impediment')
@@ -45,11 +46,13 @@ def exec(Project project, XML xml) {
   new Impediments(farm, project)
     .bootstrap()
     .register(job, reason)
-  claim.reply(
-    new Par(
-      'The impediment for %s was registered successfully by @%s'
-    ).say(job, author)
-  ).postTo(new ClaimsOf(farm, project))
+  if (new Catalog(farm).bootstrap().verbose(project.pid())) {
+    claim.reply(
+      new Par(
+        'The impediment for %s was registered successfully by @%s'
+      ).say(job, author)
+    ).postTo(new ClaimsOf(farm, project))
+  }
   claim.copy()
     .type('Impediment was registered')
     .param('job', job)
