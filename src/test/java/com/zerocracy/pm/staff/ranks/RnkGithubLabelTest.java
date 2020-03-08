@@ -25,8 +25,6 @@ import com.jcabi.github.mock.MkGithub;
 import com.zerocracy.radars.github.Job;
 import java.util.ArrayList;
 import java.util.List;
-import org.cactoos.func.StickyBiFunc;
-import org.cactoos.func.UncheckedBiFunc;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -38,6 +36,7 @@ import org.junit.Test;
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class RnkGithubLabelTest {
+
     @Test
     public void sortBugsFirst() throws Exception {
         final Github github = new MkGithub().relogin("test");
@@ -59,25 +58,6 @@ public final class RnkGithubLabelTest {
                 "gh:test/bugs#1",
                 "gh:test/bugs#3"
             )
-        );
-    }
-
-    @Test
-    public void evaluatesFromCache() throws Exception {
-        final String issue = "gh:test/cached#4";
-        final String bug = "gh:test/cached#5";
-        final UncheckedBiFunc<Github, String, Boolean> cache =
-            new UncheckedBiFunc<>(
-                new StickyBiFunc<>((ghb, job) -> job.equals(bug))
-            );
-        final RnkGithubLabel rnk = new RnkGithubLabel(new MkGithub(), cache);
-        MatcherAssert.assertThat(
-            rnk.compare(issue, bug),
-            Matchers.greaterThan(0)
-        );
-        MatcherAssert.assertThat(
-            rnk.compare(bug, issue),
-            Matchers.lessThan(0)
         );
     }
 }

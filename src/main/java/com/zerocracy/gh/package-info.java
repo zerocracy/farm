@@ -14,36 +14,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pm.staff.ranks;
-
-import com.zerocracy.pm.cost.Boosts;
-import java.util.Comparator;
-import org.cactoos.func.SolidFunc;
-import org.cactoos.func.UncheckedFunc;
 
 /**
- * Give higher rank for boosted jobs.
- *
+ * Github objects.
  * @since 1.0
  */
-public final class RnkBoost implements Comparator<String> {
-    /**
-     * Cached factor comparator.
-     */
-    private final UncheckedFunc<String, Integer> cmp;
+package com.zerocracy.gh;
 
-    /**
-     * Ctor.
-     * @param boosts Boosts
-     */
-    public RnkBoost(final Boosts boosts) {
-        this.cmp = new UncheckedFunc<>(
-            new SolidFunc<>(job -> boosts.factor(job))
-        );
-    }
-
-    @Override
-    public int compare(final String left, final String right) {
-        return Integer.compare(this.cmp.apply(right), this.cmp.apply(left));
-    }
-}

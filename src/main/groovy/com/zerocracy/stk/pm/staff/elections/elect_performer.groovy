@@ -41,6 +41,7 @@ import com.zerocracy.pm.staff.Votes
 import com.zerocracy.pm.staff.ranks.*
 import com.zerocracy.pm.staff.votes.*
 import com.zerocracy.pmo.Pmo
+import com.zerocracy.radars.github.Quota
 import org.cactoos.iterable.Mapped
 
 @SuppressWarnings('CyclomaticComplexity')
@@ -48,6 +49,10 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo().type('Ping', 'Elect performer')
   ClaimIn claim = new ClaimIn(xml)
   Farm farm = binding.variables.farm
+  Github ghb = new ExtGithub(farm).value()
+  if (!new Quota(ghb).quiet()) {
+    return
+  }
   boolean deficit = new Ledger(farm, project).bootstrap().deficit()
   Roles roles = new Roles(project).bootstrap()
   Rates rates = new Rates(project).bootstrap()
@@ -80,7 +85,6 @@ def exec(Project project, XML xml) {
   }
   Collection<String> reviews = new Reviews(project).bootstrap().iterate()
   Pmo pmo = new Pmo(farm)
-  Github github = new ExtGithub(farm).value()
   // @todo #1214:30min 0crat is assigning closed jobs. It happens when the
   //  issue was closed in github but the Close Job flow fails
   //  for some reason and the job does not leave WBS. Assure that we are
@@ -88,10 +92,10 @@ def exec(Project project, XML xml) {
   //  _after.groovy tests in dont_assign_job_closed bundle.
   List<String> jobs = wbs.iterate().toList()
   List<Comparator<String>> ranks = [
-    new RnkMeasured(new RnkGithubLabel(github, 'pdd')),
-    new RnkMeasured(new RnkGithubLabel(github, 'bug')),
+    new RnkMeasured(new RnkGithubLabel(ghb, 'pdd')),
+    new RnkMeasured(new RnkGithubLabel(ghb, 'bug')),
     new RnkMeasured(new RnkBoost(new Boosts(farm, project).bootstrap())),
-    new RnkMeasured(new RnkGithubMilestone(github)),
+    new RnkMeasured(new RnkGithubMilestone(ghb)),
     new RnkMeasured(new RnkRev(new Wbs(project).bootstrap()))
   ]
   ranks.each { jobs.sort(it) }
