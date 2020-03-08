@@ -17,6 +17,7 @@
 package com.zerocracy.farm;
 
 import com.zerocracy.Farm;
+import com.zerocracy.FarmCloudwatch;
 import com.zerocracy.Project;
 import com.zerocracy.entry.ExtFarm;
 import com.zerocracy.farm.props.PropsFarm;
@@ -64,8 +65,10 @@ public final class SmartFarm implements Farm {
                 () -> new RdFarm(
                     new ExtFarm(
                         new StrictFarm(
-                            new PropsFarm(
-                                new SyncFarm(farm, locks)
+                            new FarmCloudwatch(
+                                new PropsFarm(
+                                    new SyncFarm(farm, locks)
+                                )
                             )
                         )
                     )
