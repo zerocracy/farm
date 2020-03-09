@@ -27,7 +27,6 @@ import java.util.LinkedList;
 import java.util.List;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -39,32 +38,27 @@ import org.junit.Test;
 public final class RnkGithubMilestoneTest {
 
     @Test
-    @Ignore
     public void sortMilestonedIssuesFirst() throws Exception {
         final Github github = new MkGithub().relogin("test");
         final Repo repo = github.repos().create(
             new Repos.RepoCreate("milestones", false)
         );
         final List<String> jobs = new LinkedList<>();
-        jobs.add(
-            new Job(repo.issues().create("No milestone 1", ""))
-                .toString()
-        );
+        final Job first = new Job(repo.issues().create("No milestone 1", ""));
+        jobs.add(first.toString());
         final Issue milestoned = repo.issues().create("Has milestone", "");
         final Milestone milestone = repo.milestones().create("1.0");
         new Issue.Smart(milestoned).milestone(milestone);
         jobs.add(new Job(milestoned).toString());
-        jobs.add(
-            new Job(repo.issues().create("No milestone 2", ""))
-                .toString()
-        );
+        final Job third = new Job(repo.issues().create("No milestone 2", ""));
+        jobs.add(third.toString());
         jobs.sort(new RnkGithubMilestone(github));
         MatcherAssert.assertThat(
             jobs,
             Matchers.contains(
-                "gh:test/milestones#2",
-                "gh:test/milestones#1",
-                "gh:test/milestones#3"
+                new Job(milestoned).toString(),
+                first.toString(),
+                third.toString()
             )
         );
     }

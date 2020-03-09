@@ -40,6 +40,11 @@ import org.cactoos.scalar.UncheckedScalar;
 public final class CachedIssues {
 
     /**
+     * Milestone JSON key.
+     */
+    private static final String KEY_MILESTONE = "milestone";
+
+    /**
      * Github client.
      */
     private final Github ghb;
@@ -79,7 +84,9 @@ public final class CachedIssues {
      * @return TRUE if has a milestone
      */
     public boolean hasMilestone(final String job) {
-        return this.json(job).getJsonObject("milestone") != null;
+        final JsonObject json = this.json(job);
+        return json.containsKey(CachedIssues.KEY_MILESTONE)
+            && !json.isNull(CachedIssues.KEY_MILESTONE);
     }
 
     /**
