@@ -23,7 +23,6 @@ import com.jcabi.xml.XMLDocument;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.claims.ClaimIn;
-import com.zerocracy.farm.StkCloudwatch;
 import com.zerocracy.farm.StkSafe;
 import com.zerocracy.farm.StkTimed;
 import com.zerocracy.farm.StkVerbose;
@@ -69,15 +68,11 @@ public final class BrigadeProc implements Proc<Message> {
                     cls -> new StkSafe(
                         cls.getSimpleName(),
                         farm,
-                        new StkCloudwatch(
-                            farm,
-                            new StkVerbose(
-                                new StkTimed(
-                                    new StkRuntime(cls, farm),
-                                    cls.getSimpleName(),
-                                    Duration.ofMinutes(1L)
-                                ),
-                                cls.getName()
+                        new StkVerbose(
+                            new StkTimed(
+                                new StkRuntime(cls, farm),
+                                cls.getSimpleName(),
+                                Duration.ofMinutes(1L)
                             ),
                             cls.getName()
                         )
