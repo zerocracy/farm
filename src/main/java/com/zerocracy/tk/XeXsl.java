@@ -19,7 +19,6 @@ package com.zerocracy.tk;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.jcabi.xml.XSLDocument;
-import com.zerocracy.Item;
 import com.zerocracy.Project;
 import java.io.IOException;
 import java.net.URI;
@@ -86,34 +85,36 @@ public final class XeXsl implements XeSource {
 
     @Override
     public Iterable<Directive> toXembly() throws IOException {
-        try (final Item item = this.project.acq(this.name)) {
-            final String content;
-            if (item.path().toFile().length() == 0L) {
-                content = "<p>The document is empty yet.</p>";
-            } else {
-                final XML xml = new XMLDocument(item.path().toFile());
-                final URI uri = URI.create(
-                    String.format(
-                        "http://datum.zerocracy.com/latest/xsl/%s",
-                        this.xsl
-                    )
-                );
-                content = new XSLDocument(
-                    XeXsl.STYLESHEETS.apply(uri),
-                    (href, base) -> new StreamSource(
-                        new InputStreamOf(
-                            XeXsl.STYLESHEETS.apply(
-                                URI.create(base).resolve(href)
-                            )
+        return this.project.acq(this.name).read(
+            path -> {
+                final String content;
+                if (path.toFile().length() == 0L) {
+                    content = "<p>The document is empty yet.</p>";
+                } else {
+                    final XML xml = new XMLDocument(path.toFile());
+                    final URI uri = URI.create(
+                        String.format(
+                            "http://datum.zerocracy.com/latest/xsl/%s",
+                            this.xsl
                         )
-                    ),
-                    new SolidMap<String, Object>(
-                        new MapEntry<>("today", new DateAsText().asString())
-                    ),
-                    uri.toString()
-                ).transform(xml).nodes("/*/xhtml:body").get(0).toString();
+                    );
+                    content = new XSLDocument(
+                        XeXsl.STYLESHEETS.apply(uri),
+                        (href, base) -> new StreamSource(
+                            new InputStreamOf(
+                                XeXsl.STYLESHEETS.apply(
+                                    URI.create(base).resolve(href)
+                                )
+                            )
+                        ),
+                        new SolidMap<String, Object>(
+                            new MapEntry<>("today", new DateAsText().asString())
+                        ),
+                        uri.toString()
+                    ).transform(xml).nodes("/*/xhtml:body").get(0).toString();
+                }
+                return new XeAppend("xml", content).toXembly();
             }
-            return new XeAppend("xml", content).toXembly();
-        }
+        );
     }
 }

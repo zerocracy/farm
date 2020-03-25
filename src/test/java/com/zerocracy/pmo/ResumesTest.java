@@ -18,8 +18,7 @@ package com.zerocracy.pmo;
 
 import com.jcabi.matchers.XhtmlMatchers;
 import com.zerocracy.Farm;
-import com.zerocracy.Item;
-import com.zerocracy.Xocument;
+import com.zerocracy.ItemXml;
 import com.zerocracy.farm.fake.FkFarm;
 import java.time.Duration;
 import java.time.Instant;
@@ -43,6 +42,7 @@ import org.xembly.Xembler;
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle MagicNumberCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @checkstyle LineLengthCheck (500 lines)
  */
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 public final class ResumesTest {
@@ -67,19 +67,17 @@ public final class ResumesTest {
                 187141,
                 "test"
             );
-        try (final Item item = new Pmo(farm).acq("resumes.xml")) {
-            MatcherAssert.assertThat(
-                new Xocument(item).nodes("/resumes/resume[@login = 'new']"),
-                Matchers.contains(
-                    XhtmlMatchers.hasXPaths(
-                        "resume/text[text() = 'Invite me']",
-                        "resume/submitted[text() = '2018-01-01T00:00:00']",
-                        "resume/personality[text() = 'INTJ-A']",
-                        "resume/stackoverflow[text() = '187141']"
-                    )
+        MatcherAssert.assertThat(
+            new ItemXml(new Pmo(farm).acq("resumes.xml")).nodes("/resumes/resume[@login = 'new']"),
+            Matchers.contains(
+                XhtmlMatchers.hasXPaths(
+                    "resume/text[text() = 'Invite me']",
+                    "resume/submitted[text() = '2018-01-01T00:00:00']",
+                    "resume/personality[text() = 'INTJ-A']",
+                    "resume/stackoverflow[text() = '187141']"
                 )
-            );
-        }
+            )
+        );
     }
 
     @Test

@@ -20,6 +20,7 @@ import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Item
 import com.zerocracy.Project
+import com.zerocracy.TextItem
 import com.zerocracy.pmo.Awards
 import com.zerocracy.pmo.Pmo
 import org.hamcrest.MatcherAssert
@@ -27,11 +28,11 @@ import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
-  new Pmo(farm).acq('test.txt').withCloseable {
+  new Pmo(farm).acq('test.txt').with {
     Item item ->
       MatcherAssert.assertThat(
         'Incorrect candidate message',
-        item.path().text,
+        new TextItem(item).readAll(),
         Matchers.startsWith('Thanks for purchasing RFP #42; the email of the client is test@zerocracy.com')
       )
   }

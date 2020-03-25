@@ -17,7 +17,6 @@
 package com.zerocracy.tk.project;
 
 import com.zerocracy.Farm;
-import com.zerocracy.Item;
 import com.zerocracy.Project;
 import java.io.IOException;
 import org.cactoos.text.TextOf;
@@ -55,14 +54,11 @@ public final class TkXml implements TkRegex {
         final String artifact = new RqHref.Smart(
             new RqHref.Base(req)
         ).single("file");
-        try (final Item item = project.acq(artifact)) {
-            return new RsWithType(
-                new RsWithBody(
-                    new TextOf(item.path()).asString()
-                ),
-                "application/xml"
-            );
-        }
+        return new RsWithType(
+            new RsWithBody(
+                project.acq(artifact).read(TextOf::new).asString()
+            ),
+            "application/xml"
+        );
     }
-
 }

@@ -16,12 +16,11 @@
  */
 package com.zerocracy.pm.cost;
 
-import com.zerocracy.Item;
+import com.zerocracy.ItemXml;
 import com.zerocracy.Par;
 import com.zerocracy.Policy;
 import com.zerocracy.Project;
 import com.zerocracy.SoftException;
-import com.zerocracy.Xocument;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.cash.CashParsingException;
 import java.io.IOException;
@@ -51,12 +50,8 @@ public final class Rates {
     /**
      * Bootstrap it.
      * @return Itself
-     * @throws IOException If fails
      */
-    public Rates bootstrap() throws IOException {
-        try (final Item wbs = this.item()) {
-            new Xocument(wbs.path()).bootstrap("pm/cost/rates");
-        }
+    public Rates bootstrap() {
         return this;
     }
 
@@ -85,23 +80,21 @@ public final class Rates {
                 ).say(rate, min)
             );
         }
-        try (final Item item = this.item()) {
-            new Xocument(item).modify(
+        this.item().update(
+            new Directives()
+                .xpath(String.format("/rates/person[@id='%s']", login))
+                .remove()
+        );
+        if (!rate.equals(Cash.ZERO)) {
+            this.item().update(
                 new Directives()
-                    .xpath(String.format("/rates/person[@id='%s']", login))
-                    .remove()
+                    .xpath("/rates")
+                    .add("person")
+                    .attr("id", login)
+                    .add("created").set(new DateAsText().asString()).up()
+                    .add("rate")
+                    .set(rate)
             );
-            if (!rate.equals(Cash.ZERO)) {
-                new Xocument(item).modify(
-                    new Directives()
-                        .xpath("/rates")
-                        .add("person")
-                        .attr("id", login)
-                        .add("created").set(new DateAsText().asString()).up()
-                        .add("rate")
-                        .set(rate)
-                );
-            }
         }
     }
 
@@ -119,9 +112,9 @@ public final class Rates {
                 ).say(login)
             );
         }
-        try (final Item item = this.item()) {
+        try {
             return new Cash.S(
-                new Xocument(item).xpath(
+                this.item().xpath(
                     String.format("/rates/person[@id='%s']/rate/text()", login)
                 ).get(0)
             );
@@ -137,11 +130,9 @@ public final class Rates {
      * @throws IOException If fails
      */
     public boolean exists(final String login) throws IOException {
-        try (final Item item = this.item()) {
-            return !new Xocument(item).nodes(
-                String.format("/rates/person[@id='%s']/rate", login)
-            ).isEmpty();
-        }
+        return this.item().exists(
+            String.format("/rates/person[@id='%s']/rate", login)
+        );
     }
 
     /**
@@ -149,7 +140,7 @@ public final class Rates {
      * @return Item
      * @throws IOException If fails
      */
-    private Item item() throws IOException {
-        return this.project.acq("rates.xml");
+    private ItemXml item() throws IOException {
+        return new ItemXml(this.project.acq("rates.xml"), "pm/cost/rates");
     }
 }

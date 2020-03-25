@@ -16,11 +16,16 @@
  */
 package com.zerocracy.farm.sync;
 
+import com.jcabi.log.Logger;
 import com.zerocracy.Item;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
 import lombok.EqualsAndHashCode;
+import org.cactoos.Func;
+import org.cactoos.Proc;
 
 /**
  * Synchronized and thread safe item.
@@ -38,14 +43,14 @@ final class SyncItem implements Item {
     /**
      * Lock.
      */
-    private final Lock lock;
+    private final ReadWriteLock lock;
 
     /**
      * Ctor.
      * @param item Original item
      * @param lck Lock
      */
-    SyncItem(final Item item, final Lock lck) {
+    SyncItem(final Item item, final ReadWriteLock lck) {
         this.origin = item;
         this.lock = lck;
     }
@@ -56,27 +61,62 @@ final class SyncItem implements Item {
     }
 
     @Override
-    public Path path() throws IOException {
-        if (Thread.currentThread().isInterrupted()) {
-            Thread.currentThread().interrupt();
-            throw new IllegalStateException(
-                String.format(
-                    "The thread %s is interrupted, can't continue.",
-                    Thread.currentThread().getName()
-                )
-            );
+    public <T> T read(final Func<Path, T> reader) throws IOException {
+        final Lock lck = this.lock.readLock();
+        Logger.debug(this, "#read(): try %s", lck);
+        this.tryLock(lck);
+        Logger.debug(this, "#read(): acq %s", lck);
+        try {
+            return this.origin.read(reader);
+        } finally {
+            lck.unlock();
+            Logger.debug(this, "#read(): unlock %s", lck);
         }
-        return this.origin.path();
     }
 
     @Override
-    public void close() throws IOException {
+    public void update(final Proc<Path> writer) throws IOException {
+        final Lock lck = this.lock.writeLock();
+        Logger.debug(this, "#update(): try %s", lck);
+        this.tryLock(lck);
+        Logger.debug(this, "#update(): acq %s", lck);
         try {
-            if (!Thread.currentThread().isInterrupted()) {
-                this.origin.close();
-            }
+            this.origin.update(writer);
         } finally {
-            this.lock.unlock();
+            lck.unlock();
+            Logger.debug(this, "#update(): unlocked %s", lck);
+        }
+    }
+
+    /**
+     * Try to lock the resource with given time.
+     * @param lck Lock to acquire
+     */
+    private void tryLock(final Lock lck) {
+        final long start = System.currentTimeMillis();
+        try {
+            // @checkstyle MagicNumber (1 line)
+            if (!lck.tryLock(15L, TimeUnit.SECONDS)) {
+                throw new IllegalStateException(
+                    Logger.format(
+                        "Failed to acquire a lock %s/%s for \"%s\" in %[ms]s",
+                        this.lock, lck,
+                        this.origin,
+                        System.currentTimeMillis() - start
+                    )
+                );
+            }
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException(
+                Logger.format(
+                    "%s interrupted while waiting for \"%s\" in %[ms]s",
+                    Thread.currentThread().getName(),
+                    this.origin,
+                    System.currentTimeMillis() - start
+                ),
+                ex
+            );
         }
     }
 }

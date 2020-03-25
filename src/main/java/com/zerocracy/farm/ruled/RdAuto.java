@@ -20,7 +20,6 @@ import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.jcabi.xml.XSLDocument;
-import com.zerocracy.Item;
 import com.zerocracy.Project;
 import java.io.IOException;
 import java.net.URI;
@@ -122,32 +121,33 @@ final class RdAuto {
                 ), "-"
             )
         );
-        try (final Item item = this.project.acq(target)) {
-            if (item.path().toFile().exists()
-                && item.path().toFile().length() > 0L) {
-                final XML xml = new XMLDocument(item.path().toFile());
-                final XML after = new XSLDocument(
-                    new TextOf(
-                        RdAuto.CACHE.apply(URI.create(xsl))
-                    ).asString(),
-                    new RdSources(this.project)
-                ).transform(xml);
-                if (!xml.equals(after)) {
-                    new LengthOf(
-                        new TeeInput(
-                            after.toString(),
-                            item.path()
-                        )
-                    ).intValue();
-                    Logger.info(
-                        this, "Applied %s to %s in %s (%d to %d): %s",
-                        xsl, target, this.project,
-                        xml.toString().length(), after.toString().length(),
-                        this.reason
-                    );
+        this.project.acq(target).update(
+            src -> {
+                if (src.toFile().exists()
+                    && src.toFile().length() > 0L) {
+                    final XML xml = new XMLDocument(src.toFile());
+                    final XML after = new XSLDocument(
+                        new TextOf(
+                            RdAuto.CACHE.apply(URI.create(xsl))
+                        ).asString(),
+                        new RdSources(this.project)
+                    ).transform(xml);
+                    if (!xml.equals(after)) {
+                        new LengthOf(
+                            new TeeInput(
+                                after.toString(),
+                                src
+                            )
+                        ).intValue();
+                        Logger.info(
+                            this, "Applied %s to %s in %s (%d to %d): %s",
+                            xsl, target, this.project,
+                            xml.toString().length(), after.toString().length(),
+                            this.reason
+                        );
+                    }
                 }
             }
-        }
+        );
     }
-
 }

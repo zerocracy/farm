@@ -22,6 +22,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import lombok.EqualsAndHashCode;
+import org.cactoos.Func;
+import org.cactoos.Proc;
+import org.cactoos.func.IoCheckedFunc;
 import org.cactoos.io.LengthOf;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.io.TeeInput;
@@ -36,6 +39,7 @@ import org.xembly.Xembler;
  * <p>This Item represents the {@code _props.xml} file in a PMO project.</p>
  *
  * @since 1.0
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @EqualsAndHashCode(of = "temp")
 final class PropsItem implements Item {
@@ -74,7 +78,24 @@ final class PropsItem implements Item {
     }
 
     @Override
-    public Path path() throws IOException {
+    public <T> T read(final Func<Path, T> reader) throws IOException {
+        this.bootstrap();
+        return new IoCheckedFunc<>(reader).apply(this.temp);
+    }
+
+    @Override
+    public void update(final Proc<Path> writer) throws IOException {
+        throw new IOException("props is readonly");
+    }
+
+    /**
+     * Bootstrap props.
+     * @throws IOException On failure
+     */
+    private void bootstrap() throws IOException {
+        if (Files.exists(this.temp) && Files.size(this.temp) > 0L) {
+            return;
+        }
         final Directives dirs = new Directives();
         if (this.getClass().getResource("/org/junit/Test.class") != null) {
             dirs.xpath("/props").add("testing").set("yes");
@@ -94,12 +115,5 @@ final class PropsItem implements Item {
                 this.temp
             )
         ).intValue();
-        return this.temp;
     }
-
-    @Override
-    public void close() throws IOException {
-        Files.delete(this.temp);
-    }
-
 }

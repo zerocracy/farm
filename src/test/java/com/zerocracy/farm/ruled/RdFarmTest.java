@@ -27,7 +27,9 @@ import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.farm.S3Farm;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.farm.strict.StrictFarm;
+import com.zerocracy.farm.sync.Locks;
 import com.zerocracy.farm.sync.SyncFarm;
+import com.zerocracy.farm.sync.TestLocks;
 import com.zerocracy.pm.scope.Wbs;
 import com.zerocracy.pmo.Pmo;
 import java.nio.file.Files;
@@ -41,6 +43,7 @@ import org.junit.Test;
  * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @checkstyle LineLengthCheck (500 lines)
  */
 public final class RdFarmTest {
 
@@ -50,7 +53,8 @@ public final class RdFarmTest {
             Files.createTempDirectory("").toFile(),
             "some-bucket"
         );
-        try (final Farm farm = new SyncFarm(new RdFarm(new S3Farm(bucket)))) {
+        final Locks locks = new TestLocks();
+        try (final Farm farm = new SyncFarm(new RdFarm(new S3Farm(bucket, locks)), locks)) {
             final Project project = farm.find("@id='RDFRMTEST'")
                 .iterator().next();
             final Wbs wbs = new Wbs(project).bootstrap();
@@ -63,7 +67,7 @@ public final class RdFarmTest {
                     wbs.add(job);
                     return wbs.exists(job);
                 },
-                new RunsInThreads<>(total)
+                new RunsInThreads<>(total, 1)
             );
             MatcherAssert.assertThat(
                 wbs.iterate().size(),
@@ -78,9 +82,10 @@ public final class RdFarmTest {
             Files.createTempDirectory("").toFile(),
             "some-bucket-pmo"
         );
+        final Locks locks = new TestLocks();
         try (
             final Farm farm =
-                new RdFarm(new StrictFarm(new PropsFarm(new S3Farm(bucket))))
+                new RdFarm(new StrictFarm(new PropsFarm(new S3Farm(bucket, locks))))
         ) {
             final Project pmo = new Pmo(farm);
             new ClaimOut().type("hello you").postTo(new ClaimsOf(farm));

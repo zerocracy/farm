@@ -16,11 +16,10 @@
  */
 package com.zerocracy.pm.cost;
 
-import com.zerocracy.Item;
+import com.zerocracy.ItemXml;
 import com.zerocracy.Par;
 import com.zerocracy.Project;
 import com.zerocracy.SoftException;
-import com.zerocracy.Xocument;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.cash.CashParsingException;
 import java.io.IOException;
@@ -50,12 +49,8 @@ public final class Vesting {
     /**
      * Bootstrap it.
      * @return Itself
-     * @throws IOException If fails
      */
-    public Vesting bootstrap() throws IOException {
-        try (final Item wbs = this.item()) {
-            new Xocument(wbs.path()).bootstrap("pm/cost/vesting");
-        }
+    public Vesting bootstrap() {
         return this;
     }
 
@@ -73,9 +68,9 @@ public final class Vesting {
                 ).say(login)
             );
         }
-        try (final Item item = this.item()) {
+        try {
             return new Cash.S(
-                new Xocument(item).xpath(
+                this.item().xpath(
                     String.format(
                         "/vesting/person[@id='%s']/rate/text()",
                         login
@@ -94,8 +89,8 @@ public final class Vesting {
      * @throws IOException If fails
      */
     public void rate(final String login, final Cash rate) throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item).modify(
+        try {
+            this.item().update(
                 new Directives()
                     .xpath(
                         String.format(
@@ -127,11 +122,9 @@ public final class Vesting {
      * @throws IOException If fails
      */
     public boolean exists(final String login) throws IOException {
-        try (final Item item = this.item()) {
-            return !new Xocument(item).nodes(
-                String.format("/vesting/person[@id='%s']/rate", login)
-            ).isEmpty();
-        }
+        return this.item().exists(
+            String.format("/vesting/person[@id='%s']/rate", login)
+        );
     }
 
     /**
@@ -139,7 +132,9 @@ public final class Vesting {
      * @return Item
      * @throws IOException If fails
      */
-    private Item item() throws IOException {
-        return this.project.acq("vesting.xml");
+    private ItemXml item() throws IOException {
+        return new ItemXml(
+            this.project.acq("vesting.xml"), "pm/cost/vesting"
+        );
     }
 }

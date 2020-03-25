@@ -114,14 +114,6 @@ public final class Xocument {
 
     /**
      * Ctor.
-     * @param item Item
-     */
-    public Xocument(final Item item) {
-        this((Scalar<Path>) item::path);
-    }
-
-    /**
-     * Ctor.
      * @param path File
      */
     public Xocument(final Path path) {

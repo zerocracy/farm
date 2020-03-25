@@ -16,23 +16,22 @@
  */
 package com.zerocracy.bundles.fetches_subdirectories
 
-
 import com.jcabi.xml.XML
 import com.zerocracy.Project
-import org.cactoos.text.TextOf
+import com.zerocracy.TextItem
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
-  project.acq('claims.xml').withCloseable {
+  project.acq('claims.xml').with {
     MatcherAssert.assertThat(
-      new TextOf(it.iterator().next().path()).asString(),
+      new TextItem(it).readAll(),
       Matchers.containsString('<claims xmlns:xsi=')
     )
   }
-  project.acq('options/foo.xml').withCloseable {
+  project.acq('options/foo.xml').with {
     MatcherAssert.assertThat(
-      new TextOf(it.iterator().next().path()).asString(),
+      new TextItem(it).readAll(),
       Matchers.containsString('<options xmlns:xsi=')
     )
   }

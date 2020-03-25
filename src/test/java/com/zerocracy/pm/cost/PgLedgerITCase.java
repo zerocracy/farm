@@ -19,8 +19,7 @@ package com.zerocracy.pm.cost;
 import com.jcabi.aspects.Tv;
 import com.jcabi.jdbc.JdbcSession;
 import com.jcabi.jdbc.ListOutcome;
-import com.zerocracy.Item;
-import com.zerocracy.Xocument;
+import com.zerocracy.ItemXml;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.db.ExtDataSource;
 import com.zerocracy.farm.fake.FkProject;
@@ -203,47 +202,43 @@ public final class PgLedgerITCase {
         final String cus = "cus_123";
         final String detailsone = "PgLedgerITCase#migrateFromXmlFormat: funded for test";
         final String detailstwo = "PgLedgerITCase#migrateFromXmlFormat: bug was reported";
-        try (Item item = pkt.acq("ledger.xml")) {
-            final String amountone = "$42.11";
-            final String amounttwo = "$0.01";
-            final String eltr = "transaction";
-            new Xocument(item.path()).bootstrap("pm/cost/ledger").modify(
-                new Directives()
-                    .xpath("ledger")
-                    .add("transactions")
-                    .push()
-                    .add(eltr)
-                    .attr(PgLedgerITCase.TID, 1)
-                    .add(PgLedgerITCase.CREATED).set(createdone).up()
-                    .add(PgLedgerITCase.AMOUNT).set(amountone).up()
-                    .add(PgLedgerITCase.DEBIT).set(assets).up()
-                    .add(PgLedgerITCase.DTX).set(cash).up()
-                    .add(PgLedgerITCase.CREDIT).set(income).up()
-                    .add(PgLedgerITCase.CTX).set(cus).up()
-                    .add(PgLedgerITCase.DETAILS).set(detailsone).up()
-                    .pop()
-                    .push()
-                    .add(eltr)
-                    .attr(PgLedgerITCase.TID, 2)
-                    .attr(PgLedgerITCase.PARENT, 1)
-                    .add(PgLedgerITCase.CREATED).set(createdtwo).up()
-                    .add(PgLedgerITCase.AMOUNT).set(amounttwo).up()
-                    .add(PgLedgerITCase.DEBIT).set("liabilities").up()
-                    .add(PgLedgerITCase.DTX).set("debt").up()
-                    .add(PgLedgerITCase.CREDIT).set(assets).up()
-                    .add(PgLedgerITCase.CTX).set(cash).up()
-                    .add(PgLedgerITCase.DETAILS).set(detailstwo).up()
-                    .pop()
-            );
-        }
+        final String amountone = "$42.11";
+        final String amounttwo = "$0.01";
+        final String eltr = "transaction";
+        new ItemXml(pkt.acq("ledger.xml"), "pm/cost/ledger").update(
+            new Directives()
+                .xpath("ledger")
+                .add("transactions")
+                .push()
+                .add(eltr)
+                .attr(PgLedgerITCase.TID, 1)
+                .add(PgLedgerITCase.CREATED).set(createdone).up()
+                .add(PgLedgerITCase.AMOUNT).set(amountone).up()
+                .add(PgLedgerITCase.DEBIT).set(assets).up()
+                .add(PgLedgerITCase.DTX).set(cash).up()
+                .add(PgLedgerITCase.CREDIT).set(income).up()
+                .add(PgLedgerITCase.CTX).set(cus).up()
+                .add(PgLedgerITCase.DETAILS).set(detailsone).up()
+                .pop()
+                .push()
+                .add(eltr)
+                .attr(PgLedgerITCase.TID, 2)
+                .attr(PgLedgerITCase.PARENT, 1)
+                .add(PgLedgerITCase.CREATED).set(createdtwo).up()
+                .add(PgLedgerITCase.AMOUNT).set(amounttwo).up()
+                .add(PgLedgerITCase.DEBIT).set("liabilities").up()
+                .add(PgLedgerITCase.DTX).set("debt").up()
+                .add(PgLedgerITCase.CREDIT).set(assets).up()
+                .add(PgLedgerITCase.CTX).set(cash).up()
+                .add(PgLedgerITCase.DETAILS).set(detailstwo).up()
+                .pop()
+        );
         ledger.bootstrap();
-        try (Item item = pkt.acq("ledger.xml")) {
-            MatcherAssert.assertThat(
-                "Didn't remove xml entries",
-                new Xocument(item.path()).xpath("/transactions"),
-                Matchers.emptyIterable()
-            );
-        }
+        MatcherAssert.assertThat(
+            "Didn't remove xml entries",
+            new ItemXml(pkt.acq("ledger.xml")).xpath("/transactions"),
+            Matchers.emptyIterable()
+        );
         final List<Map<String, String>> select = new JdbcSession(data)
             .sql("SELECT id, parent, project, amount, dt, dtx, ct, ctx, details, created FROM ledger")
             .select(

@@ -17,11 +17,10 @@
 package com.zerocracy.pm.cost;
 
 import com.zerocracy.Farm;
-import com.zerocracy.Item;
+import com.zerocracy.ItemXml;
 import com.zerocracy.Par;
 import com.zerocracy.Project;
 import com.zerocracy.SoftException;
-import com.zerocracy.Xocument;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.cash.CashParsingException;
 import com.zerocracy.cash.Currency;
@@ -95,15 +94,11 @@ public final class Estimates {
      * @throws IOException If fails
      */
     public Estimates bootstrap() throws IOException {
-        try (final Item wbs = this.item()) {
-            final Xocument xoc = new Xocument(wbs.path());
-            xoc.bootstrap("pm/cost/estimates");
-            xoc.modify(
-                new Directives()
-                    .xpath("/estimates[not(@total)]")
-                    .attr("total", Cash.ZERO)
-            );
-        }
+        this.item().update(
+            new Directives()
+                .xpath("/estimates[not(@total)]")
+                .attr("total", Cash.ZERO)
+        );
         return this;
     }
 
@@ -113,26 +108,23 @@ public final class Estimates {
      * @throws IOException If fails
      */
     public Cash total() throws IOException {
-        try (final Item item = this.item()) {
-            final Xocument xoc = new Xocument(item);
-            return new IoCheckedScalar<Cash>(
-                new Ternary<>(
-                    new IoCheckedScalar<>(
-                        new Reduced<Cash, Cash>(
-                            Cash.ZERO,
-                            Cash::add,
-                            new Mapped<>(
-                                Cash.S::new,
-                                xoc.xpath("//order/cash/text()")
-                            )
+        return new IoCheckedScalar<Cash>(
+            new Ternary<>(
+                new IoCheckedScalar<>(
+                    new Reduced<Cash, Cash>(
+                        Cash.ZERO,
+                        Cash::add,
+                        new Mapped<>(
+                            Cash.S::new,
+                            this.item().xpath("//order/cash/text()")
                         )
-                    ).value(),
-                    Cash::unified,
-                    csh -> csh,
-                    csh -> csh.exchange(Currency.USD)
-                )
-            ).value();
-        }
+                    )
+                ).value(),
+                Cash::unified,
+                csh -> csh,
+                csh -> csh.exchange(Currency.USD)
+            )
+        ).value();
     }
 
     /**
@@ -170,21 +162,18 @@ public final class Estimates {
             );
         }
         final String role = new Wbs(this.project).bootstrap().role(job);
-        try (final Item estimates = this.item()) {
-            final Xocument xoc = new Xocument(estimates.path());
-            xoc.modify(
-                new Directives()
-                    .xpath(String.format("/estimates/order[@id= '%s']", job))
-                    .remove()
-                    .xpath("/estimates")
-                    .add("order")
-                    .attr("id", job)
-                    .add("role").set(role).up()
-                    .add("created").set(new DateAsText().asString()).up()
-                    .add("cash")
-                    .set(cash)
-            );
-        }
+        this.item().update(
+            new Directives()
+                .xpath(String.format("/estimates/order[@id= '%s']", job))
+                .remove()
+                .xpath("/estimates")
+                .add("order")
+                .attr("id", job)
+                .add("role").set(role).up()
+                .add("created").set(new DateAsText().asString()).up()
+                .add("cash")
+                .set(cash)
+        );
     }
 
     /**
@@ -201,9 +190,9 @@ public final class Estimates {
                 ).say(job)
             );
         }
-        try (final Item wbs = this.item()) {
+        try {
             return new Cash.S(
-                new Xocument(wbs.path()).xpath(
+                this.item().xpath(
                     String.format(
                         "/estimates/order[@id='%s']/cash/text()", job
                     )
@@ -221,11 +210,9 @@ public final class Estimates {
      * @throws IOException If fails of it there is no assignee
      */
     public boolean exists(final String job) throws IOException {
-        try (final Item wbs = this.item()) {
-            return !new Xocument(wbs.path()).nodes(
-                String.format("/estimates/order[@id='%s']", job)
-            ).isEmpty();
-        }
+        return this.item().exists(
+            String.format("/estimates/order[@id='%s']", job)
+        );
     }
 
     /**
@@ -233,7 +220,9 @@ public final class Estimates {
      * @return Item
      * @throws IOException If fails
      */
-    private Item item() throws IOException {
-        return this.project.acq("estimates.xml");
+    private ItemXml item() throws IOException {
+        return new ItemXml(
+            this.project.acq("estimates.xml"), "pm/cost/estimates"
+        );
     }
 }

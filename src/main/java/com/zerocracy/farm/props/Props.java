@@ -66,8 +66,8 @@ public final class Props {
 
     @Override
     public String toString() {
-        try (final Item item = this.item()) {
-            return new TextOf(item.path()).asString();
+        try {
+            return this.item().read(TextOf::new).asString();
         } catch (final IOException ex) {
             throw new IllegalStateException(ex);
         }
@@ -119,11 +119,9 @@ public final class Props {
      * @throws IOException If fails
      */
     private List<String> values(final String xpath) throws IOException {
-        try (final Item item = this.item()) {
-            return new XMLDocument(item.path()).xpath(
-                String.format("%s/text()", xpath)
-            );
-        }
+        return this.item().read(XMLDocument::new).xpath(
+            String.format("%s/text()", xpath)
+        );
     }
 
     /**
@@ -134,5 +132,4 @@ public final class Props {
     private Item item() throws IOException {
         return this.project.acq("_props.xml");
     }
-
 }

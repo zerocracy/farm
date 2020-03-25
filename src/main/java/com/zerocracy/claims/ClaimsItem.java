@@ -20,10 +20,9 @@ import com.jcabi.aspects.Tv;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
-import com.zerocracy.Item;
+import com.zerocracy.ItemXml;
 import com.zerocracy.Par;
 import com.zerocracy.Project;
-import com.zerocracy.Xocument;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Comparator;
@@ -42,7 +41,6 @@ import org.cactoos.map.MapOf;
 import org.cactoos.time.DateAsText;
 import org.xembly.Directive;
 import org.xembly.Directives;
-import org.xembly.ImpossibleModificationException;
 import org.xembly.Xembler;
 
 /**
@@ -69,12 +67,10 @@ public final class ClaimsItem {
     /**
      * Bootstrap it.
      * @return Itself
-     * @throws IOException If fails
+     * @throws IOException On failure
      */
     public ClaimsItem bootstrap() throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item).bootstrap("pm/claims");
-        }
+        this.item().update();
         return this;
     }
 
@@ -94,58 +90,57 @@ public final class ClaimsItem {
      */
     @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     public void add(final Iterable<Directive> claim) throws IOException {
-        try (final Item item = this.item()) {
-            final List<XML> claims = new XMLDocument(
-                new Xembler(
-                    new Directives()
-                        .add("claims")
-                        .append(claim)
-                ).dom()
-            ).nodes("/claims/claim");
-            final Xocument xocument = new Xocument(item);
-            final List<XML> nodes = xocument.nodes("/claims/claim");
-            final Set<String> signatures = new HashSet<>(
-                new Sorted<>(
-                    new Mapped<>(
-                        xml -> ClaimsItem.signature(new ClaimIn(xml)),
-                        nodes
-                    )
-                )
-            );
-            final Collection<Iterable<Directive>> filtered = new Mapped<>(
-                entry -> new Directives().xpath("/claims").append(
-                    new Directives()
-                    .add("claim")
-                    .append(Directives.copyOf(entry.getValue().node()))
-                ),
-                new Filtered<>(
-                    entry -> !signatures.contains(entry.getKey()),
-                    new MapOf<>(
-                        xml -> ClaimsItem.signature(new ClaimIn(xml)),
-                        xml -> xml,
-                        claims
-                    ).entrySet()
-                )
-            );
-            for (final Iterable<Directive> dirs : filtered) {
-                xocument.modify(dirs);
-            }
-            if (filtered.size() != claims.size()) {
-                Logger.error(
-                    this,
-                    new Par(
-                        "Duplicate claims are not allowed in %s,",
-                        "can't add this XML to %d existing ones:\n%s"
-                    ).say(
-                        this.project.pid(),
-                        nodes.size(),
-                        new Xembler(claim).xmlQuietly()
+        this.item().update(
+            xocument -> {
+                final List<XML> claims = new XMLDocument(
+                    new Xembler(
+                        new Directives()
+                            .add("claims")
+                            .append(claim)
+                    ).dom()
+                ).nodes("/claims/claim");
+                final List<XML> nodes = xocument.nodes("/claims/claim");
+                final Set<String> signatures = new HashSet<>(
+                    new Sorted<>(
+                        new Mapped<>(
+                            xml -> ClaimsItem.signature(new ClaimIn(xml)),
+                            nodes
+                        )
                     )
                 );
+                final Collection<Iterable<Directive>> filtered = new Mapped<>(
+                    entry -> new Directives().xpath("/claims").append(
+                        new Directives()
+                            .add("claim")
+                            .append(Directives.copyOf(entry.getValue().node()))
+                    ),
+                    new Filtered<>(
+                        entry -> !signatures.contains(entry.getKey()),
+                        new MapOf<>(
+                            xml -> ClaimsItem.signature(new ClaimIn(xml)),
+                            xml -> xml,
+                            claims
+                        ).entrySet()
+                    )
+                );
+                for (final Iterable<Directive> dirs : filtered) {
+                    xocument.modify(dirs);
+                }
+                if (filtered.size() != claims.size()) {
+                    Logger.error(
+                        this,
+                        new Par(
+                            "Duplicate claims are not allowed in %s,",
+                            "can't add this XML to %d existing ones:\n%s"
+                        ).say(
+                            this.project.pid(),
+                            nodes.size(),
+                            new Xembler(claim).xmlQuietly()
+                        )
+                    );
+                }
             }
-        } catch (final ImpossibleModificationException err) {
-            throw new IOException("Failed to read input claim", err);
-        }
+        );
         final int size = new LengthOf(this.iterate()).intValue();
         if (size > Tv.HUNDRED) {
             throw new IllegalStateException(
@@ -184,8 +179,8 @@ public final class ClaimsItem {
      */
     public Collection<XML> iterate() throws IOException {
         final String now = new DateAsText().asString();
-        try (final Item item = this.item()) {
-            return new Sorted<>(
+        return this.item().read(
+            xocument -> new Sorted<>(
                 new Comparator<XML>() {
                     @Override
                     public int compare(final XML left, final XML right) {
@@ -197,13 +192,13 @@ public final class ClaimsItem {
                         return new ClaimIn(xml).created();
                     }
                 },
-                new Xocument(item).nodes(
+                xocument.nodes(
                     String.format(
                         "/claims/claim[not(until) or until < '%s']", now
                     )
                 )
-            );
-        }
+            )
+        );
     }
 
     /**
@@ -212,8 +207,8 @@ public final class ClaimsItem {
      * @throws IOException If fails
      */
     private void delete(final XML claim) throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item).modify(
+        this.item().update(
+            xocument -> xocument.modify(
                 new Directives().xpath(
                     String.format(
                         "/claims/claim[@id='%s' and type='%s']",
@@ -221,8 +216,8 @@ public final class ClaimsItem {
                         claim.xpath("type/text()").get(0)
                     )
                 ).strict(1).remove()
-            );
-        }
+            )
+        );
     }
 
     /**
@@ -230,8 +225,8 @@ public final class ClaimsItem {
      * @return Item
      * @throws IOException If fails
      */
-    private Item item() throws IOException {
-        return this.project.acq("claims.xml");
+    private ItemXml item() throws IOException {
+        return new ItemXml(this.project.acq("claims.xml"), "pm/claims");
     }
 
     /**

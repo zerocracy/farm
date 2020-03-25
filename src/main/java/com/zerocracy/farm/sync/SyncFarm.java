@@ -19,12 +19,12 @@ package com.zerocracy.farm.sync;
 import com.jcabi.aspects.Tv;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
-import com.zerocracy.farm.guts.Guts;
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import lombok.EqualsAndHashCode;
 import org.cactoos.iterable.Mapped;
-import org.xembly.Directives;
 
 /**
  * Synchronized farm.
@@ -41,14 +41,15 @@ public final class SyncFarm implements Farm {
     private final Farm origin;
 
     /**
-     * Terminator.
-     */
-    private final Terminator terminator;
-
-    /**
      * Locks.
      */
     private final Locks locks;
+
+    /**
+     * Acquire flags for projects.
+     * @checkstyle LineLengthCheck (5 lines)
+     */
+    private final ConcurrentMap<String, ConcurrentMap<String, AtomicBoolean>> lpkt;
 
     /**
      * Ctor.
@@ -62,50 +63,31 @@ public final class SyncFarm implements Farm {
     /**
      * Ctor.
      *
-     * @param farm Farm
-     * @param locks Locks
-     */
-    public SyncFarm(final Farm farm, final Locks locks) {
-        this(farm, locks, TimeUnit.MINUTES.toMillis((long) Tv.FOUR));
-    }
-
-    /**
-     * Ctor.
-     *
      * @param farm Original farm
      * @param locks Sync locks
-     * @param sec Seconds to give to each thread
      */
-    public SyncFarm(final Farm farm, final Locks locks, final long sec) {
+    public SyncFarm(final Farm farm, final Locks locks) {
         this.origin = farm;
         this.locks = locks;
-        this.terminator = new Terminator(farm, sec);
+        this.lpkt = new ConcurrentHashMap<>(Tv.FIFTY);
     }
 
     @Override
     public Iterable<Project> find(final String query) throws IOException {
-        synchronized (this.origin) {
-            return new Guts(
-                this.origin,
-                () -> new Mapped<>(
-                    pkt -> new SyncProject(pkt, this.locks, this.terminator),
-                    this.origin.find(query)
-                ),
-                () -> new Directives()
-                    .xpath("/guts")
-                    .add("farm")
-                    .attr("id", this.getClass().getSimpleName())
-                    .append(this.terminator.value())
-            ).apply(query);
-        }
+        return new Mapped<>(
+            pkt -> new SyncProject(
+                pkt, this.locks,
+                this.lpkt.computeIfAbsent(
+                    pkt.pid(),
+                    key -> new ConcurrentHashMap<>(Tv.FIFTY)
+                )
+            ),
+            this.origin.find(query)
+        );
     }
 
     @Override
     public void close() throws IOException {
-        try {
-            this.terminator.close();
-        } finally {
-            this.origin.close();
-        }
+        this.origin.close();
     }
 }

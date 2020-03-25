@@ -19,9 +19,8 @@ package com.zerocracy.pmo;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
-import com.zerocracy.Item;
+import com.zerocracy.ItemXml;
 import com.zerocracy.Par;
-import com.zerocracy.Xocument;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.Iterator;
@@ -65,12 +64,8 @@ public final class Rfps {
     /**
      * Bootstrap it.
      * @return Itself
-     * @throws IOException If fails
      */
-    public Rfps bootstrap() throws IOException {
-        try (final Item team = this.item()) {
-            new Xocument(team).bootstrap("pmo/rfps");
-        }
+    public Rfps bootstrap() {
         return this;
     }
 
@@ -81,35 +76,32 @@ public final class Rfps {
      */
     @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
     public Iterable<Directive> toXembly() throws IOException {
-        try (final Item item = this.item()) {
-            final Directives dirs = new Directives().add("rfps");
-            for (final XML rfp
-                : new Xocument(item.path()).nodes("//rfp[sow!='']")) {
-                dirs.add("rfp")
-                    .add("id").set(rfp.xpath("@id").get(0)).up()
-                    .add("created").set(rfp.xpath("created/text()").get(0)).up()
-                    .add("ago")
-                    .set(
-                        Logger.format(
-                            "%[ms]s",
-                            System.currentTimeMillis()
+        final Directives dirs = new Directives().add("rfps");
+        for (final XML rfp : this.item().nodes("//rfp[sow!='']")) {
+            dirs.add("rfp")
+                .add("id").set(rfp.xpath("@id").get(0)).up()
+                .add("created").set(rfp.xpath("created/text()").get(0)).up()
+                .add("ago")
+                .set(
+                    Logger.format(
+                        "%[ms]s",
+                        System.currentTimeMillis()
                             - new DateOf(
-                                rfp.xpath("created/text()").get(0)
-                            ).value().getTime()
-                        )
+                            rfp.xpath("created/text()").get(0)
+                        ).value().getTime()
                     )
-                    .up()
-                    .add("sow");
-                final Iterator<String> sow = rfp.xpath("sow/text()").iterator();
-                if (sow.hasNext()) {
-                    dirs.set(sow.next());
-                } else {
-                    dirs.set("");
-                }
-                dirs.up().up();
+                )
+                .up()
+                .add("sow");
+            final Iterator<String> sow = rfp.xpath("sow/text()").iterator();
+            if (sow.hasNext()) {
+                dirs.set(sow.next());
+            } else {
+                dirs.set("");
             }
-            return dirs;
+            dirs.up().up();
         }
+        return dirs;
     }
 
     /**
@@ -119,24 +111,22 @@ public final class Rfps {
      * @throws IOException If fails
      */
     public Iterable<Directive> toXembly(final String uid) throws IOException {
-        try (final Item item = this.item()) {
-            final XML rfp = new Xocument(item.path()).nodes(
-                String.format("//rfp[login='%s']", uid)
-            ).get(0);
-            final Directives dirs = new Directives().add("rfp")
-                .add("id").set(rfp.xpath("@id").get(0)).up()
-                .add("created").set(rfp.xpath("created/text()").get(0)).up()
-                .add("paid").set(rfp.xpath("paid/text()").get(0)).up()
-                .add("email").set(rfp.xpath("email/text()").get(0)).up()
-                .add("sow");
-            final Iterator<String> sow = rfp.xpath("sow/text()").iterator();
-            if (sow.hasNext()) {
-                dirs.set(sow.next());
-            } else {
-                dirs.set("");
-            }
-            return dirs.up().up();
+        final XML rfp = this.item().nodes(
+            String.format("//rfp[login='%s']", uid)
+        ).get(0);
+        final Directives dirs = new Directives().add("rfp")
+            .add("id").set(rfp.xpath("@id").get(0)).up()
+            .add("created").set(rfp.xpath("created/text()").get(0)).up()
+            .add("paid").set(rfp.xpath("paid/text()").get(0)).up()
+            .add("email").set(rfp.xpath("email/text()").get(0)).up()
+            .add("sow");
+        final Iterator<String> sow = rfp.xpath("sow/text()").iterator();
+        if (sow.hasNext()) {
+            dirs.set(sow.next());
+        } else {
+            dirs.set("");
         }
+        return dirs.up().up();
     }
 
     /**
@@ -154,17 +144,15 @@ public final class Rfps {
                 ).say(rid, buyer)
             );
         }
-        try (final Item item = this.item()) {
-            final String email = new Xocument(item.path()).xpath(
-                String.format("/rfps/rfp[@id='%s']/email/text()", rid)
-            ).get(0);
-            new Xocument(item.path()).modify(
-                new Directives()
-                    .xpath(String.format("/rfps/rfp[@id='%s']", rid))
-                    .strict(1).remove()
-            );
-            return email;
-        }
+        final String email = this.item().xpath(
+            String.format("/rfps/rfp[@id='%s']/email/text()", rid)
+        ).get(0);
+        this.item().update(
+            new Directives()
+                .xpath(String.format("/rfps/rfp[@id='%s']", rid))
+                .strict(1).remove()
+        );
+        return email;
     }
 
     /**
@@ -182,26 +170,24 @@ public final class Rfps {
                 new Par("RFP exists already, no need to pay again").say()
             );
         }
-        try (final Item item = this.item()) {
-            final int max = Integer.parseInt(
-                new Xocument(item).xpath("/rfps/@max", "0")
-            );
-            final int rid = max + 1;
-            new Xocument(item.path()).modify(
-                new Directives()
-                    .xpath("/rfps")
-                    .attr("max", rid)
-                    .add("rfp")
-                    .attr("id", rid)
-                    .add("created")
-                    .set(new DateAsText().asString()).up()
-                    .add("login").set(login).up()
-                    .add("paid").set(payment).up()
-                    .add("email").set(email).up()
-                    .add("sow").set("").up()
-            );
-            return rid;
-        }
+        final int max = Integer.parseInt(
+            this.item().xpath("/rfps/@max", "0")
+        );
+        final int rid = max + 1;
+        this.item().update(
+            new Directives()
+                .xpath("/rfps")
+                .attr("max", rid)
+                .add("rfp")
+                .attr("id", rid)
+                .add("created")
+                .set(new DateAsText().asString()).up()
+                .add("login").set(login).up()
+                .add("paid").set(payment).up()
+                .add("email").set(email).up()
+                .add("sow").set("").up()
+        );
+        return rid;
     }
 
     /**
@@ -217,18 +203,16 @@ public final class Rfps {
                 new Par("RFP doesn't exist, you need to pay first").say()
             );
         }
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
-                new Directives().xpath(
-                    String.format("/rfps/rfp[login='%s']/sow", login)
-                ).strict(1).set(sow).up()
-            );
-            return Integer.parseInt(
-                new Xocument(item).xpath(
-                    String.format("//rfp[login= '%s']/@id", login)
-                ).get(0)
-            );
-        }
+        this.item().update(
+            new Directives().xpath(
+                String.format("/rfps/rfp[login='%s']/sow", login)
+            ).strict(1).set(sow).up()
+        );
+        return Integer.parseInt(
+            this.item().xpath(
+                String.format("//rfp[login= '%s']/@id", login)
+            ).get(0)
+        );
     }
 
     /**
@@ -238,11 +222,9 @@ public final class Rfps {
      * @throws IOException If fails
      */
     public String owner(final int rid) throws IOException {
-        try (final Item item = this.item()) {
-            return new Xocument(item).xpath(
-                String.format("//rfp[@id='%s']/login/text()", rid)
-            ).get(0);
-        }
+        return this.item().xpath(
+            String.format("//rfp[@id='%s']/login/text()", rid)
+        ).get(0);
     }
 
     /**
@@ -252,11 +234,7 @@ public final class Rfps {
      * @throws IOException If fails
      */
     public boolean exists(final int rid) throws IOException {
-        try (final Item item = this.item()) {
-            return !new Xocument(item).nodes(
-                String.format("//rfp[@id='%s']", rid)
-            ).isEmpty();
-        }
+        return this.item().exists(String.format("//rfp[@id='%s']", rid));
     }
 
     /**
@@ -266,11 +244,9 @@ public final class Rfps {
      * @throws IOException If fails
      */
     public boolean exists(final String uid) throws IOException {
-        try (final Item item = this.item()) {
-            return !new Xocument(item).nodes(
-                String.format("//rfp[login='%s']", uid)
-            ).isEmpty();
-        }
+        return this.item().exists(
+            String.format("//rfp[login='%s']", uid)
+        );
     }
 
     /**
@@ -280,11 +256,9 @@ public final class Rfps {
      * @throws IOException If fails
      */
     public boolean complete(final String uid) throws IOException {
-        try (final Item item = this.item()) {
-            return !new Xocument(item).nodes(
-                String.format("//rfp[login='%s' and sow!='']", uid)
-            ).isEmpty();
-        }
+        return this.item().exists(
+            String.format("//rfp[login='%s' and sow!='']", uid)
+        );
     }
 
     /**
@@ -294,20 +268,18 @@ public final class Rfps {
      * @throws IOException If fails
      */
     public Iterable<Integer> olderThan(final Instant date) throws IOException {
-        try (final Item item = this.item()) {
-            return new Mapped<>(
-                Integer::parseInt,
-                new Xocument(item.path()).xpath(
-                    new JoinedText(
-                        "",
-                        "/rfps/rfp[xs:dateTime(created) < ",
-                        "xs:dateTime('",
-                        date.toString(),
-                        "')]/@id"
-                    ).asString()
-                )
-            );
-        }
+        return new Mapped<>(
+            Integer::parseInt,
+            this.item().xpath(
+                new JoinedText(
+                    "",
+                    "/rfps/rfp[xs:dateTime(created) < ",
+                    "xs:dateTime('",
+                    date.toString(),
+                    "')]/@id"
+                ).asString()
+            )
+        );
     }
 
     /**
@@ -316,13 +288,11 @@ public final class Rfps {
      * @throws IOException If fails
      */
     public void remove(final Long rfp) throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
-                new Directives().xpath(
-                    String.format("/rfps/rfp[@id = '%d']", rfp)
-                ).remove()
-            );
-        }
+        this.item().update(
+            new Directives().xpath(
+                String.format("/rfps/rfp[@id = '%d']", rfp)
+            ).remove()
+        );
     }
 
     /**
@@ -330,7 +300,7 @@ public final class Rfps {
      * @return Item
      * @throws IOException If fails
      */
-    private Item item() throws IOException {
-        return this.pmo.acq("rfps.xml");
+    private ItemXml item() throws IOException {
+        return new ItemXml(this.pmo.acq("rfps.xml"), "pmo/rfps");
     }
 }

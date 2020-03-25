@@ -21,9 +21,9 @@ import com.jcabi.xml.XMLDocument;
 import com.mongodb.MongoClient;
 import com.mongodb.client.model.Filters;
 import com.zerocracy.Farm;
-import com.zerocracy.Item;
 import com.zerocracy.Project;
 import com.zerocracy.RunsInThreads;
+import com.zerocracy.TextItem;
 import com.zerocracy.claims.ClaimOut;
 import com.zerocracy.claims.ClaimsItem;
 import com.zerocracy.claims.Footprint;
@@ -36,8 +36,6 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.bson.BsonDocument;
 import org.bson.BsonString;
-import org.cactoos.io.LengthOf;
-import org.cactoos.io.TeeInput;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Ignore;
@@ -49,6 +47,7 @@ import org.xembly.Xembler;
  * Test case for {@link ExtMongo}.
  * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle LineLengthCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
@@ -58,21 +57,16 @@ public final class ExtMongoTest {
     @Ignore
     public void connectsToProduction() throws Exception {
         final Project project = new FkProject();
-        try (final Item item = project.acq("_props.xml")) {
-            new LengthOf(
-                new TeeInput(
-                    new Xembler(
-                        new Directives().add("props").add("mongo")
-                            .add("host").set("ds253918.mlab.com").up()
-                            .add("port").set("53918").up()
-                            .add("user").set("admin").up()
-                            .add("password").set("---").up()
-                            .add("dbname").set("footprint").up()
-                    ).xmlQuietly(),
-                    item.path()
-                )
-            ).value();
-        }
+        new TextItem(project.acq("_props.xml")).write(
+            new Xembler(
+                new Directives().add("props").add("mongo")
+                    .add("host").set("ds253918.mlab.com").up()
+                    .add("port").set("53918").up()
+                    .add("user").set("admin").up()
+                    .add("password").set("---").up()
+                    .add("dbname").set("footprint").up()
+            ).xmlQuietly()
+        );
         final MongoClient client = new ExtMongo(new FkFarm(project)).value();
         MatcherAssert.assertThat(
             client.getDatabase("footprint").runCommand(
@@ -107,8 +101,7 @@ public final class ExtMongoTest {
             MatcherAssert.assertThat(
                 inc -> {
                     final MongoClient mongo = new ExtMongo(farm).value();
-                    try (final Footprint footprint =
-                        new Footprint(mongo, pid)) {
+                    try (final Footprint footprint = new Footprint(mongo, pid)) {
                         final XML xml = new XMLDocument(
                             String.join(
                                 "",
@@ -127,7 +120,7 @@ public final class ExtMongoTest {
                             .iterator().hasNext();
                     }
                 },
-                new RunsInThreads<>(new AtomicInteger())
+                new RunsInThreads<>(new AtomicInteger(), 1)
             );
         }
     }

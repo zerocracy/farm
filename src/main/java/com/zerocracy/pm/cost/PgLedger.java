@@ -21,9 +21,8 @@ import com.jcabi.jdbc.Outcome;
 import com.jcabi.jdbc.Preparation;
 import com.jcabi.jdbc.SingleOutcome;
 import com.jcabi.xml.XML;
-import com.zerocracy.Item;
+import com.zerocracy.ItemXml;
 import com.zerocracy.Project;
-import com.zerocracy.Xocument;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.cash.CashParsingException;
 import java.io.IOException;
@@ -191,20 +190,19 @@ public final class PgLedger {
      * @throws SQLException If postgres fails
      */
     @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
-    public PgLedger bootstrap(final Item item) throws IOException,
+    public PgLedger bootstrap(final ItemXml item) throws IOException,
         SQLException {
-        final Xocument xml = new Xocument(item.path());
         final String xpath = "/ledger/transactions";
-        if (!xml.nodes(xpath).isEmpty()) {
+        if (!item.nodes(xpath).isEmpty()) {
             final JdbcSession session =
                 new JdbcSession(this.data).autocommit(false);
             // @checkstyle LineLength (2 line)
-            for (final XML txn : xml.nodes("/ledger/transactions/transaction")) {
+            for (final XML txn : item.nodes("/ledger/transactions/transaction")) {
                 session.sql("INSERT INTO ledger (id, project, parent, created, amount, dt, dtx, ct, ctx, details) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
                     .prepare(new PgLedger.XmlPreparation(txn, this.pkt))
                     .insert(Outcome.VOID);
             }
-            xml.modify(
+            item.update(
                 new Directives()
                     .xpath(xpath)
                     .remove()

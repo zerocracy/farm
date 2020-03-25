@@ -17,9 +17,8 @@
 package com.zerocracy.pmo;
 
 import com.zerocracy.Farm;
-import com.zerocracy.Item;
+import com.zerocracy.ItemXml;
 import com.zerocracy.Project;
-import com.zerocracy.Xocument;
 import java.io.IOException;
 import java.time.Instant;
 import org.cactoos.iterable.ItemAt;
@@ -90,26 +89,24 @@ public final class Blanks {
      */
     public void add(final Project proj, final String job, final String kind,
         final Instant time) throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
-                new Directives()
-                    .xpath("/blanks")
-                    .push()
-                    .xpath(String.format("blank[@job = '%s']", job))
-                    .remove()
-                    .pop()
-                    .add("blank")
-                    .attr("job", job)
-                    .add("project")
-                    .set(proj.pid())
-                    .up()
-                    .add("kind")
-                    .set(kind)
-                    .up()
-                    .add("added")
-                    .set(time)
-            );
-        }
+        this.item().update(
+            new Directives()
+                .xpath("/blanks")
+                .push()
+                .xpath(String.format("blank[@job = '%s']", job))
+                .remove()
+                .pop()
+                .add("blank")
+                .attr("job", job)
+                .add("project")
+                .set(proj.pid())
+                .up()
+                .add("kind")
+                .set(kind)
+                .up()
+                .add("added")
+                .set(time)
+        );
     }
 
     /**
@@ -118,9 +115,7 @@ public final class Blanks {
      * @throws IOException If fails
      */
     public Iterable<String> iterate() throws IOException {
-        try (final Item item = this.item()) {
-            return new Xocument(item.path()).xpath("/blanks/blank/@job");
-        }
+        return this.item().xpath("/blanks/blank/@job");
     }
 
     /**
@@ -129,15 +124,13 @@ public final class Blanks {
      * @throws IOException If fails
      */
     public int total() throws IOException {
-        try (final Item item = this.item()) {
-            return new NumberOf(
-                new IoCheckedScalar<>(
-                    new ItemAt<>(
-                        new Xocument(item).xpath("count(/blanks/blank)")
-                    )
-                ).value()
-            ).intValue();
-        }
+        return new NumberOf(
+            new IoCheckedScalar<>(
+                new ItemAt<>(
+                    this.item().xpath("count(/blanks/blank)")
+                )
+            ).value()
+        ).intValue();
     }
 
     /**
@@ -146,20 +139,18 @@ public final class Blanks {
      * @throws IOException If failed
      */
     public void removeOlderThan(final Instant date) throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
-                new Directives()
-                    .xpath(
-                        new JoinedText(
-                            "",
-                            "/blanks/blank[xs:dateTime(added) < ",
-                            "xs:dateTime('",
-                            date.toString(),
-                            "')]"
-                        ).asString()
-                    ).remove()
-            );
-        }
+        this.item().update(
+            new Directives()
+                .xpath(
+                    new JoinedText(
+                        "",
+                        "/blanks/blank[xs:dateTime(added) < ",
+                        "xs:dateTime('",
+                        date.toString(),
+                        "')]"
+                    ).asString()
+                ).remove()
+        );
     }
 
     /**
@@ -168,9 +159,6 @@ public final class Blanks {
      * @throws IOException If fails
      */
     public Blanks bootstrap() throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).bootstrap("pmo/blanks");
-        }
         return this;
     }
 
@@ -179,9 +167,12 @@ public final class Blanks {
      * @return Item
      * @throws IOException If fails
      */
-    private Item item() throws IOException {
-        return this.pmo.acq(
-            String.format("blanks/%s.xml", this.login)
+    private ItemXml item() throws IOException {
+        return new ItemXml(
+            this.pmo.acq(
+                String.format("blanks/%s.xml", this.login)
+            ),
+            "pmo/blanks"
         );
     }
 }

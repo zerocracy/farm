@@ -17,16 +17,16 @@
 package com.zerocracy.stk.pm.comm
 
 import com.jcabi.xml.XML
-import com.zerocracy.farm.Assume
-import com.zerocracy.Item
 import com.zerocracy.Project
 import com.zerocracy.claims.ClaimIn
+import com.zerocracy.farm.Assume
+
 // notify test: print message to text file
 
 static exec(Project project, XML xml) {
   new Assume(project, xml).type('Notify test')
   ClaimIn claim = new ClaimIn(xml)
-  Item item = project.acq('test.txt')
-  item.path().toFile().append("${claim.param('message')}\n")
-  item.close()
+  project.acq('test.txt').with {
+    update {it.toFile().append("${claim.param('message')}\n")}
+  }
 }

@@ -19,11 +19,18 @@ package com.zerocracy.bundles.modifies_vacation_mode
 import com.jcabi.xml.XML
 import com.zerocracy.Item
 import com.zerocracy.Project
+import com.zerocracy.TextItem
+import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers
 
 def exec(Project pmo, XML xml) {
-  Item item = pmo.acq('test.txt').withCloseable {
-    item -> assert item.path().text.contains(
-      'You are on vacation now. To change the status use "on" or "off" as an option.'
-    )
+  Item item = pmo.acq('test.txt').with {
+    item ->
+      MatcherAssert.assertThat(
+        new TextItem(item).readAll(),
+        Matchers.containsString(
+          'You are on vacation now. To change the status use "on" or "off" as an option.'
+        )
+      )
   }
 }

@@ -94,17 +94,25 @@ final class GsProject implements Project {
     public Item acq(final String file) throws IOException {
         final Path temp = Files.createTempFile("farm", ".xml");
         final Iterator<Project> pkts = this.farm.find(this.query).iterator();
-        XML before = new XMLDocument(
+        final XML start = new XMLDocument(
             new Xembler(GsProject.start()).xmlQuietly()
         );
+        final XML before;
         if (pkts.hasNext()) {
-            try (final Item item = pkts.next().acq(file)) {
-                final Path path = item.path();
-                if (path.toFile().exists()
-                    && path.toFile().length() != 0L) {
-                    before = new XMLDocument(path);
+            before = pkts.next().acq(file).read(
+                path -> {
+                    final XML res;
+                    if (path.toFile().exists()
+                        && path.toFile().length() != 0L) {
+                        res = new XMLDocument(path);
+                    } else {
+                        res = start;
+                    }
+                    return res;
                 }
-            }
+            );
+        } else {
+            before = start;
         }
         new LengthOf(
             new TeeInput(
@@ -179,5 +187,4 @@ final class GsProject implements Project {
             .up()
             .up();
     }
-
 }

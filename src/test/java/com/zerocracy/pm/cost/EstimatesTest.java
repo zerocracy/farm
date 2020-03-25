@@ -18,10 +18,9 @@ package com.zerocracy.pm.cost;
 
 import com.jcabi.aspects.Tv;
 import com.zerocracy.Farm;
-import com.zerocracy.Item;
+import com.zerocracy.ItemXml;
 import com.zerocracy.Project;
 import com.zerocracy.Txn;
-import com.zerocracy.Xocument;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
@@ -151,13 +150,11 @@ public final class EstimatesTest {
                 new RangeOf<Integer>(1, Tv.TEN, x -> x + 1)
             )
         ).value();
-        try (final Item item = pkt.acq("estimates.xml")) {
-            new Xocument(item.path()).modify(
-                new Directives()
-                    .xpath("/estimates/order[@id='gh:test/test#1']")
-                    .remove()
-            );
-        }
+        new ItemXml(pkt.acq("estimates.xml")).update(
+            new Directives()
+                .xpath("/estimates/order[@id='gh:test/test#1']")
+                .remove()
+        );
         MatcherAssert.assertThat(
             est.total(), Matchers.equalTo(new Cash.S("$144"))
         );

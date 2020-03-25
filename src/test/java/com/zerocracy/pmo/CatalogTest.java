@@ -16,9 +16,8 @@
  */
 package com.zerocracy.pmo;
 
-import com.zerocracy.Item;
+import com.zerocracy.ItemXml;
 import com.zerocracy.Project;
-import com.zerocracy.Xocument;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
@@ -53,37 +52,32 @@ public final class CatalogTest {
         final Project project = new FkProject();
         final FkFarm farm = new FkFarm(project);
         final String pid = "67WE3343P";
-        try (final Item item = CatalogTest.item(project)) {
-            new Xocument(item.path()).bootstrap("pmo/catalog");
-            new Xocument(item.path()).modify(
-                new Directives()
-                    .xpath("/catalog")
-                    .add("project")
-                    .attr("id", pid)
-                    .add("title").set(pid).up()
-                    .add("created")
-                    .set(Instant.now().toString()).up()
-                    .add("prefix").set("2017/01/AAAABBBBC/").up()
-                    .add("fee").set("0").up()
-                    .add("alive").set("true").up()
-                    .add("publish").set("false").up()
-                    .add("adviser").set("0crat").up()
-                    .add("architect").set("0crat").up()
-                    .add("members").up()
-                    .add("jobs").set(0).up()
-                    .add("orders").set(0).up()
-                    .add("cash").attr("deficit", false).set(Cash.ZERO).up()
-                    .add("languages").up()
-            );
-        }
+        CatalogTest.item(project).update(
+            new Directives()
+                .xpath("/catalog")
+                .add("project")
+                .attr("id", pid)
+                .add("title").set(pid).up()
+                .add("created")
+                .set(Instant.now().toString()).up()
+                .add("prefix").set("2017/01/AAAABBBBC/").up()
+                .add("fee").set("0").up()
+                .add("alive").set("true").up()
+                .add("publish").set("false").up()
+                .add("adviser").set("0crat").up()
+                .add("architect").set("0crat").up()
+                .add("members").up()
+                .add("jobs").set(0).up()
+                .add("orders").set(0).up()
+                .add("cash").attr("deficit", false).set(Cash.ZERO).up()
+                .add("languages").up()
+        );
         final Catalog catalog = new Catalog(farm);
         catalog.link(pid, "github", "yegor256");
-        try (final Item item = CatalogTest.item(project)) {
-            MatcherAssert.assertThat(
-                new Xocument(item.path()).xpath("//project[links/link]/@id"),
-                Matchers.not(Matchers.emptyIterable())
-            );
-        }
+        MatcherAssert.assertThat(
+            CatalogTest.item(project).xpath("//project[links/link]/@id"),
+            Matchers.not(Matchers.emptyIterable())
+        );
     }
 
     @Test
@@ -334,7 +328,7 @@ public final class CatalogTest {
         return catalog;
     }
 
-    private static Item item(final Project project) throws IOException {
-        return project.acq("catalog.xml");
+    private static ItemXml item(final Project project) throws IOException {
+        return new ItemXml(project.acq("catalog.xml"), "pmo/catalog");
     }
 }

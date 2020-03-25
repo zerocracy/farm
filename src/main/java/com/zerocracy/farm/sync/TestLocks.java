@@ -20,8 +20,8 @@ import com.zerocracy.Project;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * Locks for unit-testing.
@@ -33,7 +33,7 @@ public final class TestLocks implements Locks {
     /**
      * Lock map.
      */
-    private final Map<String, Lock> locks;
+    private final Map<String, ReadWriteLock> locks;
 
     /**
      * Ctor.
@@ -47,13 +47,16 @@ public final class TestLocks implements Locks {
      *
      * @param locks Locks
      */
-    public TestLocks(final Map<String, Lock> locks) {
+    public TestLocks(final Map<String, ReadWriteLock> locks) {
         this.locks = locks;
     }
 
     @Override
-    public Lock lock(final Project pkt, final String res) throws IOException {
-        final String lid = String.format("%s:%s", pkt.pid(), "ANY");
-        return this.locks.computeIfAbsent(lid, key -> new ReentrantLock(true));
+    public ReadWriteLock lock(final Project pkt, final String res)
+        throws IOException {
+        final String lid = String.format("%s:%s", pkt.pid(), res);
+        return this.locks.computeIfAbsent(
+            lid, key -> new ReentrantReadWriteLock(true)
+        );
     }
 }

@@ -41,7 +41,7 @@ def exec(Project project, XML xml) {
   }
   Catalog catalog = new Catalog(farm).bootstrap()
   String prefix = catalog.findByXPath("@id='${project.pid()}'").iterator().next()
-  new S3Farm(new ExtBucket().value()).delete(prefix)
+  new S3Farm(new ExtBucket().value(), locks).delete(prefix)
   catalog.delete(project.pid())
   new ClaimIn(xml).reply(
     new Par(

@@ -20,7 +20,11 @@ import com.zerocracy.Item;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import org.cactoos.Func;
+import org.cactoos.Proc;
 import org.cactoos.Scalar;
+import org.cactoos.func.IoCheckedFunc;
+import org.cactoos.func.IoCheckedProc;
 import org.cactoos.io.LengthOf;
 import org.cactoos.io.TeeInput;
 import org.cactoos.scalar.IoCheckedScalar;
@@ -34,6 +38,7 @@ import org.cactoos.scalar.UncheckedScalar;
  * <p>There is no thread-safety guarantee.</p>
  *
  * @since 1.0
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class FkItem implements Item {
 
@@ -114,17 +119,29 @@ public final class FkItem implements Item {
     }
 
     @Override
-    public Path path() throws IOException {
-        return new IoCheckedScalar<>(this.file).value();
+    public <T> T read(final Func<Path, T> reader) throws IOException {
+        final Path src = new IoCheckedScalar<>(this.file).value();
+        final T res = new IoCheckedFunc<>(reader).apply(src);
+        this.close();
+        return res;
     }
 
     @Override
-    public void close() throws IOException {
+    public void update(final Proc<Path> writer) throws IOException {
+        final Path src = new IoCheckedScalar<>(this.file).value();
+        new IoCheckedProc<>(writer).exec(src);
+        this.close();
+    }
+
+    /**
+     * Close the file.
+     * @throws IOException On failure
+     */
+    private void close() throws IOException {
         if (this.delete) {
             Files.delete(new IoCheckedScalar<>(this.file).value());
         } else {
             new IoCheckedScalar<>(this.file).value().toFile().deleteOnExit();
         }
     }
-
 }

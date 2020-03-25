@@ -17,10 +17,9 @@
 package com.zerocracy.farm.guts;
 
 import com.jcabi.matchers.XhtmlMatchers;
-import com.zerocracy.Item;
 import com.zerocracy.Project;
+import com.zerocracy.TextItem;
 import com.zerocracy.farm.fake.FkFarm;
-import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 import org.xembly.Directives;
@@ -38,15 +37,14 @@ public final class GsProjectTest {
         final Project pkt = new GsProject(
             new FkFarm(), "", () -> new Directives().xpath("/guts").add("test")
         );
-        try (final Item item = pkt.acq("data.xml")) {
-            MatcherAssert.assertThat(
-                XhtmlMatchers.xhtml(new TextOf(item.path()).asString()),
-                XhtmlMatchers.hasXPaths(
-                    "/guts/test",
-                    "/guts/jvm/attrs/attr[@id='availableProcessors']"
-                )
-            );
-        }
+        MatcherAssert.assertThat(
+            XhtmlMatchers.xhtml(
+                new TextItem(pkt.acq("data.xml")).readAll()
+            ),
+            XhtmlMatchers.hasXPaths(
+                "/guts/test",
+                "/guts/jvm/attrs/attr[@id='availableProcessors']"
+            )
+        );
     }
-
 }

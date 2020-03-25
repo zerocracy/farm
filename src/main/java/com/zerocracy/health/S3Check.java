@@ -20,6 +20,7 @@ import com.jcabi.log.Logger;
 import com.zerocracy.Farm;
 import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -51,8 +52,9 @@ final class S3Check implements HealthCheck {
     @Override
     public void run() {
         try {
-            new Pmo(this.farm).acq("people.xml").close();
-            this.out.set("OK");
+            if (new Pmo(this.farm).acq("people.xml").read(Files::size) > 0L) {
+                this.out.set("OK");
+            }
         } catch (final IOException err) {
             Logger.error(
                 this,

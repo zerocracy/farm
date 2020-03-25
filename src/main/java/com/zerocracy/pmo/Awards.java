@@ -17,9 +17,8 @@
 package com.zerocracy.pmo;
 
 import com.zerocracy.Farm;
-import com.zerocracy.Item;
+import com.zerocracy.ItemXml;
 import com.zerocracy.Project;
-import com.zerocracy.Xocument;
 import java.io.IOException;
 import java.time.Instant;
 import java.time.ZonedDateTime;
@@ -72,9 +71,6 @@ public final class Awards {
      * @throws IOException If fails
      */
     public Awards bootstrap() throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).bootstrap("pmo/awards");
-        }
         return this;
     }
 
@@ -84,20 +80,18 @@ public final class Awards {
      * @throws IOException If failed
      */
     public void removeOlderThan(final Instant date) throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
-                new Directives()
-                    .xpath(
-                        new JoinedText(
-                            "",
-                            "/awards/award[xs:dateTime(added) < ",
-                            "xs:dateTime('",
-                            date.toString(),
-                            "')]"
-                        ).asString()
-                    ).remove()
-            );
-        }
+        this.item().update(
+            new Directives()
+                .xpath(
+                    new JoinedText(
+                        "",
+                        "/awards/award[xs:dateTime(added) < ",
+                        "xs:dateTime('",
+                        date.toString(),
+                        "')]"
+                    ).asString()
+                ).remove()
+        );
     }
 
     /**
@@ -136,25 +130,23 @@ public final class Awards {
                 )
             );
         }
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
-                new Directives()
-                    .xpath("/awards")
-                    .add("award")
-                    .add("points")
-                    .set(points)
-                    .up()
-                    .add("added").set(new DateAsText(date).asString()).up()
-                    .add("project")
-                    .set(project.pid())
-                    .up()
-                    .add("reason")
-                    .set(reason)
-                    .up()
-                    .add("job")
-                    .set(job)
-            );
-        }
+        this.item().update(
+            new Directives()
+                .xpath("/awards")
+                .add("award")
+                .add("points")
+                .set(points)
+                .up()
+                .add("added").set(new DateAsText(date).asString()).up()
+                .add("project")
+                .set(project.pid())
+                .up()
+                .add("reason")
+                .set(reason)
+                .up()
+                .add("job")
+                .set(job)
+        );
     }
 
     /**
@@ -163,13 +155,9 @@ public final class Awards {
      * @throws IOException If fails
      */
     public int total() throws IOException {
-        try (final Item item = this.item()) {
-            return Integer.parseInt(
-                new Xocument(item.path()).xpath(
-                    "sum(/awards/award/points/text())"
-                ).get(0)
-            );
-        }
+        return Integer.parseInt(
+            this.item().xpath("sum(/awards/award/points/text())", "0")
+        );
     }
 
     /**
@@ -179,25 +167,23 @@ public final class Awards {
      * @throws IOException If fails
      */
     public List<Integer> awards(final int days) throws IOException {
-        try (final Item item = this.item()) {
-            return new Mapped<>(
-                Integer::parseInt,
-                new Xocument(item.path()).xpath(
-                    new JoinedText(
-                        "",
-                        "/awards/award[",
-                        "xs:dateTime(added) > xs:dateTime('",
-                        new DateAsText(
-                            ZonedDateTime.now()
-                                .minusDays(days)
-                                .toInstant()
-                                .toEpochMilli()
-                        ).asString(),
-                        "')]/points/text()"
-                    ).asString()
-                )
-            );
-        }
+        return new Mapped<>(
+            Integer::parseInt,
+            this.item().xpath(
+                new JoinedText(
+                    "",
+                    "/awards/award[",
+                    "xs:dateTime(added) > xs:dateTime('",
+                    new DateAsText(
+                        ZonedDateTime.now()
+                            .minusDays(days)
+                            .toInstant()
+                            .toEpochMilli()
+                    ).asString(),
+                    "')]/points/text()"
+                ).asString()
+            )
+        );
     }
 
     /**
@@ -205,9 +191,12 @@ public final class Awards {
      * @return Item
      * @throws IOException If fails
      */
-    private Item item() throws IOException {
-        return this.pmo.acq(
-            String.format("awards/%s.xml", this.login)
+    private ItemXml item() throws IOException {
+        return new ItemXml(
+            this.pmo.acq(
+                String.format("awards/%s.xml", this.login)
+            ),
+            "pmo/awards"
         );
     }
 }

@@ -20,6 +20,7 @@ import com.zerocracy.Item;
 import com.zerocracy.Project;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import lombok.EqualsAndHashCode;
 import org.xembly.Directive;
 import org.xembly.Directives;
@@ -72,9 +73,9 @@ final class PropsProject implements Project {
     public Item acq(final String file) throws IOException {
         final Item item;
         if ("_props.xml".equals(file)) {
-            item = new PropsItem(
-                Files.createTempFile("props", ".xml"), this.post
-            );
+            final Path tmp = Files.createTempFile("props", ".xml");
+            tmp.toFile().deleteOnExit();
+            item = new PropsItem(tmp, this.post);
         } else {
             item = this.origin.acq(file);
         }

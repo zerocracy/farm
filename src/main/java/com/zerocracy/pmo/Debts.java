@@ -20,7 +20,7 @@ import com.jcabi.aspects.Tv;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
-import com.zerocracy.Item;
+import com.zerocracy.ItemXml;
 import com.zerocracy.Par;
 import com.zerocracy.Xocument;
 import com.zerocracy.cash.Cash;
@@ -30,6 +30,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import org.cactoos.collection.Joined;
 import org.cactoos.collection.Sorted;
 import org.cactoos.io.InputOf;
@@ -50,6 +51,7 @@ import org.xembly.Directives;
  *
  * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @checkstyle LineLengthCheck (5000 lines)
  */
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 public final class Debts {
@@ -78,12 +80,8 @@ public final class Debts {
     /**
      * Bootstrap it.
      * @return Itself
-     * @throws IOException If fails
      */
-    public Debts bootstrap() throws IOException {
-        try (final Item team = this.item()) {
-            new Xocument(team).bootstrap("pmo/debts");
-        }
+    public Debts bootstrap() {
         return this;
     }
 
@@ -94,69 +92,66 @@ public final class Debts {
      * @throws IOException If fails
      */
     public Iterable<Directive> toXembly(final String uid) throws IOException {
-        try (final Item item = this.item()) {
-            final Iterator<XML> debts = new Xocument(item.path()).nodes(
-                String.format("/debts/debt[@login='%s']", uid)
-            ).iterator();
-            final Directives dirs = new Directives();
-            if (debts.hasNext()) {
-                final XML debt = debts.next();
-                dirs.add("debt").attr("total", this.amount(uid)).append(
-                    new Joined<Directive>(
-                        new Mapped<XML, Iterable<Directive>>(
-                            xml -> {
-                                final String details = String.format(
-                                    "%s (%s)",
-                                    xml.xpath("details/text()").get(0),
-                                    xml.xpath("reason/text()").get(0)
-                                );
-                                final Instant created = Instant.parse(
-                                    xml.xpath("created/text()").get(0)
-                                );
-                                return new Directives().add("item")
-                                    .add("ago")
-                                    .set(
-                                        Logger.format(
-                                            "%[ms]s",
-                                            Duration.between(
-                                                created,
-                                                Instant.now()
-                                            ).toMillis()
-                                        )
+        final List<XML> nodes = this.item().nodes(String.format("/debts/debt[@login='%s']", uid));
+        final Iterator<XML> debts = nodes.iterator();
+        final Directives dirs = new Directives();
+        if (debts.hasNext()) {
+            final XML debt = debts.next();
+            dirs.add("debt").attr("total", this.amount(uid)).append(
+                new Joined<Directive>(
+                    new Mapped<XML, Iterable<Directive>>(
+                        xml -> {
+                            final String details = String.format(
+                                "%s (%s)",
+                                xml.xpath("details/text()").get(0),
+                                xml.xpath("reason/text()").get(0)
+                            );
+                            final Instant created = Instant.parse(
+                                xml.xpath("created/text()").get(0)
+                            );
+                            return new Directives().add("item")
+                                .add("ago")
+                                .set(
+                                    Logger.format(
+                                        "%[ms]s",
+                                        Duration.between(
+                                            created,
+                                            Instant.now()
+                                        ).toMillis()
                                     )
-                                    .up()
-                                    .add("amount")
-                                    .set(xml.xpath("amount/text()").get(0))
-                                    .up()
-                                    .add("details")
-                                    .set(new Par.ToText(details).toString())
-                                    .up()
-                                    .add("details_html")
-                                    .set(new Par.ToHtml(details).toString())
-                                    .up()
-                                    .up();
-                            },
-                            debt.nodes("items/item")
+                                )
+                                .up()
+                                .add("amount")
+                                .set(xml.xpath("amount/text()").get(0))
+                                .up()
+                                .add("details")
+                                .set(new Par.ToText(details).toString())
+                                .up()
+                                .add("details_html")
+                                .set(new Par.ToHtml(details).toString())
+                                .up()
+                                .up();
+                        },
+                        debt.nodes("items/item")
+                    )
+                )
+            );
+            final Iterator<XML> failures = debt.nodes("failure").iterator();
+            if (failures.hasNext()) {
+                final XML failure = failures.next();
+                dirs.attr(
+                    "failed",
+                    String.format(
+                        "Failed to pay on %s (attempt #%d)",
+                        failure.xpath("created/text()").get(0),
+                        Integer.parseInt(
+                            failure.xpath("attempt/text()").get(0)
                         )
                     )
                 );
-                final Iterator<XML> failures = debt.nodes("failure").iterator();
-                if (failures.hasNext()) {
-                    final XML failure = failures.next();
-                    dirs.attr(
-                        "failed",
-                        String.format(
-                            "Failed to pay on %s (attempt #%d)",
-                            failure.xpath("created/text()").get(0),
-                            Integer.parseInt(
-                                failure.xpath("attempt/text()").get(0)
-                            )
-                        )
-                    );
-                }
             }
-            return dirs;
         }
+        return dirs;
     }
 
     /**
@@ -186,23 +181,21 @@ public final class Debts {
     public void add(final String uid, final Cash amount,
         final String details, final String reason, final Instant created)
         throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
-                new Directives()
-                    .xpath(String.format("/debts[not(debt[@login='%s'])]", uid))
-                    .add("debt").attr("login", uid)
-                    .xpath(String.format("/debts/debt[@login='%s']", uid))
-                    .strict(1)
-                    .addIf("items")
-                    .add("item")
-                    .add("created")
-                    .set(created.toString())
-                    .up()
-                    .add("amount").set(amount).up()
-                    .add("details").set(details).up()
-                    .add("reason").set(reason).up()
-            );
-        }
+        this.item().update(
+            new Directives()
+                .xpath(String.format("/debts[not(debt[@login='%s'])]", uid))
+                .add("debt").attr("login", uid)
+                .xpath(String.format("/debts/debt[@login='%s']", uid))
+                .strict(1)
+                .addIf("items")
+                .add("item")
+                .add("created")
+                .set(created.toString())
+                .up()
+                .add("amount").set(amount).up()
+                .add("details").set(details).up()
+                .add("reason").set(reason).up()
+        );
     }
 
     /**
@@ -212,19 +205,14 @@ public final class Debts {
      * @throws IOException If fails
      */
     public Cash amount(final String uid) throws IOException {
-        if (!this.exists(uid)) {
-            throw new IllegalArgumentException(
-                new Par("@%s doesn't have a debt, can't calculate").say(uid)
-            );
-        }
-        try (final Item item = this.item()) {
-            return new IoCheckedScalar<>(
-                new Reduced<Cash, Cash>(
-                    Cash.ZERO,
-                    Cash::add,
-                    new Mapped<>(
-                        Cash.S::new,
-                        new Xocument(item.path()).xpath(
+        return new IoCheckedScalar<>(
+            new Reduced<Cash, Cash>(
+                Cash.ZERO,
+                Cash::add,
+                new Mapped<>(
+                    Cash.S::new,
+                    this.item().<List<String>>read(
+                        xoc -> Debts.require(xoc, uid).xpath(
                             String.format(
                                 "//debt[@login='%s']/items/item/amount/text()",
                                 uid
@@ -232,8 +220,8 @@ public final class Debts {
                         )
                     )
                 )
-            ).value();
-        }
+            )
+        ).value();
     }
 
     /**
@@ -242,19 +230,14 @@ public final class Debts {
      * @throws IOException If fails
      */
     public void remove(final String uid) throws IOException {
-        if (!this.exists(uid)) {
-            throw new IllegalArgumentException(
-                new Par("@%s doesn't have a debt").say(uid)
-            );
-        }
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
+        this.item().update(
+            xoc -> Debts.require(xoc, uid).modify(
                 new Directives()
                     .xpath(String.format("/debts/debt[@login= '%s']", uid))
                     .strict(1)
                     .remove()
-            );
-        }
+            )
+        );
     }
 
     /**
@@ -265,13 +248,8 @@ public final class Debts {
      */
     public void failure(final String uid,
         final String reason) throws IOException {
-        if (!this.exists(uid)) {
-            throw new IllegalArgumentException(
-                new Par("@%s doesn't have a debt, can't add failure").say(uid)
-            );
-        }
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
+        this.item().update(
+            xoc -> Debts.require(xoc, uid).modify(
                 new Directives()
                     .xpath(
                         String.format(
@@ -289,8 +267,8 @@ public final class Debts {
                     .xpath("attempt").xset(". + 1").up()
                     .addIf("created").set(Instant.now().toString()).up()
                     .addIf("reason").set(reason)
-            );
-        }
+            )
+        );
     }
 
     /**
@@ -300,22 +278,17 @@ public final class Debts {
      * @throws IOException If fails
      */
     public boolean expired(final String uid) throws IOException {
-        if (!this.exists(uid)) {
-            throw new IllegalArgumentException(
-                new Par("@%s doesn't have a debt, can't check it").say(uid)
-            );
-        }
-        try (final Item item = this.item()) {
-            final Instant failed = Instant.parse(
-                new Xocument(item.path()).xpath(
+        final Instant failed = Instant.parse(
+            this.item().read(
+                xoc -> Debts.require(xoc, uid).xpath(
                     String.format(
                         "/debts/debt[@login='%s']/failure/created/text()", uid
                     ),
                     "2000-01-01T00:00:00Z"
                 )
-            );
-            return failed.isBefore(Instant.now().minus(Duration.ofDays(1)));
-        }
+            )
+        );
+        return failed.isBefore(Instant.now().minus(Duration.ofDays(1)));
     }
 
     /**
@@ -326,11 +299,9 @@ public final class Debts {
      */
     public Collection<String> iterate(final String filter)
         throws IOException {
-        try (final Item item = this.item()) {
-            return new Xocument(item).xpath(
-                String.format("/debts/debt[%s]/@login", filter)
-            );
-        }
+        return this.item().xpath(
+            String.format("/debts/debt[%s]/@login", filter)
+        );
     }
 
     /**
@@ -340,11 +311,7 @@ public final class Debts {
      * @throws IOException If fails
      */
     public boolean exists(final String uid) throws IOException {
-        try (final Item item = this.item()) {
-            return !new Xocument(item).nodes(
-                String.format("//debt[@login='%s']", uid)
-            ).isEmpty();
-        }
+        return this.item().read(xoc -> Debts.exists(xoc, uid));
     }
 
     /**
@@ -356,26 +323,22 @@ public final class Debts {
      */
     public boolean olderThan(final String uid, final Instant date)
         throws IOException {
-        if (!this.exists(uid)) {
-            throw new IllegalArgumentException(
-                new Par("@%s doesn't have a debt, can't check it").say(uid)
-            );
-        }
-        try (final Item item = this.item()) {
-            final String xpath = String.format(
-                "/debts/debt[@login='%s']/items/item/created/text()", uid
-            );
-            return new IoCheckedScalar<>(
-                new ItemAt<>(
-                    new Sorted<>(
-                        new Mapped<>(
-                            Instant::parse,
-                            new Xocument(item.path()).xpath(xpath)
+        return new IoCheckedScalar<>(
+            new ItemAt<>(
+                new Sorted<>(
+                    new Mapped<>(
+                        Instant::parse,
+                        this.item().<List<String>>read(
+                            xoc -> Debts.require(xoc, uid).xpath(
+                                String.format(
+                                    "/debts/debt[@login='%s']/items/item/created/text()", uid
+                                )
+                            )
                         )
                     )
                 )
-            ).value().isBefore(date);
-        }
+            )
+        ).value().isBefore(date);
     }
 
     /**
@@ -385,28 +348,27 @@ public final class Debts {
      * @throws IOException If fails
      */
     public String hash(final String uid) throws IOException {
-        final String str;
-        try (final Item item = this.item()) {
-            str = new IoCheckedScalar<>(
-                new Reduced<>(
-                    new StringBuilder(Tv.HUNDRED),
-                    (acc, debt) -> acc.append(
-                        String.join(
-                            "",
-                            debt.xpath("created/text()").get(0),
-                            debt.xpath("amount/text()").get(0),
-                            debt.xpath("details/text()").get(0),
-                            debt.xpath("reason/text()").get(0)
-                        )
-                    ),
-                    new Xocument(item.path()).nodes(
+        final String str = new IoCheckedScalar<>(
+            new Reduced<>(
+                new StringBuilder(Tv.HUNDRED),
+                (acc, debt) -> acc.append(
+                    String.join(
+                        "",
+                        debt.xpath("created/text()").get(0),
+                        debt.xpath("amount/text()").get(0),
+                        debt.xpath("details/text()").get(0),
+                        debt.xpath("reason/text()").get(0)
+                    )
+                ),
+                this.item().read(
+                    xoc -> Debts.require(xoc, uid).nodes(
                         String.format(
                             "/debts/debt[@login='%s']/items/item", uid
                         )
                     )
                 )
-            ).value().toString();
-        }
+            )
+        ).value().toString();
         return new HexOf(
             new Sha256DigestOf(new InputOf(str, StandardCharsets.UTF_8))
         ).asString();
@@ -417,7 +379,36 @@ public final class Debts {
      * @return Item
      * @throws IOException If fails
      */
-    private Item item() throws IOException {
-        return this.pmo.acq("debts.xml");
+    private ItemXml item() throws IOException {
+        return new ItemXml(this.pmo.acq("debts.xml"), "pmo/debts");
+    }
+
+    /**
+     * Require debt in xocument?
+     * @param xoc Xocument
+     * @param uid User ID
+     * @return Xocument
+     * @throws IOException If fails
+     */
+    private static Xocument require(final Xocument xoc, final String uid)
+        throws IOException {
+        if (!Debts.exists(xoc, uid)) {
+            throw new IllegalArgumentException(
+                new Par("@%s doesn't have a debt, can't check it").say(uid)
+            );
+        }
+        return xoc;
+    }
+
+    /**
+     * Debt exists in xocument?
+     * @param xoc Xocument
+     * @param uid User ID
+     * @return TRUE if exists
+     * @throws IOException If fails
+     */
+    private static boolean exists(final Xocument xoc, final String uid)
+        throws IOException {
+        return !xoc.nodes(String.format("//debt[@login='%s']", uid)).isEmpty();
     }
 }

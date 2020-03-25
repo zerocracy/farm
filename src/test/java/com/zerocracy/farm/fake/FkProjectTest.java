@@ -16,8 +16,8 @@
  */
 package com.zerocracy.farm.fake;
 
-import com.zerocracy.Item;
 import com.zerocracy.Project;
+import com.zerocracy.TextItem;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.hamcrest.MatcherAssert;
@@ -62,18 +62,11 @@ public final class FkProjectTest {
     public void managesItems() throws Exception {
         final Project project = new FkProject();
         final String name = "test.txt";
-        try (final Item item = project.acq(name)) {
-            Files.write(item.path(), "Hello, world!".getBytes());
-        }
-        try (final Item item = project.acq("something-else.txt")) {
-            Files.write(item.path(), "Bye, bye!".getBytes());
-        }
-        try (final Item item = project.acq(name)) {
-            MatcherAssert.assertThat(
-                new String(Files.readAllBytes(item.path())),
-                Matchers.startsWith("Hello")
-            );
-        }
+        new TextItem(project.acq(name)).write("Hello, world!");
+        new TextItem(project.acq("something-else.txt")).write("Bye, bye!");
+        MatcherAssert.assertThat(
+            new TextItem(project.acq(name)).readAll(),
+            Matchers.startsWith("Hello")
+        );
     }
-
 }

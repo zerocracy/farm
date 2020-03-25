@@ -28,7 +28,7 @@ import javax.sql.DataSource;
  *
  * @since 1.0
  */
-public final class PgLocks implements Locks {
+public final class PgLocks {
 
     /**
      * Resource name.
@@ -55,7 +55,13 @@ public final class PgLocks implements Locks {
         this.holders = new ConcurrentHashMap<>();
     }
 
-    @Override
+    /**
+     * Lock.
+     * @param pkt Project
+     * @param res Resource
+     * @return Lock
+     * @throws IOException If fails
+     */
     public Lock lock(final Project pkt, final String res) throws IOException {
         final String lid = String.format("%s:%s", pkt.pid(), PgLocks.RES);
         final PgLock.Holder holder = this.holders

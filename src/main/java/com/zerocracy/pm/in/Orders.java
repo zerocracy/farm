@@ -18,10 +18,10 @@ package com.zerocracy.pm.in;
 
 import com.zerocracy.Farm;
 import com.zerocracy.Item;
+import com.zerocracy.ItemXml;
 import com.zerocracy.Project;
 import com.zerocracy.SoftException;
 import com.zerocracy.Txn;
-import com.zerocracy.Xocument;
 import com.zerocracy.pm.cost.Boosts;
 import com.zerocracy.pm.scope.Wbs;
 import java.io.IOException;
@@ -73,12 +73,8 @@ public final class Orders {
     /**
      * Bootstrap it.
      * @return Itself
-     * @throws IOException If fails
      */
-    public Orders bootstrap() throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).bootstrap("pm/in/orders");
-        }
+    public Orders bootstrap() {
         return this;
     }
 
@@ -122,26 +118,24 @@ public final class Orders {
             );
         }
         try (final Txn txn = new Txn(this.project)) {
-            try (final Item wbs = Orders.item(this.project)) {
-                new Xocument(wbs.path()).modify(
-                    new Directives()
-                        .xpath(
-                            String.format(
-                                "/orders[not(order[@job='%s'])]",
-                                job
-                            )
+            this.item().update(
+                new Directives()
+                    .xpath(
+                        String.format(
+                            "/orders[not(order[@job='%s'])]",
+                            job
                         )
-                        .strict(1)
-                        .add("order")
-                        .attr("job", job)
-                        .add("created").set(start.toString()).up()
-                        .add("performer")
-                        .set(login)
-                        .up()
-                        .add("reason")
-                        .set(reason)
-                );
-            }
+                    )
+                    .strict(1)
+                    .add("order")
+                    .attr("job", job)
+                    .add("created").set(start.toString()).up()
+                    .add("performer")
+                    .set(login)
+                    .up()
+                    .add("reason")
+                    .set(reason)
+            );
             final String role = new Wbs(this.project).bootstrap().role(job);
             int factor = 2;
             if ("REV".equals(role)) {
@@ -166,14 +160,12 @@ public final class Orders {
                 )
             );
         }
-        try (final Item wbs = this.item()) {
-            new Xocument(wbs.path()).modify(
-                new Directives()
-                    .xpath(String.format("/orders/order[@job ='%s']", job))
-                    .strict(1)
-                    .remove()
-            );
-        }
+        this.item().update(
+            new Directives()
+                .xpath(String.format("/orders/order[@job ='%s']", job))
+                .strict(1)
+                .remove()
+        );
     }
 
     /**
@@ -182,14 +174,12 @@ public final class Orders {
      * @throws IOException If fails
      */
     public void remove(final String job) throws IOException {
-        try (final Item orders = this.item()) {
-            new Xocument(orders.path()).modify(
-                new Directives()
-                    .xpath(String.format("/orders/order[@job ='%s']", job))
-                    .strict(1)
-                    .remove()
-            );
-        }
+        this.item().update(
+            new Directives()
+                .xpath(String.format("/orders/order[@job ='%s']", job))
+                .strict(1)
+                .remove()
+        );
     }
 
     /**
@@ -198,11 +188,9 @@ public final class Orders {
      * @throws IOException If fails of it there is no assignee
      */
     public Collection<String> iterate() throws IOException {
-        try (final Item wbs = this.item()) {
-            return new Xocument(wbs.path()).xpath(
-                "/orders/order/@job  "
-            );
-        }
+        return this.item().xpath(
+            "/orders/order/@job  "
+        );
     }
 
     /**
@@ -212,11 +200,9 @@ public final class Orders {
      * @throws IOException If fails of it there is no assignee
      */
     public boolean assigned(final String job) throws IOException {
-        try (final Item item = this.item()) {
-            return !new Xocument(item.path()).nodes(
-                String.format("/orders/order[@job='%s']", job)
-            ).isEmpty();
-        }
+        return !this.item().nodes(
+            String.format("/orders/order[@job='%s']", job)
+        ).isEmpty();
     }
 
     /**
@@ -233,11 +219,9 @@ public final class Orders {
                 )
             );
         }
-        try (final Item item = this.item()) {
-            return new Xocument(item.path()).xpath(
-                String.format("/orders/order[@job='%s']/performer/text()", job)
-            ).get(0);
-        }
+        return this.item().xpath(
+            String.format("/orders/order[@job='%s']/performer/text()", job)
+        ).get(0);
     }
 
     /**
@@ -254,16 +238,14 @@ public final class Orders {
                 )
             );
         }
-        try (final Item orders = this.item()) {
-            return new DateOf(
-                new Xocument(orders.path()).xpath(
-                    String.format(
-                        "/orders/order[@job='%s']/created/text()",
-                        job
-                    )
-                ).get(0)
-            ).value();
-        }
+        return new DateOf(
+            this.item().xpath(
+                String.format(
+                    "/orders/order[@job='%s']/created/text()",
+                    job
+                )
+            ).get(0)
+        ).value();
     }
 
     /**
@@ -274,19 +256,17 @@ public final class Orders {
      */
     public Iterable<String> olderThan(final ChronoZonedDateTime<LocalDate> time)
         throws IOException {
-        try (final Item item = this.item()) {
-            return new SolidList<>(
-                new Xocument(item.path()).xpath(
-                    new JoinedText(
-                        "",
-                        "/orders/order[",
-                        "xs:dateTime(created) < xs:dateTime('",
-                        time.format(DateTimeFormatter.ISO_INSTANT),
-                        "')]/@job"
-                    ).asString()
-                )
-            );
-        }
+        return new SolidList<>(
+            this.item().xpath(
+                new JoinedText(
+                    "",
+                    "/orders/order[",
+                    "xs:dateTime(created) < xs:dateTime('",
+                    time.format(DateTimeFormatter.ISO_INSTANT),
+                    "')]/@job"
+                ).asString()
+            )
+        );
     }
 
     /**
@@ -296,26 +276,24 @@ public final class Orders {
      * @throws IOException If fails
      */
     public LocalDateTime created(final String job) throws IOException {
-        try (final Item item = this.item()) {
-            return new IoCheckedScalar<>(
-                new ItemAt<>(
-                    new Mapped<String, LocalDateTime>(
-                        (String txt) -> LocalDateTime.parse(
-                            txt,
-                            DateTimeFormatter.ISO_INSTANT.withZone(
-                                ZoneOffset.UTC
-                            )
-                        ),
-                        new Xocument(item.path()).xpath(
-                            String.format(
-                                "/orders/order[@job = '%s']/created/text()",
-                                job
-                            )
+        return new IoCheckedScalar<>(
+            new ItemAt<>(
+                new Mapped<String, LocalDateTime>(
+                    (String txt) -> LocalDateTime.parse(
+                        txt,
+                        DateTimeFormatter.ISO_INSTANT.withZone(
+                            ZoneOffset.UTC
+                        )
+                    ),
+                    this.item().xpath(
+                        String.format(
+                            "/orders/order[@job = '%s']/created/text()",
+                            job
                         )
                     )
                 )
-            ).value();
-        }
+            )
+        ).value();
     }
 
     /**
@@ -325,11 +303,9 @@ public final class Orders {
      * @throws IOException If fails
      */
     public Collection<String> jobs(final String login) throws IOException {
-        try (final Item item = this.item()) {
-            return new Xocument(item.path()).xpath(
-                String.format("/orders/order[performer='%s']/@job", login)
-            );
-        }
+        return this.item().xpath(
+            String.format("/orders/order[performer='%s']/@job", login)
+        );
     }
 
     /**
@@ -337,8 +313,8 @@ public final class Orders {
      * @return Item
      * @throws IOException If fails
      */
-    private Item item() throws IOException {
-        return Orders.item(this.project);
+    private ItemXml item() throws IOException {
+        return new ItemXml(Orders.item(this.project), "pm/in/orders");
     }
 
     /**

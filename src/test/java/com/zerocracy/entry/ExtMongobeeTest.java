@@ -34,5 +34,4 @@ public final class ExtMongobeeTest {
         final Farm farm = new PropsFarm(new FkFarm());
         new ExtMongobee(farm).apply();
     }
-
 }

@@ -23,8 +23,6 @@ import com.zerocracy.Item;
 import com.zerocracy.Project;
 import com.zerocracy.farm.fake.FkItem;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.StringUtils;
 import org.cactoos.collection.Joined;
@@ -53,30 +51,13 @@ final class S3Project implements Project {
     private final String prefix;
 
     /**
-     * Path to temporary storage.
-     */
-    private final Path temp;
-
-    /**
      * Ctor.
      * @param bkt Bucket
      * @param pfx Prefix
-     * @throws IOException If fails
      */
-    S3Project(final Bucket bkt, final String pfx) throws IOException {
-        this(bkt, pfx, Files.createTempDirectory(""));
-    }
-
-    /**
-     * Ctor.
-     * @param bkt Bucket
-     * @param pfx Prefix
-     * @param tmp Storage
-     */
-    S3Project(final Bucket bkt, final String pfx, final Path tmp) {
+    S3Project(final Bucket bkt, final String pfx) {
         this.bucket = bkt;
         this.prefix = pfx;
-        this.temp = tmp;
     }
 
     @Override
@@ -132,12 +113,8 @@ final class S3Project implements Project {
                 );
             }
             final String key = String.format("%s%s", this.prefix, file);
-            item = new S3Item(
-                this.bucket.ocket(key),
-                this.temp.resolve(key)
-            );
+            item = new S3Item(this.bucket.ocket(key));
         }
         return item;
     }
-
 }

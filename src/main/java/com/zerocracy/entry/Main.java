@@ -118,13 +118,14 @@ public final class Main {
         Logger.info(this, "Farm is ready to start");
         final ShutdownFarm.Hook shutdown = new ShutdownFarm.Hook();
         final ClaimGuts cgts = new ClaimGuts();
+        final TestLocks locks = new TestLocks();
         try (
             final MessageSink farm = new MessageSink(
                 new ShutdownFarm(
                     new ClaimsFarm(
                         new SmartFarm(
-                            new S3Farm(new ExtBucket().value(), temp),
-                            new TestLocks()
+                            new S3Farm(new ExtBucket().value(), locks),
+                            locks
                         ),
                         cgts
                     ),

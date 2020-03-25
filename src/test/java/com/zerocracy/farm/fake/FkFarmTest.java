@@ -17,8 +17,8 @@
 package com.zerocracy.farm.fake;
 
 import com.zerocracy.Farm;
-import com.zerocracy.Item;
 import com.zerocracy.Project;
+import com.zerocracy.TextItem;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.cactoos.Func;
@@ -35,7 +35,7 @@ import org.junit.Test;
 public final class FkFarmTest {
 
     @Test
-    public void identityWorks() throws Exception {
+    public void identityWorks() {
         MatcherAssert.assertThat(
             new FkFarm(),
             Matchers.equalTo(new FkFarm())
@@ -79,10 +79,9 @@ public final class FkFarmTest {
     public void namesSubDirectoriesCorrectly() throws Exception {
         final Path dir = Files.createTempDirectory("x1");
         final Farm farm = new FkFarm(dir);
-        try (final Item item =
-            farm.find("@id='A77B88D99'").iterator().next().acq("t")) {
-            Files.write(item.path(), "Just some text...".getBytes());
-        }
+        new TextItem(
+            farm.find("@id='A77B88D99'").iterator().next().acq("t")
+        ).write("Just some text...");
         MatcherAssert.assertThat(
             Files.exists(dir.resolve("A77B88D99")),
             Matchers.is(true)
@@ -95,18 +94,13 @@ public final class FkFarmTest {
         final String pid = "@id='124342423'";
         final Project project = farm.find(pid).iterator().next();
         final String name = "test.txt";
-        try (final Item item = project.acq(name)) {
-            Files.write(item.path(), "Hello, world!".getBytes());
-        }
-        try (final Item item = project.acq("something-else.txt")) {
-            Files.write(item.path(), "Bye, bye!".getBytes());
-        }
-        try (final Item item = farm.find(pid).iterator().next().acq(name)) {
-            MatcherAssert.assertThat(
-                new String(Files.readAllBytes(item.path())),
-                Matchers.startsWith("Hello")
-            );
-        }
+        new TextItem(project.acq(name)).write("Hello, world!");
+        new TextItem(project.acq("something-else.txt"))
+            .write("Bye, bye!");
+        MatcherAssert.assertThat(
+            new TextItem(farm.find(pid).iterator().next().acq(name)).readAll(),
+            Matchers.startsWith("Hello")
+        );
     }
 
     @Test
@@ -114,19 +108,17 @@ public final class FkFarmTest {
         final Farm farm = new FkFarm();
         final String name = "x.txt";
         final String first = "@id='AAAAAAAAA'";
-        try (final Item item = farm.find(first).iterator().next().acq(name)) {
-            Files.write(item.path(), "first project".getBytes());
-        }
-        try (final Item item =
-            farm.find("@id='BBBBBBBBB'").iterator().next().acq(name)) {
-            Files.write(item.path(), "second project".getBytes());
-        }
-        try (final Item item = farm.find(first).iterator().next().acq(name)) {
-            MatcherAssert.assertThat(
-                new String(Files.readAllBytes(item.path())),
-                Matchers.startsWith("first")
-            );
-        }
+        new TextItem(farm.find(first).iterator().next().acq(name))
+            .write("first project");
+        new TextItem(
+            farm.find("@id='BBBBBBBBB'").iterator().next().acq(name)
+        ).write("second project");
+        new TextItem(farm.find(first).iterator().next().acq(name)).readAll();
+        MatcherAssert.assertThat(
+            new TextItem(
+                farm.find(first).iterator().next().acq(name)
+            ).readAll(),
+            Matchers.startsWith("first")
+        );
     }
-
 }

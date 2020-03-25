@@ -18,10 +18,9 @@ package com.zerocracy.pm;
 
 import com.jcabi.aspects.Tv;
 import com.zerocracy.Farm;
-import com.zerocracy.Item;
+import com.zerocracy.ItemXml;
 import com.zerocracy.Policy;
 import com.zerocracy.Project;
-import com.zerocracy.Xocument;
 import java.io.IOException;
 import org.cactoos.iterable.ItemAt;
 import org.cactoos.iterable.Mapped;
@@ -59,12 +58,8 @@ public final class PktOptions {
     /**
      * Bootstrap it.
      * @return Itself
-     * @throws IOException If fails
      */
-    public PktOptions bootstrap() throws IOException {
-        try (final Item team = this.item()) {
-            new Xocument(team).bootstrap("pm/options");
-        }
+    public PktOptions bootstrap() {
         return this;
     }
 
@@ -74,18 +69,15 @@ public final class PktOptions {
      * @throws IOException If fails
      */
     public int daysToCloseTask() throws IOException {
-        try (final Item item = this.item()) {
-            return new IoCheckedScalar<>(
-                new ItemAt<Number>(
-                    xpath -> new Policy(this.farm).get("8.days", Tv.TEN),
-                    new Mapped<>(
-                        NumberOf::new,
-                        new Xocument(item.path())
-                            .xpath("/options/daysToCloseTask/text()")
-                    )
+        return new IoCheckedScalar<>(
+            new ItemAt<Number>(
+                xpath -> new Policy(this.farm).get("8.days", Tv.TEN),
+                new Mapped<>(
+                    NumberOf::new,
+                    this.item().xpath("/options/daysToCloseTask/text()")
                 )
-            ).value().intValue();
-        }
+            )
+        ).value().intValue();
     }
 
     /**
@@ -94,14 +86,12 @@ public final class PktOptions {
      * @throws IOException If fails
      */
     public void daysToCloseTask(final int val) throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item).modify(
-                new Directives()
-                    .xpath("/options")
-                    .addIf("daysToCloseTask")
-                    .set(val)
-            );
-        }
+        this.item().update(
+            new Directives()
+                .xpath("/options")
+                .addIf("daysToCloseTask")
+                .set(val)
+        );
     }
 
     /**
@@ -109,7 +99,7 @@ public final class PktOptions {
      * @return Item
      * @throws IOException If fails
      */
-    private Item item() throws IOException {
-        return this.pkt.acq("options.xml");
+    private ItemXml item() throws IOException {
+        return new ItemXml(this.pkt.acq("options.xml"), "pm/options");
     }
 }

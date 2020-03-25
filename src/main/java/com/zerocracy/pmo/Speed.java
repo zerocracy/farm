@@ -17,9 +17,8 @@
 package com.zerocracy.pmo;
 
 import com.zerocracy.Farm;
-import com.zerocracy.Item;
+import com.zerocracy.ItemXml;
 import com.zerocracy.Project;
-import com.zerocracy.Xocument;
 import java.io.IOException;
 import java.time.Instant;
 import org.cactoos.collection.Mapped;
@@ -69,12 +68,8 @@ public final class Speed {
     /**
      * Bootstrap it.
      * @return This
-     * @throws IOException If fails
      */
-    public Speed bootstrap() throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).bootstrap("pmo/speed");
-        }
+    public Speed bootstrap() {
         return this;
     }
 
@@ -90,24 +85,22 @@ public final class Speed {
     public void add(final String project, final String job, final long minutes,
         final Instant added)
         throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
-                new Directives()
-                    .xpath("/speed")
-                    .add("order")
-                    .attr("job", job)
-                    .add("project")
-                    .set(project)
-                    .up()
-                    .add("minutes")
-                    .set(minutes)
-                    .up()
-                    .add("added")
-                    .set(added)
-                    .up()
-                    .up()
-            );
-        }
+        this.item().update(
+            new Directives()
+                .xpath("/speed")
+                .add("order")
+                .attr("job", job)
+                .add("project")
+                .set(project)
+                .up()
+                .add("minutes")
+                .set(minutes)
+                .up()
+                .add("added")
+                .set(added)
+                .up()
+                .up()
+        );
     }
 
     /**
@@ -116,18 +109,15 @@ public final class Speed {
      * @throws IOException If fails
      */
     public double avg() throws IOException {
-        try (final Item item = this.item()) {
-            return new IoCheckedScalar<>(
-                new ItemAt<>(
-                    0.0,
-                    new Mapped<>(
-                        Double::parseDouble,
-                        new Xocument(item.path())
-                            .xpath("avg(/speed/order/minutes)")
-                    )
+        return new IoCheckedScalar<>(
+            new ItemAt<>(
+                0.0,
+                new Mapped<>(
+                    Double::parseDouble,
+                    this.item().xpath("avg(/speed/order/minutes)")
                 )
-            ).value();
-        }
+            )
+        ).value();
     }
 
     /**
@@ -136,9 +126,7 @@ public final class Speed {
      * @throws IOException If fails
      */
     public boolean isEmpty() throws IOException {
-        try (final Item item = this.item()) {
-            return new Xocument(item.path()).nodes("/speed/order").isEmpty();
-        }
+        return this.item().empty("/speed/order");
     }
 
     /**
@@ -147,11 +135,7 @@ public final class Speed {
      * @throws IOException If fails
      */
     public Iterable<String> jobs() throws IOException {
-        try (final Item item = this.item()) {
-            return new Xocument(item.path()).xpath(
-                "/speed/order/@job"
-            );
-        }
+        return this.item().xpath("/speed/order/@job");
     }
 
     /**
@@ -160,20 +144,17 @@ public final class Speed {
      * @throws IOException If failed
      */
     public void removeOlderThan(final Instant date) throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
-                new Directives()
-                    .xpath(
-                        new JoinedText(
-                            "",
-                            "/speed/order[xs:dateTime(added) < ",
-                            "xs:dateTime('",
-                            date.toString(),
-                            "')]"
-                        ).asString()
-                    ).remove()
-            );
-        }
+        this.item().update(
+            new Directives().xpath(
+                new JoinedText(
+                    "",
+                    "/speed/order[xs:dateTime(added) < ",
+                    "xs:dateTime('",
+                    date.toString(),
+                    "')]"
+                ).asString()
+            ).remove()
+        );
     }
 
     /**
@@ -181,9 +162,10 @@ public final class Speed {
      * @return Item
      * @throws IOException If fails
      */
-    private Item item() throws IOException {
-        return this.pmo.acq(
-            String.format("speed/%s.xml", this.login)
+    private ItemXml item() throws IOException {
+        return new ItemXml(
+            this.pmo.acq(String.format("speed/%s.xml", this.login)),
+            "pmo/speed"
         );
     }
 }

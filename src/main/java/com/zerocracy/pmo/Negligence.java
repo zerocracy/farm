@@ -17,9 +17,8 @@
 package com.zerocracy.pmo;
 
 import com.zerocracy.Farm;
-import com.zerocracy.Item;
+import com.zerocracy.ItemXml;
 import com.zerocracy.Project;
-import com.zerocracy.Xocument;
 import java.io.IOException;
 import java.time.Instant;
 import org.cactoos.text.JoinedText;
@@ -69,11 +68,7 @@ public final class Negligence {
      * @throws IOException If fails
      */
     public int delays() throws IOException {
-        try (final Item item = this.item()) {
-            return new Xocument(item.path())
-                .nodes("/negligence/order")
-                .size();
-        }
+        return this.item().nodes("/negligence/order").size();
     }
 
     /**
@@ -82,20 +77,18 @@ public final class Negligence {
      * @throws IOException If failed
      */
     public void removeOlderThan(final Instant date) throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
-                new Directives()
-                    .xpath(
-                        new JoinedText(
-                            "",
-                            "/negligence/order[xs:dateTime(added) < ",
-                            "xs:dateTime('",
-                            date.toString(),
-                            "')]"
-                        ).asString()
-                    ).remove()
-            );
-        }
+        this.item().update(
+            new Directives()
+                .xpath(
+                    new JoinedText(
+                        "",
+                        "/negligence/order[xs:dateTime(added) < ",
+                        "xs:dateTime('",
+                        date.toString(),
+                        "')]"
+                    ).asString()
+                ).remove()
+        );
     }
 
     /**
@@ -117,30 +110,24 @@ public final class Negligence {
      */
     public void add(final Project proj, final String job, final Instant time)
         throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
-                new Directives()
-                    .xpath("/negligence")
-                    .add("order")
-                    .attr("job", job)
-                    .add("project")
-                    .set(proj.pid())
-                    .up()
-                    .add("added")
-                    .set(time)
-            );
-        }
+        this.item().update(
+            new Directives()
+                .xpath("/negligence")
+                .add("order")
+                .attr("job", job)
+                .add("project")
+                .set(proj.pid())
+                .up()
+                .add("added")
+                .set(time)
+        );
     }
 
     /**
      * Bootstrap it.
      * @return This
-     * @throws IOException If fails
      */
-    public Negligence bootstrap() throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).bootstrap("pmo/negligence");
-        }
+    public Negligence bootstrap() {
         return this;
     }
 
@@ -149,9 +136,12 @@ public final class Negligence {
      * @return Item
      * @throws IOException If fails
      */
-    private Item item() throws IOException {
-        return this.pmo.acq(
-            String.format("negligence/%s.xml", this.login)
+    private ItemXml item() throws IOException {
+        return new ItemXml(
+            this.pmo.acq(
+                String.format("negligence/%s.xml", this.login)
+            ),
+            "pmo/negligence"
         );
     }
 }

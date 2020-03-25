@@ -17,9 +17,8 @@
 package com.zerocracy.pm.staff;
 
 import com.jcabi.xml.XML;
-import com.zerocracy.Item;
+import com.zerocracy.ItemXml;
 import com.zerocracy.Project;
-import com.zerocracy.Xocument;
 import com.zerocracy.cash.Cash;
 import java.io.IOException;
 import java.time.Instant;
@@ -52,12 +51,8 @@ public final class Applications {
     /**
      * Bootstrap it.
      * @return Itself
-     * @throws IOException If fails
      */
-    public Applications bootstrap() throws IOException {
-        try (final Item team = this.item()) {
-            new Xocument(team).bootstrap("pm/staff/applications");
-        }
+    public Applications bootstrap() {
         return this;
     }
 
@@ -71,22 +66,20 @@ public final class Applications {
      */
     public void submit(final String login, final String role,
         final Cash rate) throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item).modify(
-                new Directives()
-                    .xpath("/applications")
-                    .push()
-                    .xpath(String.format("application[@login='%s']", login))
-                    .remove()
-                    .pop()
-                    .add("application")
-                    .attr("login", login)
-                    .add("created").set(Instant.now().toString()).up()
-                    .add("role").set(role).up()
-                    .add("rate").set(rate).up()
-                    .up()
-            );
-        }
+        this.item().update(
+            new Directives()
+                .xpath("/applications")
+                .push()
+                .xpath(String.format("application[@login='%s']", login))
+                .remove()
+                .pop()
+                .add("application")
+                .attr("login", login)
+                .add("created").set(Instant.now().toString()).up()
+                .add("role").set(role).up()
+                .add("rate").set(rate).up()
+                .up()
+        );
     }
 
     /**
@@ -95,9 +88,7 @@ public final class Applications {
      * @throws IOException If fails
      */
     public Iterable<XML> all() throws IOException {
-        try (final Item item = this.item()) {
-            return new Xocument(item).nodes("/applications/application");
-        }
+        return this.item().nodes("/applications/application");
     }
 
     /**
@@ -105,7 +96,9 @@ public final class Applications {
      * @return Item
      * @throws IOException If fails
      */
-    private Item item() throws IOException {
-        return this.pkt.acq("applications.xml");
+    private ItemXml item() throws IOException {
+        return new ItemXml(
+            this.pkt.acq("applications.xml"), "pm/staff/applications"
+        );
     }
 }

@@ -27,6 +27,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import lombok.EqualsAndHashCode;
+import org.cactoos.Func;
+import org.cactoos.Proc;
 import org.cactoos.io.LengthOf;
 import org.cactoos.io.TeeInput;
 
@@ -34,6 +36,7 @@ import org.cactoos.io.TeeInput;
  * Footprint item.
  *
  * @since 1.0
+ * @checkstyle LineLengthCheck (500 lines)
  */
 @EqualsAndHashCode(of = "origin")
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
@@ -81,19 +84,45 @@ final class FtItem implements Item {
     }
 
     @Override
-    public Path path() throws IOException {
-        return this.origin.path();
+    public <T> T read(final Func<Path, T> reader) throws IOException {
+        return this.origin.read(
+            path -> {
+                final Path before = path;
+                if (before.toFile().exists()) {
+                    new LengthOf(new TeeInput(path, this.temp)).intValue();
+                }
+                final T out = reader.apply(path);
+                this.close(path);
+                return out;
+            }
+        );
     }
 
     @Override
-    public void close() throws IOException {
+    public void update(final Proc<Path> writer) throws IOException {
+        this.origin.update(
+            path -> {
+                final Path before = path;
+                if (before.toFile().exists()) {
+                    new LengthOf(new TeeInput(path, this.temp)).intValue();
+                }
+                writer.exec(path);
+                this.close(path);
+            }
+        );
+    }
+
+    /**
+     * Close the path.
+     * @param path Path
+     * @throws IOException On failure
+     */
+    private void close(final Path path) throws IOException {
         final Path modified = Files.createTempFile("footprint", ".xml");
-        new LengthOf(new TeeInput(this.path(), modified)).intValue();
+        new LengthOf(new TeeInput(path, modified)).intValue();
         final XML after = FtItem.claims(modified);
-        this.origin.close();
         final XML before = FtItem.claims(this.temp);
-        try (final Footprint footprint =
-            new Footprint(this.farm, this.project)) {
+        try (final Footprint footprint = new Footprint(this.farm, this.project)) {
             for (final XML claim : before.nodes("//claim[type!='Ping']")) {
                 if (!FtItem.exists(after, claim)) {
                     footprint.close(claim);
@@ -141,5 +170,4 @@ final class FtItem implements Item {
         }
         return xml;
     }
-
 }

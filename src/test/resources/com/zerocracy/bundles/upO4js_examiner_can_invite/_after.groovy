@@ -20,6 +20,7 @@ import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
+import com.zerocracy.TextItem
 import com.zerocracy.pmo.Awards
 import com.zerocracy.pmo.People
 import com.zerocracy.pmo.Resumes
@@ -51,11 +52,11 @@ def exec(Project project, XML xml) {
     new Awards(farm, user).bootstrap().total(),
     new IsEqual<>(1266)
   )
-  project.acq('test.txt').withCloseable {
+  project.acq('test.txt').with {
     item ->
       MatcherAssert.assertThat(
         'inviter didn\'t receive a message',
-        item.path().text,
+        new TextItem(item).readAll(),
         new StringContains(
           new Par('You received bonus %d points for @%s resume examination').say(32, friend)
         )

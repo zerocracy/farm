@@ -16,13 +16,16 @@
  */
 package com.zerocracy.farm.sync;
 
-import com.jcabi.log.Logger;
 import com.zerocracy.Item;
 import com.zerocracy.Project;
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
+import java.nio.file.Path;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.ReadWriteLock;
 import lombok.EqualsAndHashCode;
+import org.cactoos.Func;
+import org.cactoos.Proc;
 
 /**
  * Sync project.
@@ -32,6 +35,11 @@ import lombok.EqualsAndHashCode;
  */
 @EqualsAndHashCode(of = "origin")
 final class SyncProject implements Project {
+
+    /**
+     * Does strict projects enabled.
+     */
+    private static final boolean STRICT_ENABLED = false;
 
     /**
      * Origin project.
@@ -44,20 +52,21 @@ final class SyncProject implements Project {
     private final Locks locks;
 
     /**
-     * Terminator.
+     * Lock flags for projects artifacts.
      */
-    private final Terminator terminator;
+    private final ConcurrentMap<String, AtomicBoolean> lpkt;
 
     /**
      * Ctor.
      * @param pkt Project
      * @param lcks Locks
-     * @param tmr Terminator
+     * @param lpkt Project lock flags
      */
-    SyncProject(final Project pkt, final Locks lcks, final Terminator tmr) {
+    SyncProject(final Project pkt, final Locks lcks,
+        final ConcurrentMap<String, AtomicBoolean> lpkt) {
         this.origin = pkt;
         this.locks = lcks;
-        this.terminator = tmr;
+        this.lpkt = lpkt;
     }
 
     @Override
@@ -67,37 +76,85 @@ final class SyncProject implements Project {
 
     @Override
     public Item acq(final String file) throws IOException {
-        final long start = System.currentTimeMillis();
-        final Lock lock = this.locks.lock(this, file);
-        try {
-            // @checkstyle MagicNumber (1 line)
-            if (!lock.tryLock(2L, TimeUnit.MINUTES)) {
-                throw new IllegalStateException(
-                    Logger.format(
-                        "Failed to acquire \"%s\" in \"%s\" in %[ms]s: %s",
-                        file, this.origin.pid(),
-                        System.currentTimeMillis() - start,
-                        lock
+        final ReadWriteLock lock = this.locks.lock(this, file);
+        final Item item;
+        if (SyncProject.STRICT_ENABLED) {
+            item = new SyncProject.StrictProjectItem(
+                this.origin.acq(file),
+                this.lpkt.computeIfAbsent(file, key -> new AtomicBoolean())
+            );
+        } else {
+            item = new WarnItem(
+                String.format("%s/%s", this.pid(), file),
+                new SyncItem(this.origin.acq(file), lock)
+            );
+        }
+        return item;
+    }
+
+    /**
+     * Strict project.
+     */
+    private static final class StrictProjectItem implements Item {
+
+        /**
+         * Origin item.
+         */
+        private final Item item;
+
+        /**
+         * Acquire flag.
+         */
+        private final AtomicBoolean acq;
+
+        /**
+         * Ctor.
+         * @param item Item
+         * @param acq Flag
+         */
+        StrictProjectItem(final Item item, final AtomicBoolean acq) {
+            this.item = item;
+            this.acq = acq;
+        }
+
+        @Override
+        @SuppressWarnings("PMD.PrematureDeclaration")
+        public <T> T read(final Func<Path, T> reader) throws IOException {
+            if (!this.acq.compareAndSet(false, true)) {
+                throw new IOException(
+                    String.format(
+                        "read: unable to access locked item: %s", this.item
                     )
                 );
             }
-        } catch (final InterruptedException ex) {
-            Thread.currentThread().interrupt();
-            throw new IllegalStateException(
-                Logger.format(
-                    "%s interrupted while waiting for \"%s\" in %s for %[ms]s",
-                    Thread.currentThread().getName(),
-                    file, this.pid(),
-                    System.currentTimeMillis() - start
-                ),
-                ex
-            );
+            final T res = this.item.read(reader);
+            if (!this.acq.compareAndSet(true, false)) {
+                throw new IOException(
+                    String.format(
+                        "read: unable to free unlocked item: %s", this.item
+                    )
+                );
+            }
+            return res;
         }
-        this.terminator.submit(this, file, lock);
-        return new WarnItem(
-            String.format("%s/%s", this.pid(), file),
-            new SyncItem(this.origin.acq(file), lock),
-            System.nanoTime()
-        );
+
+        @Override
+        public void update(final Proc<Path> writer) throws IOException {
+            if (!this.acq.compareAndSet(false, true)) {
+                throw new IOException(
+                    String.format(
+                        "write: unable to access locked item: %s", this.item
+                    )
+                );
+            }
+            this.item.update(writer);
+            if (!this.acq.compareAndSet(true, false)) {
+                throw new IOException(
+                    String.format(
+                        "write: unable to free unlocked item: %s", this.item
+                    )
+                );
+            }
+        }
     }
 }

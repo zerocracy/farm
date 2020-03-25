@@ -25,9 +25,9 @@ import com.zerocracy.RunsInThreads;
 import com.zerocracy.claims.ClaimOut;
 import com.zerocracy.claims.ClaimSignature;
 import com.zerocracy.claims.Footprint;
+import com.zerocracy.farm.SmartFarm;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
-import com.zerocracy.farm.props.PropsFarm;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import org.cactoos.func.IoCheckedProc;
@@ -46,10 +46,11 @@ import org.junit.Test;
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class FootprintProcTest {
+
     @Test
     public void footprintClaim() throws Exception {
         final Project project = new FkProject();
-        final Farm farm = new PropsFarm(new FkFarm(project));
+        final Farm farm = new SmartFarm(new FkFarm(project));
         final AtomicLong cid = new AtomicLong(1L);
         final int threads = 10;
         try (final Footprint footprint = new Footprint(farm, project)) {

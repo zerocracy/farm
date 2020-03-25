@@ -19,11 +19,11 @@ package com.zerocracy.pmo;
 import com.jcabi.aspects.Tv;
 import com.zerocracy.Project;
 import com.zerocracy.SoftException;
+import com.zerocracy.TextItem;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -108,15 +108,11 @@ public final class PeopleTest {
 
     public void upgradesXsdAutomatically() throws Exception {
         final Project project = new FkProject();
-        Files.write(
-            project.acq("people.xml").path(),
-            String.join(
-                "",
-                "<people xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'",
-                " xsi:noNamespaceSchemaLocation='",
-                "http://datum.zerocracy.com/0.7.1",
-                "/xsd/project/people.xsd'/>"
-            ).getBytes()
+        new TextItem(project.acq("people.xml")).write(
+            "<people xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'",
+            " xsi:noNamespaceSchemaLocation='",
+            "http://datum.zerocracy.com/0.7.1",
+            "/xsd/project/people.xsd'/>"
         );
         final FkFarm farm = new FkFarm(project);
         final People people = new People(farm).bootstrap();

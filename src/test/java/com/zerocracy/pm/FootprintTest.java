@@ -92,7 +92,7 @@ public final class FootprintTest {
                         ).iterator().hasNext();
                     }
                 },
-                new RunsInThreads<>(new AtomicInteger())
+                new RunsInThreads<>(new AtomicInteger(), 1)
             );
         }
     }

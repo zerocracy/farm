@@ -17,9 +17,8 @@
 package com.zerocracy.pmo;
 
 import com.zerocracy.Farm;
-import com.zerocracy.Item;
+import com.zerocracy.ItemXml;
 import com.zerocracy.Par;
-import com.zerocracy.Xocument;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -63,9 +62,6 @@ public final class Bots {
      * @throws IOException If fails
      */
     public Bots bootstrap() throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).bootstrap("pmo/bots");
-        }
         return this;
     }
 
@@ -85,36 +81,34 @@ public final class Bots {
         }
         final String bid = bot.getString("bot_user_id");
         final String team = json.getString("team_id");
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
-                new Directives()
-                    .xpath(
-                        String.format(
-                            "/bots[not(bot[@id='%s'])]",
-                            bid
-                        )
+        this.item().update(
+            new Directives()
+                .xpath(
+                    String.format(
+                        "/bots[not(bot[@id='%s'])]",
+                        bid
                     )
-                    .add("bot")
-                    .attr("id", bid)
-                    .xpath(
-                        String.format(
-                            "/bots/bot[@id='%s']",
-                            bid
-                        )
+                )
+                .add("bot")
+                .attr("id", bid)
+                .xpath(
+                    String.format(
+                        "/bots/bot[@id='%s']",
+                        bid
                     )
-                    .strict(1)
-                    .addIf("access_token")
-                    .set(json.getString("access_token")).up()
-                    .addIf("team_name")
-                    .set(json.getString("team_name")).up()
-                    .addIf("team_id")
-                    .set(team).up()
-                    .addIf("bot_access_token")
-                    .set(bot.getString("bot_access_token")).up()
-                    .addIf("created")
-                    .set(new DateAsText().asString())
-            );
-        }
+                )
+                .strict(1)
+                .addIf("access_token")
+                .set(json.getString("access_token")).up()
+                .addIf("team_name")
+                .set(json.getString("team_name")).up()
+                .addIf("team_id")
+                .set(team).up()
+                .addIf("bot_access_token")
+                .set(bot.getString("bot_access_token")).up()
+                .addIf("created")
+                .set(new DateAsText().asString())
+        );
         return team;
     }
 
@@ -125,13 +119,11 @@ public final class Bots {
      * @throws IOException If fails
      */
     public String name(final String bot) throws IOException {
-        try (final Item item = this.item()) {
-            return new Xocument(item.path()).xpath(
-                String.format(
-                    "/bots/bot[@id='%s']/team_name/text()", bot
-                )
-            ).get(0);
-        }
+        return this.item().xpath(
+            String.format(
+                "/bots/bot[@id='%s']/team_name/text()", bot
+            )
+        ).get(0);
     }
 
     /**
@@ -140,17 +132,13 @@ public final class Bots {
      * @throws IOException If fails
      */
     public Iterable<Map.Entry<String, String>> tokens() throws IOException {
-        try (final Item item = this.item()) {
-            return new Mapped<>(
-                node -> new HashMap.SimpleEntry<>(
-                    node.xpath("@id").get(0),
-                    node.xpath("bot_access_token/text()").get(0)
-                ),
-                new Xocument(item.path()).nodes(
-                    "/bots/bot"
-                )
-            );
-        }
+        return new Mapped<>(
+            node -> new HashMap.SimpleEntry<>(
+                node.xpath("@id").get(0),
+                node.xpath("bot_access_token/text()").get(0)
+            ),
+            this.item().nodes("/bots/bot")
+        );
     }
 
     /**
@@ -158,8 +146,10 @@ public final class Bots {
      * @return Item
      * @throws IOException If fails
      */
-    private Item item() throws IOException {
-        return this.pmo.acq("bots.xml");
+    private ItemXml item() throws IOException {
+        return new ItemXml(
+            this.pmo.acq("bots.xml"),
+            "pmo/bots"
+        );
     }
-
 }

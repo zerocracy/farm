@@ -19,7 +19,6 @@ package com.zerocracy.tk.project;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.zerocracy.Farm;
-import com.zerocracy.Item;
 import com.zerocracy.Par;
 import com.zerocracy.Project;
 import com.zerocracy.claims.ClaimOut;
@@ -43,6 +42,7 @@ import org.takes.rs.RsWithType;
  *
  * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @checkstyle LineLengthCheck (500 lines)
  */
 public final class TkArchive implements TkRegex {
 
@@ -63,20 +63,16 @@ public final class TkArchive implements TkRegex {
     @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
     public Response act(final RqRegex req) throws IOException {
         final Project project = new RqProject(this.farm, req, "PO");
-        final XML list;
-        try (final Item item = project.acq("_list.xml")) {
-            list = new XMLDocument(item.path());
-        }
+        final XML list = project.acq("_list.xml")
+            .read(XMLDocument::new);
         final Path zip = Files.createTempFile("0crat", ".zip");
-        try (final ZipOutputStream out =
-            new ZipOutputStream(new FileOutputStream(zip.toFile()))) {
+        try (final ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zip.toFile()))) {
             for (final String artifact : list.xpath("//item/name/text()")) {
                 final ZipEntry entry = new ZipEntry(artifact);
                 out.putNextEntry(entry);
-                try (final Item item = project.acq(artifact)) {
-                    final byte[] data = new BytesOf(item.path()).asBytes();
-                    out.write(data, 0, data.length);
-                }
+                final byte[] data = project.acq(artifact)
+                    .read(Files::readAllBytes);
+                out.write(data, 0, data.length);
                 out.closeEntry();
             }
         }
@@ -90,5 +86,4 @@ public final class TkArchive implements TkRegex {
             "application/zip"
         );
     }
-
 }

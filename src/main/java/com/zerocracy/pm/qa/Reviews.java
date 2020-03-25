@@ -17,11 +17,10 @@
 package com.zerocracy.pm.qa;
 
 import com.jcabi.xml.XML;
-import com.zerocracy.Item;
+import com.zerocracy.ItemXml;
 import com.zerocracy.Par;
 import com.zerocracy.Project;
 import com.zerocracy.SoftException;
-import com.zerocracy.Xocument;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.claims.ClaimOut;
 import java.io.IOException;
@@ -58,12 +57,8 @@ public final class Reviews {
     /**
      * Bootstrap it.
      * @return Itself
-     * @throws IOException If fails
      */
-    public Reviews bootstrap() throws IOException {
-        try (final Item wbs = this.item()) {
-            new Xocument(wbs.path()).bootstrap("pm/qa/reviews");
-        }
+    public Reviews bootstrap() {
         return this;
     }
 
@@ -86,20 +81,18 @@ public final class Reviews {
                 new Par("Quality review for %s already exists").say(job)
             );
         }
-        try (final Item reviews = this.item()) {
-            new Xocument(reviews.path()).modify(
-                new Directives()
-                    .xpath("/reviews")
-                    .add("review")
-                    .attr("job", job)
-                    .add("requested").set(Instant.now().toString()).up()
-                    .add("inspector").set(inspector).up()
-                    .add("performer").set(performer).up()
-                    .add("cash").set(cash).up()
-                    .add("minutes").set(minutes).up()
-                    .add("bonus").set(bonus).up()
-            );
-        }
+        this.item().update(
+            new Directives()
+                .xpath("/reviews")
+                .add("review")
+                .attr("job", job)
+                .add("requested").set(Instant.now().toString()).up()
+                .add("inspector").set(inspector).up()
+                .add("performer").set(performer).up()
+                .add("cash").set(cash).up()
+                .add("minutes").set(minutes).up()
+                .add("bonus").set(bonus).up()
+        );
     }
 
     /**
@@ -117,17 +110,14 @@ public final class Reviews {
                 new Par("There is no quality review for %s").say(job)
             );
         }
-        final XML review;
-        try (final Item reviews = this.item()) {
-            review = new Xocument(reviews.path()).nodes(
-                String.format("//review[@job= '%s']", job)
-            ).get(0);
-            new Xocument(reviews.path()).modify(
-                new Directives().xpath(
-                    String.format("//review[@job='%s']", job)
-                ).strict(1).remove()
-            );
-        }
+        final XML review = this.item().nodes(
+            String.format("//review[@job= '%s']", job)
+        ).get(0);
+        this.item().update(
+            new Directives().xpath(
+                String.format("//review[@job='%s']", job)
+            ).strict(1).remove()
+        );
         int minutes = Integer.parseInt(review.xpath("minutes/text()").get(0));
         final Cash extra = new Cash.S(review.xpath("bonus/text()").get(0));
         Cash cash = new Cash.S(review.xpath("cash/text()").get(0));
@@ -148,24 +138,21 @@ public final class Reviews {
      * @throws IOException If fails
      */
     public Cash bonus(final String job) throws IOException {
-        try (final Item item = this.item()) {
-            return
-                new IoCheckedScalar<>(
-                    new ItemAt<>(
-                        new Mapped<String, Cash>(
-                            Cash.S::new,
-                            new Xocument(item.path()).xpath(
-                                new JoinedText(
-                                    "",
-                                    "/reviews",
-                                    String.format("/review[@job = '%s']", job),
-                                    "/bonus/text()"
-                                ).asString()
-                            )
-                        )
+        return new IoCheckedScalar<>(
+            new ItemAt<>(
+                new Mapped<String, Cash>(
+                    Cash.S::new,
+                    this.item().xpath(
+                        new JoinedText(
+                            "",
+                            "/reviews",
+                            String.format("/review[@job = '%s']", job),
+                            "/bonus/text()"
+                        ).asString()
                     )
-                ).value();
-        }
+                )
+            )
+        ).value();
     }
 
     /**
@@ -182,11 +169,9 @@ public final class Reviews {
                 ).say(job)
             );
         }
-        try (final Item reviews = this.item()) {
-            return new Xocument(reviews.path()).xpath(
-                String.format("//review[@job='%s']/inspector/text()", job)
-            ).get(0);
-        }
+        return this.item().xpath(
+            String.format("//review[@job='%s']/inspector/text()", job)
+        ).get(0);
     }
 
     /**
@@ -203,13 +188,11 @@ public final class Reviews {
                 ).say(job)
             );
         }
-        try (final Item reviews = this.item()) {
-            return Instant.parse(
-                new Xocument(reviews.path()).xpath(
-                    String.format("//review[@job='%s']/requested/text()", job)
-                ).get(0)
-            );
-        }
+        return Instant.parse(
+            this.item().xpath(
+                String.format("//review[@job='%s']/requested/text()", job)
+            ).get(0)
+        );
     }
 
     /**
@@ -226,11 +209,9 @@ public final class Reviews {
                 ).say(job)
             );
         }
-        try (final Item reviews = this.item()) {
-            return new Xocument(reviews.path()).xpath(
-                String.format("//review[@job='%s']/performer/text()", job)
-            ).get(0);
-        }
+        return this.item().xpath(
+            String.format("//review[@job='%s']/performer/text()", job)
+        ).get(0);
     }
 
     /**
@@ -247,13 +228,11 @@ public final class Reviews {
                 ).say(job)
             );
         }
-        try (final Item reviews = this.item()) {
-            return Integer.parseInt(
-                new Xocument(reviews.path()).xpath(
-                    String.format("//review[@job='%s']/minutes/text()", job)
-                ).get(0)
-            );
-        }
+        return Integer.parseInt(
+            this.item().xpath(
+                String.format("//review[@job='%s']/minutes/text()", job)
+            ).get(0)
+        );
     }
 
     /**
@@ -263,11 +242,9 @@ public final class Reviews {
      * @throws IOException If fails
      */
     public boolean exists(final String job) throws IOException {
-        try (final Item reviews = this.item()) {
-            return !new Xocument(reviews.path()).nodes(
-                String.format("//review[@job='%s']", job)
-            ).isEmpty();
-        }
+        return this.item().exists(
+            String.format("//review[@job='%s']", job)
+        );
     }
 
     /**
@@ -278,13 +255,11 @@ public final class Reviews {
      */
     public List<String> findByInspector(final String login)
         throws IOException {
-        try (final Item reviews = this.item()) {
-            return new Xocument(reviews.path()).xpath(
-                String.format(
-                    "/reviews/review[inspector='%s']/@job", login
-                )
-            );
-        }
+        return this.item().xpath(
+            String.format(
+                "/reviews/review[inspector='%s']/@job", login
+            )
+        );
     }
 
     /**
@@ -293,9 +268,7 @@ public final class Reviews {
      * @throws IOException If fails
      */
     public List<String> iterate() throws IOException {
-        try (final Item reviews = this.item()) {
-            return new Xocument(reviews.path()).xpath("/reviews/review/@job");
-        }
+        return this.item().xpath("/reviews/review/@job");
     }
 
     /**
@@ -303,8 +276,7 @@ public final class Reviews {
      * @return Item
      * @throws IOException If fails
      */
-    private Item item() throws IOException {
-        return this.project.acq("reviews.xml");
+    private ItemXml item() throws IOException {
+        return new ItemXml(this.project.acq("reviews.xml"), "pm/qa/reviews");
     }
-
 }

@@ -22,6 +22,9 @@ import com.jcabi.s3.fake.FkBucket;
 import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Project;
+import com.zerocracy.TextItem;
+import com.zerocracy.farm.sync.Locks;
+import com.zerocracy.farm.sync.TestLocks;
 import com.zerocracy.pm.scope.Wbs;
 import com.zerocracy.pm.staff.Roles;
 import com.zerocracy.pmo.Catalog;
@@ -43,18 +46,14 @@ public final class S3FarmTest {
             Files.createTempDirectory("").toFile(),
             "some-bucket"
         );
-        final Farm farm = new S3Farm(bucket);
+        final Locks locks = new TestLocks();
+        final Farm farm = new S3Farm(bucket, locks);
         farm.find("@id = 'ABCDEF123'").iterator().next();
         final Project project = farm.find("@id='ABCDEF123'").iterator().next();
         final Item item = project.acq("roles.xml");
+        new TextItem(item).write("hello, world");
         MatcherAssert.assertThat(
-            item.path().toFile().exists(),
-            Matchers.is(false)
-        );
-        Files.write(item.path(), "hello, world".getBytes());
-        item.close();
-        MatcherAssert.assertThat(
-            new String(Files.readAllBytes(item.path())),
+            new TextItem(item).readAll(),
             Matchers.containsString("hello")
         );
     }
@@ -65,7 +64,8 @@ public final class S3FarmTest {
             Files.createTempDirectory("").toFile(),
             "some-bucket-to-test"
         );
-        final Farm farm = new S3Farm(bucket);
+        final Locks locks = new TestLocks();
+        final Farm farm = new S3Farm(bucket, locks);
         MatcherAssert.assertThat(
             farm.find("links/link[@rel='github']"),
             Matchers.emptyIterable()
@@ -78,7 +78,8 @@ public final class S3FarmTest {
             Files.createTempDirectory("").toFile(),
             "the-bucket-3"
         );
-        final Farm farm = new S3Farm(bucket);
+        final Locks locks = new TestLocks();
+        final Farm farm = new S3Farm(bucket, locks);
         final Project project = farm.find("@id='ABCR2FE03'").iterator().next();
         new Roles(project).bootstrap();
         final Roles roles = new Roles(project);
@@ -101,19 +102,19 @@ public final class S3FarmTest {
             "the-bucket-99"
         );
         final String xpath = "@id='ABCR2FDD3'";
-        final Project project = new S3Farm(bucket)
+        final Locks locks = new TestLocks();
+        final Project project = new S3Farm(bucket, locks)
             .find(xpath).iterator().next();
         new Wbs(project).bootstrap().add("gh:test/test#4");
-        final String prefix = new Catalog(new S3Farm(bucket))
+        final String prefix = new Catalog(new S3Farm(bucket, locks))
             .findByXPath(xpath)
             .iterator().next();
-        new S3Farm(bucket).delete(prefix);
+        new S3Farm(bucket, locks).delete(prefix);
         MatcherAssert.assertThat(
             new Wbs(
-                new S3Farm(bucket).find(xpath).iterator().next()
+                new S3Farm(bucket, locks).find(xpath).iterator().next()
             ).bootstrap().iterate(),
             Matchers.emptyIterable()
         );
     }
-
 }
