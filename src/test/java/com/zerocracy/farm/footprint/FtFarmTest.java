@@ -60,7 +60,7 @@ public final class FtFarmTest {
             final Project project = farm.find(
                 String.format("@id='%s'", pid)
             ).iterator().next();
-            final int threads = 10;
+            final int threads = 1;
             MatcherAssert.assertThat(
                 inc -> {
                     final String cid = UUID.randomUUID().toString();
