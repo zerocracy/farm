@@ -16,22 +16,13 @@
  */
 package com.zerocracy.farm.props;
 
-import com.jcabi.xml.XMLDocument;
 import com.zerocracy.Item;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import lombok.EqualsAndHashCode;
 import org.cactoos.Func;
 import org.cactoos.Proc;
 import org.cactoos.func.IoCheckedFunc;
-import org.cactoos.io.LengthOf;
-import org.cactoos.io.ResourceOf;
-import org.cactoos.io.TeeInput;
-import org.cactoos.text.TextOf;
-import org.xembly.Directive;
-import org.xembly.Directives;
-import org.xembly.Xembler;
 
 /**
  * Props item.
@@ -39,7 +30,6 @@ import org.xembly.Xembler;
  * <p>This Item represents the {@code _props.xml} file in a PMO project.</p>
  *
  * @since 1.0
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @EqualsAndHashCode(of = "temp")
 final class PropsItem implements Item {
@@ -50,26 +40,11 @@ final class PropsItem implements Item {
     private final Path temp;
 
     /**
-     * Post processing.
-     */
-    private final Iterable<Directive> post;
-
-    /**
      * Ctor.
      * @param tmp Temp file
      */
     PropsItem(final Path tmp) {
-        this(tmp, new Directives());
-    }
-
-    /**
-     * Ctor.
-     * @param tmp Temp file
-     * @param dirs Post processing dirs
-     */
-    PropsItem(final Path tmp, final Iterable<Directive> dirs) {
         this.temp = tmp;
-        this.post = dirs;
     }
 
     @Override
@@ -79,41 +54,11 @@ final class PropsItem implements Item {
 
     @Override
     public <T> T read(final Func<Path, T> reader) throws IOException {
-        this.bootstrap();
         return new IoCheckedFunc<>(reader).apply(this.temp);
     }
 
     @Override
     public void update(final Proc<Path> writer) throws IOException {
         throw new IOException("props is readonly");
-    }
-
-    /**
-     * Bootstrap props.
-     * @throws IOException On failure
-     */
-    private void bootstrap() throws IOException {
-        if (Files.exists(this.temp) && Files.size(this.temp) > 0L) {
-            return;
-        }
-        final Directives dirs = new Directives();
-        if (this.getClass().getResource("/org/junit/Test.class") != null) {
-            dirs.xpath("/props").add("testing").set("yes");
-        }
-        dirs.append(this.post);
-        new LengthOf(
-            new TeeInput(
-                new XMLDocument(
-                    new Xembler(dirs).applyQuietly(
-                        new XMLDocument(
-                            new TextOf(
-                                new ResourceOf("com/zerocracy/_props.xml")
-                            ).asString()
-                        ).node()
-                    )
-                ).toString(),
-                this.temp
-            )
-        ).intValue();
     }
 }

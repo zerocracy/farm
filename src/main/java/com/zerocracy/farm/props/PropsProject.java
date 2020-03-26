@@ -19,11 +19,10 @@ package com.zerocracy.farm.props;
 import com.zerocracy.Item;
 import com.zerocracy.Project;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import lombok.EqualsAndHashCode;
-import org.xembly.Directive;
-import org.xembly.Directives;
+import org.cactoos.Scalar;
+import org.cactoos.scalar.IoCheckedScalar;
 
 /**
  * Props project.
@@ -42,26 +41,18 @@ final class PropsProject implements Project {
     private final Project origin;
 
     /**
-     * Post processing.
+     * Props file.
      */
-    private final Iterable<Directive> post;
+    private final Scalar<Path> props;
 
     /**
      * Ctor.
      * @param pkt Project
+     * @param props Properties file
      */
-    PropsProject(final Project pkt) {
-        this(pkt, new Directives());
-    }
-
-    /**
-     * Ctor.
-     * @param pkt Project
-     * @param dirs Post processing dirs
-     */
-    PropsProject(final Project pkt, final Iterable<Directive> dirs) {
+    PropsProject(final Project pkt, final Scalar<Path> props) {
         this.origin = pkt;
-        this.post = dirs;
+        this.props = props;
     }
 
     @Override
@@ -73,13 +64,10 @@ final class PropsProject implements Project {
     public Item acq(final String file) throws IOException {
         final Item item;
         if ("_props.xml".equals(file)) {
-            final Path tmp = Files.createTempFile("props", ".xml");
-            tmp.toFile().deleteOnExit();
-            item = new PropsItem(tmp, this.post);
+            item = new PropsItem(new IoCheckedScalar<>(this.props).value());
         } else {
             item = this.origin.acq(file);
         }
         return item;
     }
-
 }

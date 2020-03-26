@@ -16,15 +16,25 @@
  */
 package com.zerocracy.farm.props;
 
+import com.jcabi.xml.XMLDocument;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.guts.Guts;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import lombok.EqualsAndHashCode;
+import org.cactoos.Scalar;
+import org.cactoos.io.LengthOf;
+import org.cactoos.io.ResourceOf;
+import org.cactoos.io.TeeInput;
 import org.cactoos.iterable.Mapped;
+import org.cactoos.scalar.SolidScalar;
+import org.cactoos.text.TextOf;
 import org.xembly.Directive;
 import org.xembly.Directives;
+import org.xembly.Xembler;
 
 /**
  * Props farm.
@@ -34,6 +44,7 @@ import org.xembly.Directives;
  * class.</p>
  *
  * @since 1.0
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @EqualsAndHashCode(of = "origin")
 public final class PropsFarm implements Farm {
@@ -44,9 +55,9 @@ public final class PropsFarm implements Farm {
     private final Farm origin;
 
     /**
-     * Post processing.
+     * Props temp path.
      */
-    private final Iterable<Directive> post;
+    private final Scalar<Path> props;
 
     /**
      * Ctor.
@@ -78,7 +89,7 @@ public final class PropsFarm implements Farm {
      */
     public PropsFarm(final Farm farm, final Iterable<Directive> dirs) {
         this.origin = farm;
-        this.post = dirs;
+        this.props = new SolidScalar<>(() -> PropsFarm.loadProps(dirs));
     }
 
     @Override
@@ -86,7 +97,7 @@ public final class PropsFarm implements Farm {
         return new Guts(
             this.origin,
             () -> new Mapped<>(
-                pkt -> new PropsProject(pkt, this.post),
+                pkt -> new PropsProject(pkt, this.props),
                 this.origin.find(query)
             ),
             () -> new Directives()
@@ -100,5 +111,36 @@ public final class PropsFarm implements Farm {
     @Override
     public void close() throws IOException {
         this.origin.close();
+    }
+
+    /**
+     * Load properties file into temp location.
+     * @param post Post directives
+     * @return Path with props
+     * @throws IOException On failure
+     */
+    private static Path loadProps(final Iterable<Directive> post)
+        throws IOException {
+        final Path temp = Files.createTempFile("props", ".xml");
+        final Directives dirs = new Directives();
+        if (PropsFarm.class.getResource("/org/junit/Test.class") != null) {
+            dirs.xpath("/props").add("testing").set("yes");
+        }
+        dirs.append(post);
+        new LengthOf(
+            new TeeInput(
+                new XMLDocument(
+                    new Xembler(dirs).applyQuietly(
+                        new XMLDocument(
+                            new TextOf(
+                                new ResourceOf("com/zerocracy/_props.xml")
+                            ).asString()
+                        ).node()
+                    )
+                ).toString(),
+                temp
+            )
+        ).intValue();
+        return temp;
     }
 }
