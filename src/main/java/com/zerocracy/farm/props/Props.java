@@ -22,8 +22,9 @@ import com.zerocracy.Item;
 import com.zerocracy.Project;
 import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.List;
-import org.cactoos.text.TextOf;
 
 /**
  * Properties of PMO project.
@@ -67,7 +68,10 @@ public final class Props {
     @Override
     public String toString() {
         try {
-            return this.item().read(TextOf::new).asString();
+            return new String(
+                this.item().read(Files::readAllBytes),
+                StandardCharsets.UTF_8
+            );
         } catch (final IOException ex) {
             throw new IllegalStateException(ex);
         }

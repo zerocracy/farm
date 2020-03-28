@@ -30,7 +30,6 @@ import org.cactoos.io.LengthOf;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.io.TeeInput;
 import org.cactoos.iterable.Mapped;
-import org.cactoos.scalar.SolidScalar;
 import org.cactoos.text.TextOf;
 import org.xembly.Directive;
 import org.xembly.Directives;
@@ -89,7 +88,7 @@ public final class PropsFarm implements Farm {
      */
     public PropsFarm(final Farm farm, final Iterable<Directive> dirs) {
         this.origin = farm;
-        this.props = new SolidScalar<>(() -> PropsFarm.loadProps(dirs));
+        this.props = () -> PropsFarm.loadProps(dirs);
     }
 
     @Override
