@@ -18,10 +18,10 @@ package com.zerocracy.tk.project;
 
 import com.jcabi.matchers.XhtmlMatchers;
 import com.zerocracy.Farm;
+import com.zerocracy.FkFarm;
 import com.zerocracy.Project;
 import com.zerocracy.claims.ClaimOut;
 import com.zerocracy.entry.ClaimsOf;
-import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.footprint.FtFarm;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.tk.View;

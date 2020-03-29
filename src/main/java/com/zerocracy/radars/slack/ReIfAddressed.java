@@ -55,5 +55,4 @@ public final class ReIfAddressed implements Reaction<SlackMessagePosted> {
         }
         return done;
     }
-
 }

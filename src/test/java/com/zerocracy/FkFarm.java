@@ -14,10 +14,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.farm.fake;
+package com.zerocracy;
 
-import com.zerocracy.Farm;
-import com.zerocracy.Project;
+import com.zerocracy.farm.props.PropsFarm;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collections;
@@ -37,6 +36,7 @@ import org.cactoos.func.StickyFunc;
  * @since 1.0
  */
 @EqualsAndHashCode(of = "fid")
+@SuppressWarnings("PMD.ProhibitPublicStaticMethods")
 public final class FkFarm implements Farm {
 
     /**
@@ -182,5 +182,13 @@ public final class FkFarm implements Farm {
     @Override
     public void close() {
         // nothing to do here
+    }
+
+    /**
+     * New props farm.
+     * @return Farm instance
+     */
+    public static Farm props() {
+        return new PropsFarm(new FkFarm());
     }
 }

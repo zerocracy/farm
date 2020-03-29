@@ -86,7 +86,8 @@ public final class TkJoinPost implements TkRegex {
         } else {
             when = LocalDateTime.MIN;
         }
-        final long days = (long) new Policy().get("1.lag", 16);
+        final long days = (long) new Policy(this.farm)
+            .get("1.lag", 16);
         final LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
         if (when.plusDays(days).isAfter(now)) {
             throw new RsForward(
@@ -135,7 +136,8 @@ public final class TkJoinPost implements TkRegex {
                     new Par("Join form was submitted by @%s, you can check resumes page")
                         .say(author)
                 )
-                .param("min", new Policy().get("1.min-rep", 0))
+                // @checkstyle LineLengthCheck (1 line)
+                .param("min", new Policy(this.farm).get("1.min-rep", 0))
                 .param("reason", "New student")
                 .postTo(new ClaimsOf(this.farm));
         }

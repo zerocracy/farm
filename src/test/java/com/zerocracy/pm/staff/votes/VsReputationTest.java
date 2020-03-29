@@ -17,9 +17,9 @@
 package com.zerocracy.pm.staff.votes;
 
 import com.jcabi.aspects.Tv;
+import com.zerocracy.FkFarm;
+import com.zerocracy.FkProject;
 import com.zerocracy.Project;
-import com.zerocracy.farm.fake.FkFarm;
-import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.pmo.Awards;
 import com.zerocracy.pmo.Pmo;
 import org.cactoos.list.ListOf;

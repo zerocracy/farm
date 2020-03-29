@@ -17,10 +17,11 @@
 package com.zerocracy.pm.cost;
 
 import com.jcabi.matchers.XhtmlMatchers;
+import com.zerocracy.FkFarm;
+import com.zerocracy.FkProject;
 import com.zerocracy.Project;
 import com.zerocracy.TextItem;
 import com.zerocracy.cash.Cash;
-import com.zerocracy.farm.fake.FkProject;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Ignore;
@@ -93,7 +94,7 @@ public final class EquityTest {
             "</equity>"
         );
         MatcherAssert.assertThat(
-            equity.pdf("dmarkov"),
+            equity.pdf("dmarkov", FkFarm.props()),
             Matchers.notNullValue()
         );
     }

@@ -21,20 +21,20 @@ import com.jcabi.github.Repo
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.farm.props.Props
 import org.cactoos.map.MapEntry
 import org.cactoos.map.MapOf
-import com.zerocracy.claims.ClaimIn
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Project link was added')
   ClaimIn claim = new ClaimIn(xml)
   if (claim.param('rel') == 'github') {
-    Props props = new Props()
     Farm farm = binding.variables.farm
+    Props props = new Props(farm)
     Repo repo = new ExtGithub(farm).value().repos().get(new Coordinates.Simple(claim.param('href')))
     repo.hooks().create(
       'web',

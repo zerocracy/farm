@@ -16,9 +16,9 @@
  */
 package com.zerocracy.pm.staff.votes;
 
+import com.zerocracy.Farm;
 import com.zerocracy.pm.staff.Votes;
 import com.zerocracy.pmo.People;
-import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
 
 /**
@@ -34,10 +34,10 @@ public final class VsVacation implements Votes {
 
     /**
      * Ctor.
-     * @param pmo The PMO
+     * @param farm Farm
      */
-    public VsVacation(final Pmo pmo) {
-        this(new People(pmo));
+    public VsVacation(final Farm farm) {
+        this(new People(farm));
     }
 
     /**

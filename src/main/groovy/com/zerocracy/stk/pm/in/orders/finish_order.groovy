@@ -22,9 +22,9 @@ import com.zerocracy.Par
 import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.cash.Cash
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
-import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pm.cost.Boosts
 import com.zerocracy.pm.cost.Estimates
 import com.zerocracy.pm.cost.Rates
@@ -58,7 +58,7 @@ def exec(Project project, XML xml) {
   Cash price = Cash.ZERO
   Farm farm = binding.variables.farm
   int speed = 0
-  if (velocity <= Duration.ofHours(new Policy().get('36.hours', 48)).toMillis()) {
+  if (velocity <= Duration.ofHours(new Policy(farm).get('36.hours', 48)).toMillis()) {
     // @todo #1381:30min This message has to be moved to the final message in
     //  make_payment.groovy stakeholder. Leaving it here adds a pointless message
     //  in issue tracker, we could reduce it into a single message that contains
@@ -72,7 +72,7 @@ def exec(Project project, XML xml) {
       new Par('Job was finished in %d hours, bonus for fast delivery is possible (see §36)')
         .say(Duration.ofMillis(velocity).toHours())
     ).postTo(new ClaimsOf(farm, project))
-    speed = new Policy().get('36.bonus', 5)
+    speed = new Policy(farm).get('36.bonus', 5)
   }
   if (estimates.exists(job)) {
     price = estimates.get(job)
@@ -118,9 +118,9 @@ def exec(Project project, XML xml) {
   } else {
     Cash bonus
     if (new Wbs(project).bootstrap().role(job) == 'REV') {
-      bonus = price.mul(new Policy().get('31.rev-bonus', 33)) / 100
+      bonus = price.mul(new Policy(farm).get('31.rev-bonus', 33)) / 100
     } else {
-      bonus = price.mul(new Policy().get('31.bonus', 16)) / 100
+      bonus = price.mul(new Policy(farm).get('31.bonus', 16)) / 100
     }
     review = true
     claim.copy()

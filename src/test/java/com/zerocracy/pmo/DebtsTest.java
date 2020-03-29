@@ -17,9 +17,9 @@
 package com.zerocracy.pmo;
 
 import com.jcabi.matchers.XhtmlMatchers;
+import com.zerocracy.FkFarm;
 import com.zerocracy.Par;
 import com.zerocracy.cash.Cash;
-import com.zerocracy.farm.fake.FkFarm;
 import java.time.Instant;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;

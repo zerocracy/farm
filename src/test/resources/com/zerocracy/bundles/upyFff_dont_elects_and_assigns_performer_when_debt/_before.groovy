@@ -35,5 +35,5 @@ def exec(Project project, XML xml) {
   repo.issues().create('Issue two', '')
   repo.issues().create('Issue three', '')
   new Ledger(farm, project).bootstrap().deficit(true)
-  new Rates(project).bootstrap().set('paulodamaso', new Cash.S('$10'))
+  new Rates(project).bootstrap().set('paulodamaso', new Cash.S('$10'), farm)
 }

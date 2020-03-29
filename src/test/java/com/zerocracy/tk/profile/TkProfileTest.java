@@ -18,9 +18,9 @@ package com.zerocracy.tk.profile;
 
 import com.jcabi.matchers.XhtmlMatchers;
 import com.zerocracy.Farm;
+import com.zerocracy.FkFarm;
+import com.zerocracy.FkProject;
 import com.zerocracy.cash.Cash;
-import com.zerocracy.farm.fake.FkFarm;
-import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pm.staff.Roles;
 import com.zerocracy.pmo.Agenda;

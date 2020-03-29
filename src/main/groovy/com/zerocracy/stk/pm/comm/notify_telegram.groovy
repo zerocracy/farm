@@ -17,11 +17,11 @@
 package com.zerocracy.stk.pm.comm
 
 import com.jcabi.xml.XML
-import com.zerocracy.entry.ExtTelegram
-import com.zerocracy.farm.Assume
 import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.claims.ClaimIn
+import com.zerocracy.entry.ExtTelegram
+import com.zerocracy.farm.Assume
 import org.cactoos.Proc
 import org.cactoos.func.RetryFunc
 import org.telegram.telegrambots.api.methods.send.SendMessage

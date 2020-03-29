@@ -87,7 +87,8 @@ public final class Payroll {
             );
         }
         final String method = people.bank(login);
-        final Cash min = new Policy().get("46.min", new Cash.S("$10"));
+        final Cash min = new Policy(this.farm)
+            .get("46.min", new Cash.S("$10"));
         if (amount.compareTo(min) < 0 && !reason.startsWith("Debt repayment")
             && !"zld".equalsIgnoreCase(method)) {
             throw new SoftException(

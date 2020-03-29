@@ -18,14 +18,11 @@ package com.zerocracy.farm.props;
 
 import com.zerocracy.Item;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import lombok.EqualsAndHashCode;
 import org.cactoos.Func;
 import org.cactoos.Proc;
-import org.cactoos.Scalar;
 import org.cactoos.func.IoCheckedFunc;
-import org.cactoos.scalar.IoCheckedScalar;
 
 /**
  * Props item.
@@ -34,20 +31,20 @@ import org.cactoos.scalar.IoCheckedScalar;
  *
  * @since 1.0
  */
-@EqualsAndHashCode(of = "temp")
+@EqualsAndHashCode(of = "props")
 final class PropsItem implements Item {
 
     /**
      * Temp file.
      */
-    private final Scalar<Path> temp;
+    private final Path props;
 
     /**
      * Ctor.
-     * @param tmp Temp file
+     * @param props Temp file
      */
-    PropsItem(final Scalar<Path> tmp) {
-        this.temp = tmp;
+    PropsItem(final Path props) {
+        this.props = props;
     }
 
     @Override
@@ -57,12 +54,7 @@ final class PropsItem implements Item {
 
     @Override
     public <T> T read(final Func<Path, T> reader) throws IOException {
-        final Path file = new IoCheckedScalar<>(this.temp).value();
-        try {
-            return new IoCheckedFunc<>(reader).apply(file);
-        } finally {
-            Files.delete(file);
-        }
+        return new IoCheckedFunc<>(reader).apply(this.props);
     }
 
     @Override

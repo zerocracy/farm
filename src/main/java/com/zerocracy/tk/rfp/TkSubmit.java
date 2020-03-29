@@ -88,7 +88,8 @@ public final class TkSubmit implements Take {
                         "see §40"
                     ).say(rid)
                 )
-                .param("min", new Policy().get("40.min", 0))
+                // @checkstyle LineLengthCheck (1 line)
+                .param("min", new Policy(this.farm).get("40.min", 0))
                 .param("reason", "RFP")
                 .postTo(new ClaimsOf(this.farm));
         }

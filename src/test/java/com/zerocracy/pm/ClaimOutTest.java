@@ -18,13 +18,13 @@ package com.zerocracy.pm;
 
 import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XMLDocument;
+import com.zerocracy.FkFarm;
+import com.zerocracy.FkProject;
 import com.zerocracy.Project;
 import com.zerocracy.claims.ClaimOut;
 import com.zerocracy.claims.Claims;
 import com.zerocracy.claims.ClaimsItem;
 import com.zerocracy.entry.ClaimsOf;
-import com.zerocracy.farm.fake.FkProject;
-import com.zerocracy.farm.props.PropsFarm;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -71,7 +71,7 @@ public final class ClaimOutTest {
             .param("minutes", "45min")
             .param("cause_type", "Ping")
             .param("message", "hello, world")
-            .postTo(new ClaimsOf(new PropsFarm(), project));
+            .postTo(new ClaimsOf(FkFarm.props(), project));
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
                 new ClaimsItem(project).iterate().iterator().next()
@@ -106,7 +106,7 @@ public final class ClaimOutTest {
                 .param("role", "this is not a role"),
         };
         final Project project = new FkProject();
-        final Claims claims = new ClaimsOf(new PropsFarm(), project);
+        final Claims claims = new ClaimsOf(FkFarm.props(), project);
         for (final ClaimOut claim : data) {
             try {
                 claim.postTo(claims);

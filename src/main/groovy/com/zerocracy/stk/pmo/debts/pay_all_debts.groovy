@@ -26,7 +26,6 @@ import com.zerocracy.cash.Cash
 import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
-import com.zerocracy.farm.fake.FkProject
 import com.zerocracy.pm.cost.Ledger
 import com.zerocracy.pmo.Debts
 import com.zerocracy.pmo.People
@@ -60,7 +59,7 @@ def exec(Project pmo, XML xml) {
       return
     }
     Cash debt = debts.amount(uid)
-    Policy policy = new Policy()
+    Policy policy = new Policy(farm)
     if (!zld && debt < policy.get('46.threshold', new Cash.S('$50')) &&
       !debts.olderThan(uid, Instant.now() - Duration.ofDays(policy.get('46.days', 20)))) {
       return
@@ -75,7 +74,7 @@ def exec(Project pmo, XML xml) {
       }
       String details = amounts.join(', ')
       String pid = new Payroll(farm).pay(
-        new Ledger(farm, new FkProject()).bootstrap(),
+        new Ledger(farm, pmo).bootstrap(),
         uid, debt,
         new Par('Debt repayment, per §46: %s').say(details),
         debts.hash(uid)

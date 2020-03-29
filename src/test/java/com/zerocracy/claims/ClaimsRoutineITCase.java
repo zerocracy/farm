@@ -21,11 +21,11 @@ import com.amazonaws.services.sqs.model.Message;
 import com.jcabi.aspects.Tv;
 import com.jcabi.xml.XMLDocument;
 import com.zerocracy.Farm;
+import com.zerocracy.FkFarm;
+import com.zerocracy.FkProject;
 import com.zerocracy.Project;
 import com.zerocracy.claims.proc.SqsProject;
 import com.zerocracy.entry.ExtSqs;
-import com.zerocracy.farm.fake.FkFarm;
-import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.shutdown.ShutdownFarm;
@@ -50,7 +50,7 @@ public final class ClaimsRoutineITCase {
     public static void checkProps() throws Exception {
         Assume.assumeTrue(
             "sqs credentials are not provided",
-            new Props(new PropsFarm()).has("//sqs")
+            new Props(FkFarm.props()).has("//sqs")
         );
     }
 

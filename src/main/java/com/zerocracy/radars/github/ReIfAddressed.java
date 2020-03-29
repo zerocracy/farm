@@ -74,5 +74,4 @@ public final class ReIfAddressed implements Response {
         }
         return done;
     }
-
 }

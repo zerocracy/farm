@@ -17,8 +17,8 @@
 package com.zerocracy.pm.staff;
 
 import com.zerocracy.Farm;
-import com.zerocracy.farm.fake.FkFarm;
-import com.zerocracy.farm.fake.FkProject;
+import com.zerocracy.FkFarm;
+import com.zerocracy.FkProject;
 import com.zerocracy.pmo.Projects;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;

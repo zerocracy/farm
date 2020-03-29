@@ -22,9 +22,9 @@ import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.SoftException
 import com.zerocracy.cash.Cash
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
-import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pm.cost.Vesting
 
 def exec(Project project, XML xml) {

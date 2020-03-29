@@ -34,7 +34,7 @@ def exec(Project pmo, XML xml) {
   Farm farm = binding.variables.farm
   Policy policy = new Policy(farm)
   Instant outdated = claim.created().toInstant() - Period.ofDays(policy.get('18.days', 90))
-  new People(pmo).bootstrap().iterate().each { login ->
+  new People(farm).bootstrap().iterate().each { login ->
     new Awards(pmo, login).bootstrap().with {
       int before = total()
       removeOlderThan(outdated)

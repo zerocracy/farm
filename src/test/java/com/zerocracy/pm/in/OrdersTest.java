@@ -16,10 +16,11 @@
  */
 package com.zerocracy.pm.in;
 
+import com.zerocracy.Farm;
+import com.zerocracy.FkFarm;
+import com.zerocracy.FkProject;
 import com.zerocracy.Project;
 import com.zerocracy.cash.Cash;
-import com.zerocracy.farm.fake.FkProject;
-import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pm.cost.Estimates;
 import com.zerocracy.pm.cost.Ledger;
 import com.zerocracy.pm.cost.Rates;
@@ -42,7 +43,7 @@ public final class OrdersTest {
     @Test
     public void assignsAndResigns() throws Exception {
         final Project project = new FkProject();
-        final Orders orders = new Orders(new PropsFarm(), project).bootstrap();
+        final Orders orders = new Orders(FkFarm.props(), project).bootstrap();
         final String job = "gh:yegor256/0pdd_test#13";
         new Wbs(project).bootstrap().add(job);
         orders.assign(job, "yegor256", UUID.randomUUID().toString());
@@ -51,7 +52,7 @@ public final class OrdersTest {
     @Test
     public void setsEstimatesOnAssign() throws Exception {
         final Project project = new FkProject();
-        final PropsFarm farm = new PropsFarm();
+        final Farm farm = FkFarm.props();
         new Ledger(farm, project).bootstrap().add(
             new Ledger.Transaction(
                 new Cash.S("$1000"),
@@ -61,7 +62,8 @@ public final class OrdersTest {
             )
         );
         final String login = "dmarkov";
-        new Rates(project).bootstrap().set(login, new Cash.S("$50"));
+        new Rates(project).bootstrap()
+            .set(login, new Cash.S("$50"), FkFarm.props());
         final String job = "gh:yegor256/0pdd#19";
         final Wbs wbs = new Wbs(project).bootstrap();
         wbs.add(job);
@@ -77,7 +79,7 @@ public final class OrdersTest {
     @Test
     public void removesOrder() throws Exception {
         final Project project = new FkProject();
-        final Orders orders = new Orders(new PropsFarm(), project).bootstrap();
+        final Orders orders = new Orders(FkFarm.props(), project).bootstrap();
         final String job = "gh:yegor256/0pdd#13";
         new Wbs(project).bootstrap().add(job);
         orders.assign(job, "yegor256", UUID.randomUUID().toString());

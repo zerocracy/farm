@@ -19,7 +19,7 @@ package com.zerocracy.radars.github;
 import com.jcabi.github.Repo;
 import com.jcabi.github.Repos;
 import com.jcabi.github.mock.MkGithub;
-import com.zerocracy.farm.props.PropsFarm;
+import com.zerocracy.FkFarm;
 import javax.json.Json;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -31,6 +31,7 @@ import org.junit.Test;
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class RbMilestoneTest {
+
     @Test
     public void acceptMilestones() throws Exception {
         final MkGithub github = new MkGithub();
@@ -39,7 +40,7 @@ public final class RbMilestoneTest {
         final int number = 1;
         MatcherAssert.assertThat(
             new RbMilestone().react(
-                new PropsFarm(),
+                FkFarm.props(),
                 github,
                 Json.createObjectBuilder()
                     .add(

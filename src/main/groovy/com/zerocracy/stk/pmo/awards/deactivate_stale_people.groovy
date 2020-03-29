@@ -18,6 +18,7 @@ package com.zerocracy.stk.pmo.awards
 
 import com.jcabi.aspects.Tv
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 import com.zerocracy.pmo.Awards
@@ -25,7 +26,8 @@ import com.zerocracy.pmo.People
 
 def exec(Project pmo, XML xml) {
   new Assume(pmo, xml).isPmo().type('Ping nightly')
-  People people = new People(pmo).bootstrap()
+  Farm farm = binding.variables.farm
+  People people = new People(farm).bootstrap()
   people.iterate().each { login ->
     if (new Awards(pmo, login).bootstrap().awards(Tv.NINETY).empty) {
       people.activate(login, false)

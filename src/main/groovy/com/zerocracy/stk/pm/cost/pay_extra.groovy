@@ -37,19 +37,19 @@ def exec(Project project, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
   String login = claim.param('login')
+  Farm farm = binding.variables.farm
   int minutes = Integer.parseInt(claim.param('minutes'))
   if (minutes < 0) {
     throw new SoftException(
       new Par('Minutes %d can\'t be negative, see §49').say(minutes)
     )
   }
-  int max = new Policy().get('49.max', 120)
+  int max = new Policy(farm).get('49.max', 120)
   if (minutes > max) {
     throw new SoftException(
       new Par('Minutes %d can\'t be more than %d, see §49').say(minutes, max)
     )
   }
-  Farm farm = binding.variables.farm
   Rates rates = new Rates(project).bootstrap()
   if (!rates.exists(login)) {
     throw new SoftException(
@@ -110,7 +110,7 @@ def exec(Project project, XML xml) {
   claim.copy()
     .type('Add award points')
     .param('login', author)
-    .param('minutes', -new Policy().get('49.penalty', 60))
+    .param('minutes', -new Policy(farm).get('49.penalty', 60))
     .param(
       'reason',
       new Par(

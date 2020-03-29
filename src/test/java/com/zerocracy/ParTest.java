@@ -34,7 +34,6 @@ public final class ParTest {
         MatcherAssert.assertThat(
             new Par(
                 "@%s is a DEV",
-                "in C63314D6Z",
                 "and has %d job(s), as in §1",
                 "see [$50](/p/C6331EE6Z?a=1)",
                 "and gh:test2-0/test.-4#455",
@@ -44,7 +43,6 @@ public final class ParTest {
                 new JoinedText(
                     " ",
                     "@jack-me[/z](https://www.0crat.com/u/jack-me) is a `DEV`",
-                    "in [C63314D6Z](https://www.0crat.com/p/C63314D6Z)",
                     "and has one job, as in",
                     "[§1](http://www.zerocracy.com/policy.html#1)",
                     "see [$50](https://www.0crat.com/p/C6331EE6Z?a=1)",

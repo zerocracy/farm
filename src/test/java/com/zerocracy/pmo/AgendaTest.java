@@ -19,11 +19,11 @@ package com.zerocracy.pmo;
 import com.jcabi.aspects.Tv;
 import com.jcabi.matchers.XhtmlMatchers;
 import com.zerocracy.Farm;
+import com.zerocracy.FkFarm;
+import com.zerocracy.FkProject;
 import com.zerocracy.Project;
 import com.zerocracy.SoftException;
 import com.zerocracy.Xocument;
-import com.zerocracy.farm.fake.FkFarm;
-import com.zerocracy.farm.fake.FkProject;
 import java.nio.file.Path;
 import java.time.Clock;
 import java.time.Instant;
@@ -48,6 +48,7 @@ public final class AgendaTest {
 
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
+
     @Rule
     public ExpectedException exception = ExpectedException.none();
 

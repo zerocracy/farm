@@ -17,8 +17,8 @@
 package com.zerocracy;
 
 import com.jcabi.log.Logger;
-import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.pmo.Catalog;
+import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -37,9 +37,9 @@ import org.cactoos.text.JoinedText;
 public final class Par {
 
     /**
-     * The farm.
+     * Title resolver.
      */
-    private final Farm farm;
+    private final Func<Matcher, String> title;
 
     /**
      * The text parts.
@@ -51,7 +51,7 @@ public final class Par {
      * @param list The text
      */
     public Par(final String... list) {
-        this(new FkFarm(), list);
+        this((Matcher matcher) -> matcher.group(0), list);
     }
 
     /**
@@ -60,7 +60,38 @@ public final class Par {
      * @param list The text
      */
     public Par(final Farm frm, final String... list) {
-        this.farm = frm;
+        this(new Pmo(frm), list);
+    }
+
+    /**
+     * Ctor.
+     * @param pmo Pmo
+     * @param list The text
+     */
+    public Par(final Pmo pmo, final String... list) {
+        this(
+            (Matcher matcher) -> {
+                String ttl = matcher.group(0);
+                final Catalog catalog = new Catalog(pmo).bootstrap();
+                if (catalog.exists(ttl)) {
+                    ttl = catalog.title(ttl);
+                }
+                return String.format(
+                    "[%s](https://www.0crat.com/p/%s)",
+                    ttl, matcher.group(0)
+                );
+            },
+            list
+        );
+    }
+
+    /**
+     * Ctor.
+     * @param title Title resolver
+     * @param list Params
+     */
+    private Par(final Func<Matcher, String> title, final String... list) {
+        this.title = title;
         this.parts = new ListOf<>(list);
     }
 
@@ -83,17 +114,7 @@ public final class Par {
         );
         out = Par.replace(
             out, Par.pattern("(C[A-Z0-9]{8})"),
-            matcher -> {
-                String title = matcher.group(0);
-                final Catalog catalog = new Catalog(this.farm).bootstrap();
-                if (catalog.exists(title)) {
-                    title = catalog.title(title);
-                }
-                return String.format(
-                    "[%s](https://www.0crat.com/p/%s)",
-                    title, matcher.group(0)
-                );
-            }
+            this.title
         );
         out = Par.replace(
             out,
@@ -187,10 +208,12 @@ public final class Par {
      * To plain text.
      */
     public static final class ToText {
+
         /**
          * The par.
          */
         private final String par;
+
         /**
          * Ctor.
          * @param txt The par
@@ -198,6 +221,7 @@ public final class Par {
         public ToText(final String txt) {
             this.par = txt;
         }
+
         @Override
         public String toString() {
             return this.par
@@ -211,10 +235,12 @@ public final class Par {
      * To HTML.
      */
     public static final class ToHtml {
+
         /**
          * The par.
          */
         private final String par;
+
         /**
          * Ctor.
          * @param txt The par
@@ -222,6 +248,7 @@ public final class Par {
         public ToHtml(final String txt) {
             this.par = txt;
         }
+
         @Override
         public String toString() {
             return this.par

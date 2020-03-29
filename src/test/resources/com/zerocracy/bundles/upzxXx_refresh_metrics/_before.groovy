@@ -17,8 +17,8 @@
 package com.zerocracy.bundles.refresh_speed
 
 import com.jcabi.xml.XML
+import com.zerocracy.FkProject
 import com.zerocracy.Project
-import com.zerocracy.farm.fake.FkProject
 import com.zerocracy.pmo.Awards
 import com.zerocracy.pmo.Speed
 

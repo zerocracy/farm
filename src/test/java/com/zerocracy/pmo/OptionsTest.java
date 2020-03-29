@@ -17,8 +17,8 @@
 package com.zerocracy.pmo;
 
 import com.zerocracy.Farm;
+import com.zerocracy.FkFarm;
 import com.zerocracy.ItemXml;
-import com.zerocracy.farm.fake.FkFarm;
 import java.io.IOException;
 import java.util.Iterator;
 import org.hamcrest.MatcherAssert;

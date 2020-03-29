@@ -17,14 +17,10 @@
 package com.zerocracy.stk.pm
 
 import com.jcabi.xml.XML
-import com.zerocracy.Farm
-import com.zerocracy.Par
-import com.zerocracy.Policy
-import com.zerocracy.Project
-import com.zerocracy.SoftException
+import com.zerocracy.*
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
-import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pmo.Catalog
 import com.zerocracy.pmo.Exam
@@ -75,7 +71,7 @@ def exec(Project project, XML xml) {
     .type('Add award points')
     .param('login', author)
     .param('job', 'none')
-    .param('minutes', -new Policy().get('12.price', 256))
+    .param('minutes', -new Policy(farm).get('12.price', 256))
     .param('reason', new Par('Project %s was bootstrapped').say(project.pid()))
     .postTo(new ClaimsOf(farm, project))
   if (claim.hasParam('channel')) {

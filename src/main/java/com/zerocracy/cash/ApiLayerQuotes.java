@@ -20,6 +20,7 @@ import com.jcabi.http.Request;
 import com.jcabi.http.request.JdkRequest;
 import com.jcabi.http.response.JsonResponse;
 import com.jcabi.http.response.RestResponse;
+import com.zerocracy.Farm;
 import com.zerocracy.farm.props.Props;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -39,41 +40,52 @@ import javax.json.JsonObject;
 public final class ApiLayerQuotes implements Quotes {
 
     /**
+     * Farm.
+     */
+    private final Farm farm;
+
+    /**
      * Request.
      */
     private final Request request;
 
     /**
      * Ctor.
+     * @param farm Farm
      * @throws URISyntaxException If fails
      */
-    public ApiLayerQuotes() throws URISyntaxException {
-        this("http://apilayer.net/api/live");
+    public ApiLayerQuotes(final Farm farm) throws URISyntaxException {
+        this("http://apilayer.net/api/live", farm);
     }
 
     /**
      * Ctor.
      * @param uri The URI
+     * @param farm Farm
      * @throws URISyntaxException If fails
      */
-    public ApiLayerQuotes(final String uri) throws URISyntaxException {
-        this(new URI(uri));
+    public ApiLayerQuotes(final String uri, final Farm farm)
+        throws URISyntaxException {
+        this(new URI(uri), farm);
     }
 
     /**
      * Ctor.
      * @param uri The URI
+     * @param farm Farm
      */
-    public ApiLayerQuotes(final URI uri) {
-        this(new JdkRequest(uri));
+    public ApiLayerQuotes(final URI uri, final Farm farm) {
+        this(new JdkRequest(uri), farm);
     }
 
     /**
      * Ctor.
      * @param req The request
+     * @param farm Farm
      */
-    ApiLayerQuotes(final Request req) {
+    ApiLayerQuotes(final Request req, final Farm farm) {
         this.request = req;
+        this.farm = farm;
     }
 
     @Override
@@ -94,7 +106,8 @@ public final class ApiLayerQuotes implements Quotes {
                     .uri()
                     .queryParam(
                         "access_key",
-                        new Props().get("//apilayer_key", "")
+                        new Props(this.farm)
+                            .get("//apilayer_key", "")
                     )
                     .back()
                     .header("Accept", "application/json")
@@ -114,5 +127,4 @@ public final class ApiLayerQuotes implements Quotes {
         }
         return quote;
     }
-
 }

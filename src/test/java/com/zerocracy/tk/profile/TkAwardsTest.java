@@ -18,8 +18,8 @@ package com.zerocracy.tk.profile;
 
 import com.jcabi.matchers.XhtmlMatchers;
 import com.zerocracy.Farm;
-import com.zerocracy.farm.fake.FkFarm;
-import com.zerocracy.farm.fake.FkProject;
+import com.zerocracy.FkFarm;
+import com.zerocracy.FkProject;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pmo.Awards;
 import com.zerocracy.tk.View;

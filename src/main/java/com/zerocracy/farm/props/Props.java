@@ -20,10 +20,9 @@ import com.jcabi.xml.XMLDocument;
 import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Project;
+import com.zerocracy.TextItem;
 import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.List;
 
 /**
@@ -44,13 +43,6 @@ public final class Props {
 
     /**
      * Ctor.
-     */
-    public Props() {
-        this(new PropsFarm());
-    }
-
-    /**
-     * Ctor.
      * @param farm Original farm
      */
     public Props(final Farm farm) {
@@ -68,10 +60,7 @@ public final class Props {
     @Override
     public String toString() {
         try {
-            return new String(
-                this.item().read(Files::readAllBytes),
-                StandardCharsets.UTF_8
-            );
+            return new TextItem(this.item()).readAll();
         } catch (final IOException ex) {
             throw new IllegalStateException(ex);
         }

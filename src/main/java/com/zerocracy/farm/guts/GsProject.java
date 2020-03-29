@@ -20,17 +20,13 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.zerocracy.Farm;
 import com.zerocracy.Item;
+import com.zerocracy.ItemFrom;
 import com.zerocracy.Project;
-import com.zerocracy.farm.fake.FkItem;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import org.cactoos.Scalar;
-import org.cactoos.io.LengthOf;
-import org.cactoos.io.TeeInput;
 import org.cactoos.iterable.Joined;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.scalar.IoCheckedScalar;
@@ -92,7 +88,6 @@ final class GsProject implements Project {
 
     @Override
     public Item acq(final String file) throws IOException {
-        final Path temp = Files.createTempFile("farm", ".xml");
         final Iterator<Project> pkts = this.farm.find(this.query).iterator();
         final XML start = new XMLDocument(
             new Xembler(GsProject.start()).xmlQuietly()
@@ -114,17 +109,12 @@ final class GsProject implements Project {
         } else {
             before = start;
         }
-        new LengthOf(
-            new TeeInput(
-                new XMLDocument(
-                    new Xembler(this.dirs.value()).applyQuietly(
-                        before.node()
-                    )
-                ).toString(),
-                temp
+        final String res = new XMLDocument(
+            new Xembler(this.dirs.value()).applyQuietly(
+                before.node()
             )
-        ).intValue();
-        return new FkItem(temp);
+        ).toString();
+        return new ItemFrom(res);
     }
 
     /**

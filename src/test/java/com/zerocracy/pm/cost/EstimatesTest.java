@@ -18,12 +18,12 @@ package com.zerocracy.pm.cost;
 
 import com.jcabi.aspects.Tv;
 import com.zerocracy.Farm;
+import com.zerocracy.FkFarm;
+import com.zerocracy.FkProject;
 import com.zerocracy.ItemXml;
 import com.zerocracy.Project;
 import com.zerocracy.Txn;
 import com.zerocracy.cash.Cash;
-import com.zerocracy.farm.fake.FkFarm;
-import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pm.in.Orders;
 import com.zerocracy.pm.scope.Wbs;
@@ -50,7 +50,7 @@ public final class EstimatesTest {
     @Test
     public void showsEmptyTotal() throws Exception {
         final Estimates estimates =
-            new Estimates(new PropsFarm(), new FkProject()).bootstrap();
+            new Estimates(FkFarm.props(), new FkProject()).bootstrap();
         MatcherAssert.assertThat(
             estimates.total(),
             Matchers.equalTo(Cash.ZERO)
@@ -60,7 +60,7 @@ public final class EstimatesTest {
     @Test
     public void estimatesJobs() throws Exception {
         final Project project = new FkProject();
-        final PropsFarm farm = new PropsFarm();
+        final Farm farm = FkFarm.props();
         new Ledger(farm, project).bootstrap().add(
             new Ledger.Transaction(
                 new Cash.S("$500"),
@@ -93,7 +93,7 @@ public final class EstimatesTest {
     @Test
     public void estimatesJobsWithDifferentCurrencies() throws Exception {
         final Project project = new FkProject();
-        final Farm farm = new PropsFarm();
+        final Farm farm = FkFarm.props();
         new Ledger(farm, project).bootstrap().add(
             new Ledger.Transaction(
                 new Cash.S("$500"),
@@ -163,7 +163,7 @@ public final class EstimatesTest {
     @Test
     @Ignore
     public void calculatesTotal() throws Exception {
-        final Farm farm = new PropsFarm();
+        final Farm farm = FkFarm.props();
         final Project pkt = new FkProject();
         new Ledger(farm, pkt).bootstrap().add(
             new Ledger.Transaction(

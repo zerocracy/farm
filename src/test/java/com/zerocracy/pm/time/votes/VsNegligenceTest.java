@@ -16,8 +16,8 @@
  */
 package com.zerocracy.pm.time.votes;
 
-import com.zerocracy.farm.fake.FkFarm;
-import com.zerocracy.farm.fake.FkProject;
+import com.zerocracy.FkFarm;
+import com.zerocracy.FkProject;
 import com.zerocracy.pm.staff.Votes;
 import com.zerocracy.pm.staff.votes.VsNegligence;
 import com.zerocracy.pmo.Negligence;

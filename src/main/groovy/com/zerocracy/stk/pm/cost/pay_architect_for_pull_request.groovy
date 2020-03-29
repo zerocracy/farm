@@ -101,7 +101,7 @@ def exec(Project project, XML xml) {
           'Payment to ARC for a closed pull request, as in §28'
         ).say()
       )
-      .param('minutes', new Policy().get('28.price', 10))
+      .param('minutes', new Policy(farm).get('28.price', 10))
       .postTo(new ClaimsOf(farm, project))
   }
 }

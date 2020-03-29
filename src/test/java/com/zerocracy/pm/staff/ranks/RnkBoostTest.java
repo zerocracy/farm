@@ -16,8 +16,8 @@
  */
 package com.zerocracy.pm.staff.ranks;
 
-import com.zerocracy.farm.fake.FkProject;
-import com.zerocracy.farm.props.PropsFarm;
+import com.zerocracy.FkFarm;
+import com.zerocracy.FkProject;
 import com.zerocracy.pm.cost.Boosts;
 import java.util.Arrays;
 import java.util.List;
@@ -32,10 +32,11 @@ import org.junit.Test;
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class RnkBoostTest {
+
     @Test
     public void order() throws Exception {
         final FkProject project = new FkProject();
-        final Boosts boosts = new Boosts(new PropsFarm(), project).bootstrap();
+        final Boosts boosts = new Boosts(FkFarm.props(), project).bootstrap();
         final String first = "gh:test/test#1";
         final List<String> list = Arrays.asList(
             "gh:test/test#4",

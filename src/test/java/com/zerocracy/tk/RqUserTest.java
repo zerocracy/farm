@@ -17,9 +17,8 @@
 package com.zerocracy.tk;
 
 import com.zerocracy.Farm;
-import com.zerocracy.farm.fake.FkFarm;
+import com.zerocracy.FkFarm;
 import com.zerocracy.pmo.People;
-import com.zerocracy.pmo.Pmo;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -36,9 +35,9 @@ public final class RqUserTest {
 
     @Test
     public void buildsUser() throws Exception {
-        final Farm farm = new FkFarm();
+        final Farm farm = FkFarm.props();
         final String uid = "yegor256";
-        new People(new Pmo(farm)).bootstrap().invite(uid, "mentor");
+        new People(farm).bootstrap().invite(uid, "mentor");
         MatcherAssert.assertThat(
             new RqUser(
                 farm,
@@ -50,5 +49,4 @@ public final class RqUserTest {
             Matchers.equalTo(uid)
         );
     }
-
 }

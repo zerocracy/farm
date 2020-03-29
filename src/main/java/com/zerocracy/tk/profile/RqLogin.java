@@ -64,7 +64,7 @@ public final class RqLogin implements Scalar<String> {
         if (!people.find("github", login).iterator().hasNext()) {
             throw new RsForward(
                 new RsParFlash(
-                    new Par("User @%s not found").say(login),
+                    new Par(this.farm, "User @%s not found").say(login),
                     Level.SEVERE
                 )
             );

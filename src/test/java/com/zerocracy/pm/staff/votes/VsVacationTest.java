@@ -16,10 +16,9 @@
  */
 package com.zerocracy.pm.staff.votes;
 
-import com.zerocracy.farm.fake.FkFarm;
-import com.zerocracy.farm.fake.FkProject;
+import com.zerocracy.Farm;
+import com.zerocracy.FkFarm;
 import com.zerocracy.pmo.People;
-import com.zerocracy.pmo.Pmo;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -33,14 +32,13 @@ public final class VsVacationTest {
 
     @Test
     public void highRankForVacationTest() throws Exception {
-        final FkProject project = new FkProject();
-        final FkFarm farm = new FkFarm(project);
+        final Farm farm = FkFarm.props();
         final String uid = "g4s8";
         final People people = new People(farm).bootstrap();
         people.invite(uid, uid);
         people.vacation(uid, true);
         MatcherAssert.assertThat(
-            new VsVacation(new Pmo(farm)).take(uid, new StringBuilder()),
+            new VsVacation(farm).take(uid, new StringBuilder()),
             Matchers.equalTo(1.0D)
         );
     }

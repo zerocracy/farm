@@ -18,6 +18,7 @@ package com.zerocracy.farm.ruled;
 
 import com.zerocracy.Item;
 import com.zerocracy.Project;
+import com.zerocracy.TempFiles;
 import com.zerocracy.farm.fake.FkItem;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -82,7 +83,8 @@ final class RdItem implements Item {
     public void update(final Proc<Path> writer) throws IOException {
         this.origin.update(
             src -> {
-                final Path tmp = Files.createTempFile("rdfarm", ".xml");
+                final Path tmp = TempFiles.INSTANCE
+                    .newFile(this, ".xml");
                 if (src.toFile().exists()) {
                     new LengthOf(new TeeInput(src, tmp)).intValue();
                 }
@@ -126,9 +128,7 @@ final class RdItem implements Item {
                 Files.move(tmp, src, StandardCopyOption.REPLACE_EXISTING);
             }
         } finally {
-            if (Files.exists(tmp)) {
-                Files.delete(tmp);
-            }
+            TempFiles.INSTANCE.dispose(tmp);
         }
     }
 

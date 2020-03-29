@@ -18,8 +18,8 @@ package com.zerocracy.pmo;
 
 import com.jcabi.matchers.XhtmlMatchers;
 import com.zerocracy.Farm;
+import com.zerocracy.FkFarm;
 import com.zerocracy.ItemXml;
-import com.zerocracy.farm.fake.FkFarm;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;

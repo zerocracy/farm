@@ -18,19 +18,12 @@ package com.zerocracy.farm.fake;
 
 import com.zerocracy.Item;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
 import org.cactoos.Func;
 import org.cactoos.Proc;
-import org.cactoos.Scalar;
 import org.cactoos.func.IoCheckedFunc;
 import org.cactoos.func.IoCheckedProc;
-import org.cactoos.io.LengthOf;
-import org.cactoos.io.TeeInput;
-import org.cactoos.scalar.IoCheckedScalar;
-import org.cactoos.scalar.StickyScalar;
-import org.cactoos.scalar.SyncScalar;
-import org.cactoos.scalar.UncheckedScalar;
 
 /**
  * Fake {@link Item}.
@@ -45,19 +38,7 @@ public final class FkItem implements Item {
     /**
      * Location of the file.
      */
-    private final Scalar<Path> file;
-
-    /**
-     * Delete on close? If false, deletes on JVM exit.
-     */
-    private final boolean delete;
-
-    /**
-     * Ctor.
-     */
-    public FkItem() {
-        this(() -> Files.createTempFile("jstk", ".xml"), true);
-    }
+    private final Path path;
 
     /**
      * Ctor.
@@ -65,83 +46,32 @@ public final class FkItem implements Item {
      * @since 1.0
      */
     public FkItem(final Path path) {
-        this(
-            () -> {
-                path.toFile().getParentFile().mkdirs();
-                return path;
-            },
-            false
-        );
-    }
-
-    /**
-     * Ctor.
-     * @param content File content to return
-     * @since 1.0
-     */
-    public FkItem(final String content) {
-        this(
-            () -> {
-                final Path path = Files.createTempFile("jstk-body", "");
-                new LengthOf(new TeeInput(content, path)).value();
-                return path;
-            },
-            true
-        );
-    }
-
-    /**
-     * Ctor.
-     * @param path Path of the file
-     * @param del Delete on close()?
-     * @since 1.0
-     */
-    FkItem(final Scalar<Path> path, final boolean del) {
-        this.file = new SyncScalar<>(new StickyScalar<>(path));
-        this.delete = del;
+        this.path = path;
     }
 
     @Override
     public int hashCode() {
-        return this.toString().hashCode();
+        return Objects.hashCode(this.path);
     }
 
     @Override
     public boolean equals(final Object obj) {
         return obj instanceof FkItem
-            && this.toString().equals(obj.toString());
+            && Objects.equals(this.path, FkItem.class.cast(obj).path);
     }
 
     @Override
     public String toString() {
-        return new UncheckedScalar<>(this.file).value()
-            .getFileName().toString();
+        return this.path.getFileName().toString();
     }
 
     @Override
     public <T> T read(final Func<Path, T> reader) throws IOException {
-        final Path src = new IoCheckedScalar<>(this.file).value();
-        final T res = new IoCheckedFunc<>(reader).apply(src);
-        this.close();
-        return res;
+        return new IoCheckedFunc<>(reader).apply(this.path);
     }
 
     @Override
     public void update(final Proc<Path> writer) throws IOException {
-        final Path src = new IoCheckedScalar<>(this.file).value();
-        new IoCheckedProc<>(writer).exec(src);
-        this.close();
-    }
-
-    /**
-     * Close the file.
-     * @throws IOException On failure
-     */
-    private void close() throws IOException {
-        if (this.delete) {
-            Files.delete(new IoCheckedScalar<>(this.file).value());
-        } else {
-            new IoCheckedScalar<>(this.file).value().toFile().deleteOnExit();
-        }
+        new IoCheckedProc<>(writer).exec(this.path);
     }
 }

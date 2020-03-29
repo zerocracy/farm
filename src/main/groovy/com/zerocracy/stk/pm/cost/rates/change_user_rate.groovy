@@ -22,9 +22,9 @@ import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.SoftException
 import com.zerocracy.cash.Cash
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
-import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pm.cost.Rates
 import com.zerocracy.pmo.People
 
@@ -72,7 +72,7 @@ def exec(Project project, XML xml) {
       'Hourly rate of @%s was changed from zero to %s'
     ).say(login, rate)
   }
-  rates.set(login, rate)
+  rates.set(login, rate, farm)
   claim.copy()
     .type('User rate was changed')
     .param('login', login)

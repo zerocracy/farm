@@ -17,7 +17,7 @@
 package com.zerocracy.shutdown;
 
 import com.zerocracy.Farm;
-import com.zerocracy.farm.fake.FkFarm;
+import com.zerocracy.FkFarm;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;

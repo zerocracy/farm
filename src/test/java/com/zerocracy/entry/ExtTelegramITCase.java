@@ -16,7 +16,7 @@
  */
 package com.zerocracy.entry;
 
-import com.zerocracy.farm.props.PropsFarm;
+import com.zerocracy.FkFarm;
 import java.util.concurrent.TimeUnit;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -27,6 +27,7 @@ import org.junit.Test;
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class ExtTelegramITCase {
+
     /**
      * Telegram bot token.
      */
@@ -41,7 +42,7 @@ public final class ExtTelegramITCase {
     @Ignore
     public void runTelegramBot() throws Exception {
         new ExtTelegram(
-            new PropsFarm(),
+            FkFarm.props(),
             String.format(
                 "%s@%s",
                 ExtTelegramITCase.NAME,

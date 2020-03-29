@@ -17,11 +17,14 @@
 package com.zerocracy.farm.fake;
 
 import com.zerocracy.TextItem;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 /**
  * Test case for {@link FkItem}.
@@ -31,15 +34,11 @@ import org.junit.Test;
  */
 public final class FkItemTest {
 
-    @Test
-    public void createsInDefaultTempDir() throws Exception {
-        MatcherAssert.assertThat(
-            new FkItem().read(
-                Path::toString
-            ),
-            Matchers.endsWith(".xml")
-        );
-    }
+    /**
+     * Temp dir rule.
+     */
+    @Rule
+    public final TemporaryFolder tmp = new TemporaryFolder();
 
     @Test
     public void implementsToString() throws Exception {
@@ -65,8 +64,10 @@ public final class FkItemTest {
 
     @Test
     public void returnsByContent() throws Exception {
+        final Path path = this.tmp.newFile().toPath();
+        Files.write(path, "hello, world!".getBytes(StandardCharsets.UTF_8));
         MatcherAssert.assertThat(
-            new TextItem(new FkItem("hello, world!")).readAll(),
+            new TextItem(new FkItem(path)).readAll(),
             Matchers.startsWith("hello, ")
         );
     }

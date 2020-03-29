@@ -18,13 +18,13 @@ package com.zerocracy.entry;
 
 import com.jcabi.aspects.Loggable;
 import com.jcabi.log.Logger;
+import com.zerocracy.TempFiles;
 import com.zerocracy.claims.ClaimGuts;
 import com.zerocracy.claims.ClaimsFarm;
 import com.zerocracy.claims.ClaimsRoutine;
 import com.zerocracy.claims.MessageSink;
 import com.zerocracy.farm.S3Farm;
 import com.zerocracy.farm.SmartFarm;
-import com.zerocracy.farm.props.Props;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.farm.sync.TestLocks;
 import com.zerocracy.radars.github.GithubRoutine;
@@ -42,6 +42,7 @@ import com.zerocracy.tk.TkZoldCallback;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
 import javax.ws.rs.HttpMethod;
 import org.cactoos.func.AsyncFunc;
 import org.takes.facets.fork.FkRegex;
@@ -80,17 +81,13 @@ public final class Main {
     @Loggable
     @SuppressWarnings("PMD.AvoidCatchingThrowable")
     public static void main(final String... args) throws IOException {
-        final Props props = new Props();
-        if (props.has("//testing")) {
-            throw new IllegalStateException(
-                "Hey, we are in the testing mode!"
-            );
-        }
         final long start = System.currentTimeMillis();
         try {
             new Main(args).exec();
         } catch (final Throwable ex) {
-            new SafeSentry(new PropsFarm()).capture(ex);
+            new SafeSentry(
+                new PropsFarm(query -> Collections.emptyList())
+            ).capture(ex);
             Logger.error(Main.class, "The main app crashed: %[exception]s", ex);
             throw new IOException(ex);
         } finally {
@@ -123,9 +120,11 @@ public final class Main {
             final MessageSink farm = new MessageSink(
                 new ShutdownFarm(
                     new ClaimsFarm(
-                        new SmartFarm(
-                            new S3Farm(new ExtBucket().value(), locks),
-                            locks
+                        new TempFiles.Farm(
+                            new SmartFarm(
+                                new S3Farm(new ExtBucket().value(), locks),
+                                locks
+                            )
                         ),
                         cgts
                     ),

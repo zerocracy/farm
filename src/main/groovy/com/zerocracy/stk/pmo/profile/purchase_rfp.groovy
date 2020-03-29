@@ -40,7 +40,7 @@ def exec(Project pmo, XML xml) {
   String author = claim.author()
   new Exam(farm, author).min('40.min', 512)
   String job = 'gh:zerocracy/datum#1'
-  int points = new Policy().get('40.price', -256)
+  int points = new Policy(farm).get('40.price', -256)
   String owner = rfps.owner(rid)
   String email = rfps.buy(rid, author)
   String reason = new Par(

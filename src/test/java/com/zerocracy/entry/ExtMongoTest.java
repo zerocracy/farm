@@ -21,14 +21,14 @@ import com.jcabi.xml.XMLDocument;
 import com.mongodb.MongoClient;
 import com.mongodb.client.model.Filters;
 import com.zerocracy.Farm;
+import com.zerocracy.FkFarm;
+import com.zerocracy.FkProject;
 import com.zerocracy.Project;
 import com.zerocracy.RunsInThreads;
 import com.zerocracy.TextItem;
 import com.zerocracy.claims.ClaimOut;
 import com.zerocracy.claims.ClaimsItem;
 import com.zerocracy.claims.Footprint;
-import com.zerocracy.farm.fake.FkFarm;
-import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.farm.sync.SyncFarm;
 import com.zerocracy.pmo.Pmo;
@@ -84,7 +84,7 @@ public final class ExtMongoTest {
         final XML xml = new ClaimsItem(project).iterate().iterator().next();
         final MongoClient mongo = new ExtMongo(farm).value();
         final String pid = "12MONGO89";
-        try (final Footprint footprint = new Footprint(mongo, pid)) {
+        try (final Footprint footprint = new Footprint(mongo, pid, FkFarm.props())) {
             footprint.open(xml, "test");
             footprint.close(xml);
             MatcherAssert.assertThat(
@@ -101,7 +101,7 @@ public final class ExtMongoTest {
             MatcherAssert.assertThat(
                 inc -> {
                     final MongoClient mongo = new ExtMongo(farm).value();
-                    try (final Footprint footprint = new Footprint(mongo, pid)) {
+                    try (final Footprint footprint = new Footprint(mongo, pid, FkFarm.props())) {
                         final XML xml = new XMLDocument(
                             String.join(
                                 "",

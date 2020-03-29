@@ -19,6 +19,7 @@ package com.zerocracy.farm;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.jcabi.s3.Ocket;
 import com.zerocracy.Item;
+import com.zerocracy.TempFiles;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -77,7 +78,7 @@ final class S3Item implements Item {
             }
             return new IoCheckedFunc<>(reader).apply(tmp);
         } finally {
-            Files.delete(tmp);
+            TempFiles.INSTANCE.dispose(tmp);
         }
     }
 
@@ -112,7 +113,7 @@ final class S3Item implements Item {
                 meta
             );
         } finally {
-            Files.delete(tmp);
+            TempFiles.INSTANCE.dispose(tmp);
         }
     }
 
@@ -122,6 +123,6 @@ final class S3Item implements Item {
      * @throws IOException On failure
      */
     private static Path tempFiles() throws IOException {
-        return Files.createTempFile("farm_", ".s3");
+        return TempFiles.INSTANCE.newFile(S3Item.class);
     }
 }

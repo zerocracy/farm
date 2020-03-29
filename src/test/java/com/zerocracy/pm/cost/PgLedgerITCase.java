@@ -19,11 +19,12 @@ package com.zerocracy.pm.cost;
 import com.jcabi.aspects.Tv;
 import com.jcabi.jdbc.JdbcSession;
 import com.jcabi.jdbc.ListOutcome;
+import com.zerocracy.Farm;
+import com.zerocracy.FkFarm;
+import com.zerocracy.FkProject;
 import com.zerocracy.ItemXml;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.db.ExtDataSource;
-import com.zerocracy.farm.fake.FkProject;
-import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pmo.Pmo;
 import java.sql.SQLException;
 import java.time.Duration;
@@ -120,7 +121,7 @@ public final class PgLedgerITCase {
     @Test
     public void addTransaction() throws Exception {
         final FkProject pkt = new FkProject();
-        final DataSource data = new ExtDataSource(new PropsFarm()).value();
+        final DataSource data = new ExtDataSource(FkFarm.props()).value();
         PgLedgerITCase.cleanup(data);
         final PgLedger ledger = new PgLedger(data, pkt);
         final String dtone = "d1";
@@ -190,9 +191,9 @@ public final class PgLedgerITCase {
 
     @Test
     public void migrateFromXmlFormat() throws Exception {
-        final DataSource data = new ExtDataSource(new PropsFarm()).value();
+        final DataSource data = new ExtDataSource(FkFarm.props()).value();
         final FkProject pkt = new FkProject();
-        final Ledger ledger = new Ledger(new PropsFarm(), pkt);
+        final Ledger ledger = new Ledger(FkFarm.props(), pkt);
         PgLedgerITCase.cleanup(data);
         final String createdone = "2018-01-01T14:49:08.061Z";
         final String createdtwo = "2018-01-02T14:49:08.061Z";
@@ -295,7 +296,7 @@ public final class PgLedgerITCase {
 
     @Test
     public void collectFees() throws Exception {
-        final PropsFarm farm = new PropsFarm();
+        final Farm farm = FkFarm.props();
         final DataSource data = new ExtDataSource(farm).value();
         PgLedgerITCase.cleanup(data);
         final PgLedger ledger = new PgLedger(data, new Pmo(farm));
@@ -322,7 +323,7 @@ public final class PgLedgerITCase {
 
     @Test
     public void checksEmpty() throws Exception {
-        final PropsFarm farm = new PropsFarm();
+        final Farm farm = FkFarm.props();
         final DataSource data = new ExtDataSource(farm).value();
         PgLedgerITCase.cleanup(data);
         final PgLedger ledger = new PgLedger(data, new Pmo(farm));

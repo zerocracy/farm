@@ -18,10 +18,10 @@ package com.zerocracy.farm.reactive;
 
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import com.zerocracy.FkProject;
 import com.zerocracy.Project;
 import com.zerocracy.Stakeholder;
 import com.zerocracy.farm.MismatchException;
-import com.zerocracy.farm.fake.FkProject;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.hamcrest.MatcherAssert;

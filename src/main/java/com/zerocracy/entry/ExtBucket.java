@@ -28,6 +28,7 @@ import com.jcabi.s3.Region;
 import com.jcabi.s3.cached.CdRegion;
 import com.jcabi.s3.retry.ReRegion;
 import com.zerocracy.Farm;
+import com.zerocracy.Project;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.farm.props.PropsFarm;
 import org.cactoos.Scalar;
@@ -83,7 +84,7 @@ public final class ExtBucket implements Scalar<Bucket> {
      * Ctor.
      */
     public ExtBucket() {
-        this(new PropsFarm());
+        this(new PropsFarm(new ExtBucket.DirtyHack()));
     }
 
     /**
@@ -97,6 +98,22 @@ public final class ExtBucket implements Scalar<Bucket> {
     @Override
     public Bucket value() {
         return ExtBucket.SINGLETON.apply(this.farm);
+    }
+
+    /**
+     * It's a workaround for PropsFarm: it requires a farm
+     * to access properties, but bucket should be constructed before
+     * the farm. So we assume that this bucket factory won't ever access
+     * any properties from the farm and that PropsFarm will read all properties
+     * for the bucket without accessing other items.
+     * @since 1.0
+     */
+    private static final class DirtyHack implements Farm {
+
+        @Override
+        public Iterable<Project> find(final String xpath) {
+            throw new IllegalStateException("Should not be called here");
+        }
     }
 
 }

@@ -18,7 +18,7 @@ package com.zerocracy.tk;
 
 import com.jcabi.matchers.XhtmlMatchers;
 import com.zerocracy.Farm;
-import com.zerocracy.farm.fake.FkFarm;
+import com.zerocracy.FkFarm;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pmo.People;
 import com.zerocracy.pmo.Resumes;

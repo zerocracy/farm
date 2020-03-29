@@ -20,9 +20,9 @@ import com.jcabi.log.Logger
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.claims.Footprint
 import com.zerocracy.farm.Assume
 import com.zerocracy.farm.props.Props
-import com.zerocracy.claims.Footprint
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Ping nightly')

@@ -16,9 +16,9 @@
  */
 package com.zerocracy.zold;
 
+import com.zerocracy.FkFarm;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.farm.props.Props;
-import com.zerocracy.farm.props.PropsFarm;
 import java.math.BigDecimal;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -38,14 +38,14 @@ public final class ZoldITCase {
     public static void setUp() throws Exception {
         Assume.assumeTrue(
             "Zold integration test is not configured",
-            new Props().has("//zold/secret")
+            new Props(FkFarm.props()).has("//zold/secret")
         );
     }
 
     @Test
     public void fetchRateFromWts() throws Exception {
         MatcherAssert.assertThat(
-            new Zold(new PropsFarm()).rate().compareTo(BigDecimal.ONE),
+            new Zold(FkFarm.props()).rate().compareTo(BigDecimal.ONE),
             Matchers.equalTo(1)
         );
     }
@@ -53,7 +53,7 @@ public final class ZoldITCase {
     @Test
     public void payZold() throws Exception {
         MatcherAssert.assertThat(
-            new Zold(new PropsFarm()).pay(
+            new Zold(FkFarm.props()).pay(
                 "yegor256",
                 new Cash.S("$0.10").decimal(),
                 "ZoldITCase#payZold"
@@ -65,14 +65,14 @@ public final class ZoldITCase {
     @Test
     public void readWalletId() throws Exception {
         MatcherAssert.assertThat(
-            new Zold(new PropsFarm()).wallet(),
+            new Zold(FkFarm.props()).wallet(),
             Matchers.not(Matchers.isEmptyString())
         );
     }
 
     @Test
     public void createsInvoice() throws Exception {
-        final ZldInvoice invoice = new Zold(new PropsFarm()).invoice();
+        final ZldInvoice invoice = new Zold(FkFarm.props()).invoice();
         MatcherAssert.assertThat(
             "prefix", invoice.prefix(),
             Matchers.not(Matchers.isEmptyString())

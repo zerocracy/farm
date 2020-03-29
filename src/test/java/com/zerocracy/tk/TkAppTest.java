@@ -20,7 +20,7 @@ import com.jcabi.http.request.JdkRequest;
 import com.jcabi.http.response.RestResponse;
 import com.jcabi.http.response.XmlResponse;
 import com.jcabi.matchers.XhtmlMatchers;
-import com.zerocracy.farm.fake.FkFarm;
+import com.zerocracy.FkFarm;
 import com.zerocracy.farm.props.PropsFarm;
 import java.net.HttpURLConnection;
 import org.cactoos.text.TextOf;

@@ -21,9 +21,9 @@ import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Policy
 import com.zerocracy.Project
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
-import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pmo.Awards
 import com.zerocracy.pmo.Catalog
@@ -37,7 +37,7 @@ def exec(Project project, XML xml) {
     return
   }
   ClaimIn claim = new ClaimIn(xml)
-  int threshold = new Policy().get('33.rev-min-rep', 128)
+  int threshold = new Policy(farm).get('33.rev-min-rep', 128)
   Roles roles = new Roles(project).bootstrap()
   roles.findByRole('REV').each { uid ->
     int reputation = new Awards(farm, uid).bootstrap().total()

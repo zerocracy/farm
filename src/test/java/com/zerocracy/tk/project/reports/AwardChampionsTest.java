@@ -17,13 +17,14 @@
 package com.zerocracy.tk.project.reports;
 
 import com.jcabi.xml.XML;
+import com.zerocracy.Farm;
+import com.zerocracy.FkFarm;
+import com.zerocracy.FkProject;
 import com.zerocracy.Project;
 import com.zerocracy.claims.ClaimOut;
 import com.zerocracy.claims.ClaimsItem;
 import com.zerocracy.claims.Footprint;
 import com.zerocracy.entry.ClaimsOf;
-import com.zerocracy.farm.fake.FkProject;
-import com.zerocracy.farm.props.PropsFarm;
 import java.time.Instant;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -41,12 +42,13 @@ public final class AwardChampionsTest {
     public void retrievesReportData() throws Exception {
         final Project pkt = new FkProject("7460928I9");
         final long points = 15L;
+        final Farm farm = FkFarm.props();
         new ClaimOut().type("Award points were added")
             .param("login", "yegor256")
             .param("points", points)
-            .postTo(new ClaimsOf(new PropsFarm(), pkt));
+            .postTo(new ClaimsOf(farm, pkt));
         final XML xml = new ClaimsItem(pkt).iterate().iterator().next();
-        try (final Footprint footprint = new Footprint(new PropsFarm(), pkt)) {
+        try (final Footprint footprint = new Footprint(FkFarm.props(), pkt)) {
             footprint.open(xml, "test");
             MatcherAssert.assertThat(
                 footprint.collection().aggregate(
@@ -60,5 +62,4 @@ public final class AwardChampionsTest {
             );
         }
     }
-
 }

@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import lombok.EqualsAndHashCode;
 import org.cactoos.Scalar;
+import org.cactoos.scalar.IoCheckedScalar;
 
 /**
  * Props project.
@@ -63,7 +64,7 @@ final class PropsProject implements Project {
     public Item acq(final String file) throws IOException {
         final Item item;
         if ("_props.xml".equals(file)) {
-            item = new PropsItem(this.props);
+            item = new PropsItem(new IoCheckedScalar<>(this.props).value());
         } else {
             item = this.origin.acq(file);
         }

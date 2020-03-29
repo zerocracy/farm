@@ -18,9 +18,9 @@ package com.zerocracy.pm.qa;
 
 import com.jcabi.aspects.Tv;
 import com.jcabi.matchers.XhtmlMatchers;
+import com.zerocracy.FkProject;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.claims.ClaimOut;
-import com.zerocracy.farm.fake.FkProject;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;

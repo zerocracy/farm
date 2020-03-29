@@ -72,7 +72,8 @@ public final class TkRfp implements Take {
                     new XeAppend(
                         "price_cents",
                         Integer.toString(
-                            new Policy().get("41.price", Cash.ZERO)
+                            new Policy(this.farm)
+                                .get("41.price", Cash.ZERO)
                                 // @checkstyle MagicNumber (1 line)
                                 .decimal().intValue() * 100
                         )
@@ -85,5 +86,4 @@ public final class TkRfp implements Take {
             }
         );
     }
-
 }

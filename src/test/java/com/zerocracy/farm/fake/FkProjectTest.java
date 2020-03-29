@@ -16,6 +16,7 @@
  */
 package com.zerocracy.farm.fake;
 
+import com.zerocracy.FkProject;
 import com.zerocracy.Project;
 import com.zerocracy.TextItem;
 import java.nio.file.Files;

@@ -17,8 +17,8 @@
 package com.zerocracy.pm;
 
 import com.jcabi.aspects.Tv;
-import com.zerocracy.farm.fake.FkFarm;
-import com.zerocracy.farm.fake.FkProject;
+import com.zerocracy.FkFarm;
+import com.zerocracy.FkProject;
 import com.zerocracy.farm.props.PropsFarm;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;

@@ -16,7 +16,7 @@
  */
 package com.zerocracy.entry;
 
-import com.zerocracy.farm.fake.FkFarm;
+import com.zerocracy.FkFarm;
 import org.junit.Test;
 
 /**

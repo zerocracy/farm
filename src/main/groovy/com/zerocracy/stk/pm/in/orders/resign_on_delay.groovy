@@ -22,9 +22,9 @@ import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Policy
 import com.zerocracy.Project
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
-import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pm.PktOptions
 import com.zerocracy.pm.cost.Boosts
 import com.zerocracy.pm.cost.Ledger
@@ -34,10 +34,11 @@ import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pmo.Pmo
-import java.time.ZoneOffset
-import java.time.ZonedDateTime
 import org.cactoos.iterable.Filtered
 import org.cactoos.iterable.Limited
+
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
 
 /**
  * Resign an order that is kept for too long.
@@ -66,7 +67,7 @@ def exec(Project project, XML xml) {
   Impediments impediments = new Impediments(farm, project).bootstrap()
   Roles pmos = new Roles(new Pmo(farm)).bootstrap()
   List<String> waiting = impediments.jobs().toList()
-  Policy policy = new Policy()
+  Policy policy = new Policy(farm)
   Wbs wbs = new Wbs(project).bootstrap()
   int days = new PktOptions(project, farm).bootstrap().daysToCloseTask()
   new Limited<>(

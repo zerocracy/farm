@@ -138,6 +138,20 @@ SOFTWARE.
       </ul>
     </p>
   </xsl:template>
+  <xsl:template match="farm[@id='TempFiles']">
+    <p>
+      <xsl:text>Temporary files:</xsl:text>
+      <ui>
+        <xsl:for-each select="tmp-files/file">
+          <li>
+            <xsl:value-of select="owner/text()"/>
+            <xsl:text>: </xsl:text>
+            <xsl:value-of select="path/text()"/>
+          </li>
+        </xsl:for-each>
+      </ui>
+    </p>
+  </xsl:template>
   <xsl:template match="farm[@id='ClaimsFarm']">
     <p>
       <xsl:text>Claim queues: </xsl:text>

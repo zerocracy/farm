@@ -17,8 +17,8 @@
 package com.zerocracy.farm.sync;
 
 import com.jcabi.aspects.Tv;
+import com.zerocracy.FkFarm;
 import com.zerocracy.db.ExtDataSource;
-import com.zerocracy.farm.props.PropsFarm;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -51,7 +51,7 @@ public final class PgLockTest {
         final String res = "roles.xml";
         final List<String> actions =
             Collections.synchronizedList(new LinkedList<>());
-        final DataSource data = new ExtDataSource(new PropsFarm()).value();
+        final DataSource data = new ExtDataSource(FkFarm.props()).value();
         final String pid = "test";
         final Lock lone = new PgLock(data, pid, res, new PgLock.Holder());
         actions.add("locking1");

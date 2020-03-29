@@ -21,9 +21,9 @@ import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Policy
 import com.zerocracy.Project
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
-import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pm.staff.Roles
 
 def exec(Project project, XML xml) {
@@ -40,7 +40,7 @@ def exec(Project project, XML xml) {
         'reason',
         new Par('Boosting tasks is against our principles, see §15').say()
       )
-      .param('minutes', -new Policy().get('15.penalty', 10))
+      .param('minutes', -new Policy(farm).get('15.penalty', 10))
       .postTo(new ClaimsOf(farm, project))
   }
 }

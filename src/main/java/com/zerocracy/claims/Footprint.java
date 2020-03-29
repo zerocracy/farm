@@ -52,10 +52,12 @@ public final class Footprint implements Closeable {
      * Database name.
      */
     private static final String DBNAME = "footprint";
+
     /**
      * Collection.
      */
     private static final String CLAIMS = "claims";
+
     /**
      * Project ID.
      */
@@ -67,23 +69,30 @@ public final class Footprint implements Closeable {
     private final MongoClient mongo;
 
     /**
+     * Farm.
+     */
+    private final Farm farm;
+
+    /**
      * Ctor.
      * @param farm Farm
      * @param pkt Project
      * @throws IOException If fails
      */
     public Footprint(final Farm farm, final Project pkt) throws IOException {
-        this(new ExtMongo(farm).value(), pkt.pid());
+        this(new ExtMongo(farm).value(), pkt.pid(), farm);
     }
 
     /**
      * Ctor.
      * @param clt Client
      * @param pkt Project name
+     * @param farm Farm
      */
-    public Footprint(final MongoClient clt, final String pkt) {
+    public Footprint(final MongoClient clt, final String pkt, final Farm farm) {
         this.mongo = clt;
         this.pid = pkt;
+        this.farm = farm;
     }
 
     /**
@@ -120,7 +129,10 @@ public final class Footprint implements Closeable {
             }
             Document doc = new Document()
                 .append("cid", cid)
-                .append("version", new Props().get("//build/version", ""))
+                .append(
+                    "version",
+                    new Props(this.farm).get("//build/version", "")
+                )
                 .append("project", this.pid)
                 .append("type", claim.type())
                 .append("created", claim.created())

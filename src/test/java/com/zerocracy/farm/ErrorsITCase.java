@@ -21,7 +21,9 @@ import com.jcabi.github.Issue;
 import com.jcabi.github.Repo;
 import com.jcabi.github.Repos;
 import com.jcabi.github.mock.MkGithub;
+import com.zerocracy.FkFarm;
 import com.zerocracy.entry.ExtDynamo;
+import com.zerocracy.farm.props.PropsFarm;
 import java.util.concurrent.TimeUnit;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -38,7 +40,7 @@ public final class ErrorsITCase {
     public void fetchItems() throws Exception {
         final MkGithub github = new MkGithub();
         final Errors.Github errors = new Errors.Github(
-            new Errors(new ExtDynamo().value()),
+            new Errors(new ExtDynamo(new PropsFarm(new FkFarm())).value()),
             github
         );
         final Repo repo = github.repos()

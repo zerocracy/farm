@@ -18,9 +18,9 @@ package com.zerocracy.zold;
 
 import com.jcabi.aspects.Tv;
 import com.zerocracy.Farm;
+import com.zerocracy.FkFarm;
+import com.zerocracy.FkProject;
 import com.zerocracy.db.ExtDataSource;
-import com.zerocracy.farm.fake.FkProject;
-import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.tools.RandomString;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -43,7 +43,7 @@ public final class ZldCallbacksITCase {
 
     @Test
     public void addCallbackAndReadTheProject() throws Exception {
-        final Farm farm = new PropsFarm();
+        final Farm farm = FkFarm.props();
         final ZldCallbacks cbs =
             new ZldCallbacks(new ExtDataSource(farm).value(), farm);
         final String pid = new FkProject().pid();

@@ -21,9 +21,9 @@ import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Policy
 import com.zerocracy.Project
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
-import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pmo.Awards
 import com.zerocracy.pmo.People
 import org.cactoos.collection.Filtered
@@ -35,7 +35,7 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   People people = new People(farm).bootstrap()
   if (!people.vacation(user)) {
-    Policy policy = new Policy()
+    Policy policy = new Policy(farm)
     List<Integer> awards = new Awards(farm, user).bootstrap().awards(policy.get('52.days', 16))
     if (
       new Filtered<>({ points -> (points < 0) }, awards).size() >= policy.get('52.awards', 8)

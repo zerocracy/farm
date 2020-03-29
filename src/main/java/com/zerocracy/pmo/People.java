@@ -21,7 +21,6 @@ import com.zerocracy.Farm;
 import com.zerocracy.ItemXml;
 import com.zerocracy.Par;
 import com.zerocracy.Policy;
-import com.zerocracy.Project;
 import com.zerocracy.SoftException;
 import com.zerocracy.Xocument;
 import com.zerocracy.cash.Cash;
@@ -53,24 +52,16 @@ import org.xembly.Directives;
 public final class People {
 
     /**
-     * PMO.
+     * Farm.
      */
-    private final Project pmo;
+    private final Farm farm;
 
     /**
      * Ctor.
      * @param farm Farm
      */
     public People(final Farm farm) {
-        this(new Pmo(farm));
-    }
-
-    /**
-     * Ctor.
-     * @param pkt PMO
-     */
-    public People(final Project pkt) {
-        this.pmo = pkt;
+        this.farm = farm;
     }
 
     /**
@@ -213,7 +204,8 @@ public final class People {
                         ).say(uid)
                     );
                 }
-                final int max = new Policy().get("1.max-students", 16);
+                final int max = new Policy(this.farm)
+                    .get("1.max-students", 16);
                 final int current = xoc.nodes(
                     String.format(
                         "/people/person[mentor/text()='%s']",
@@ -290,7 +282,8 @@ public final class People {
      * @throws IOException If fails
      */
     public void rate(final String uid, final Cash rate) throws IOException {
-        final Cash max = new Policy().get("16.max", new Cash.S("$256"));
+        final Policy policy = new Policy(this.farm);
+        final Cash max = policy.get("16.max", new Cash.S("$256"));
         if (rate.compareTo(max) > 0) {
             throw new SoftException(
                 new Par(
@@ -299,7 +292,7 @@ public final class People {
                 ).say(rate, max)
             );
         }
-        final Cash min = new Policy().get("16.min", Cash.ZERO);
+        final Cash min = policy.get("16.min", Cash.ZERO);
         if (rate.compareTo(min) < 0) {
             throw new SoftException(
                 new Par(
@@ -896,7 +889,10 @@ public final class People {
      * @throws IOException If fails
      */
     private ItemXml item() throws IOException {
-        return new ItemXml(this.pmo.acq("people.xml"), "pmo/people");
+        return new ItemXml(
+            new Pmo(this.farm).acq("people.xml"),
+            "pmo/people"
+        );
     }
 
     /**

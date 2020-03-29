@@ -19,7 +19,7 @@ package com.zerocracy.farm.props;
 import com.jcabi.xml.XMLDocument;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
-import com.zerocracy.farm.fake.FkFarm;
+import com.zerocracy.TempFiles;
 import com.zerocracy.farm.guts.Guts;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -30,6 +30,8 @@ import org.cactoos.io.LengthOf;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.io.TeeInput;
 import org.cactoos.iterable.Mapped;
+import org.cactoos.scalar.SyncScalar;
+import org.cactoos.scalar.UncheckedScalar;
 import org.cactoos.text.TextOf;
 import org.xembly.Directive;
 import org.xembly.Directives;
@@ -49,6 +51,13 @@ import org.xembly.Xembler;
 public final class PropsFarm implements Farm {
 
     /**
+     * Props file location.
+     */
+    private static final Path TMP = new UncheckedScalar<>(
+        () -> TempFiles.INSTANCE.newFile(PropsFarm.class, ".xml")
+    ).value();
+
+    /**
      * Original farm.
      */
     private final Farm origin;
@@ -60,25 +69,10 @@ public final class PropsFarm implements Farm {
 
     /**
      * Ctor.
-     */
-    public PropsFarm() {
-        this(new FkFarm());
-    }
-
-    /**
-     * Ctor.
      * @param farm Original farm
      */
     public PropsFarm(final Farm farm) {
         this(farm, new Directives());
-    }
-
-    /**
-     * Ctor.
-     * @param dirs Post processing dirs
-     */
-    public PropsFarm(final Iterable<Directive> dirs) {
-        this(new FkFarm(), dirs);
     }
 
     /**
@@ -88,7 +82,7 @@ public final class PropsFarm implements Farm {
      */
     public PropsFarm(final Farm farm, final Iterable<Directive> dirs) {
         this.origin = farm;
-        this.props = () -> PropsFarm.loadProps(dirs);
+        this.props = new SyncScalar<>(() -> PropsFarm.loadProps(dirs));
     }
 
     @Override
@@ -120,26 +114,28 @@ public final class PropsFarm implements Farm {
      */
     private static Path loadProps(final Iterable<Directive> post)
         throws IOException {
-        final Path temp = Files.createTempFile("props", ".xml");
-        final Directives dirs = new Directives();
-        if (PropsFarm.class.getResource("/org/junit/Test.class") != null) {
-            dirs.xpath("/props").add("testing").set("yes");
+        final Path path = PropsFarm.TMP;
+        if (!Files.exists(path) || Files.size(path) == 0L) {
+            final Directives dirs = new Directives();
+            if (PropsFarm.class.getResource("/org/junit/Test.class") != null) {
+                dirs.xpath("/props").add("testing").set("yes");
+            }
+            dirs.append(post);
+            new LengthOf(
+                new TeeInput(
+                    new XMLDocument(
+                        new Xembler(dirs).applyQuietly(
+                            new XMLDocument(
+                                new TextOf(
+                                    new ResourceOf("com/zerocracy/_props.xml")
+                                ).asString()
+                            ).node()
+                        )
+                    ).toString(),
+                    path
+                )
+            ).intValue();
         }
-        dirs.append(post);
-        new LengthOf(
-            new TeeInput(
-                new XMLDocument(
-                    new Xembler(dirs).applyQuietly(
-                        new XMLDocument(
-                            new TextOf(
-                                new ResourceOf("com/zerocracy/_props.xml")
-                            ).asString()
-                        ).node()
-                    )
-                ).toString(),
-                temp
-            )
-        ).intValue();
-        return temp;
+        return path;
     }
 }

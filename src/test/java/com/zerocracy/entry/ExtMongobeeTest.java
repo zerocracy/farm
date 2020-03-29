@@ -17,7 +17,7 @@
 package com.zerocracy.entry;
 
 import com.zerocracy.Farm;
-import com.zerocracy.farm.fake.FkFarm;
+import com.zerocracy.FkFarm;
 import com.zerocracy.farm.props.PropsFarm;
 import org.junit.Test;
 

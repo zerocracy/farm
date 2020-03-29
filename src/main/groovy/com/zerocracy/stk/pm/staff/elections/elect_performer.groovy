@@ -33,11 +33,7 @@ import com.zerocracy.pm.cost.Rates
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.qa.Reviews
 import com.zerocracy.pm.scope.Wbs
-import com.zerocracy.pm.staff.Bans
-import com.zerocracy.pm.staff.Election
-import com.zerocracy.pm.staff.ElectionResult
-import com.zerocracy.pm.staff.Roles
-import com.zerocracy.pm.staff.Votes
+import com.zerocracy.pm.staff.*
 import com.zerocracy.pm.staff.ranks.*
 import com.zerocracy.pm.staff.votes.*
 import com.zerocracy.pmo.Pmo
@@ -112,7 +108,7 @@ def exec(Project project, XML xml) {
       )
     )
   }
-  int max = new Policy().get('3.absolute-max', 32)
+  int max = new Policy(farm).get('3.absolute-max', 32)
   int count = 0
   long vtime = System.nanoTime()
   String elected = 'not-elected'
@@ -148,14 +144,14 @@ def exec(Project project, XML xml) {
         [
           (wrapped(new VsHardCap(pmo, max)))                                     : -100,
           (wrapped(new VsReputation(pmo, logins)))                               : 4,
-          (wrapped(new VsLosers(pmo, new Policy().get('3.low-threshold', -128)))): -100,
+          (wrapped(new VsLosers(pmo, new Policy(farm).get('3.low-threshold', -128)))): -100,
           (wrapped(new VsRate(project, logins)))                                 : 2,
           (wrapped(new VsBigDebt(pmo)))                                          : -100,
           (wrapped(new VsNoRoom(pmo)))                                           : role == 'REV' ? 0 : -100,
           (wrapped(new VsOptionsMaxJobs(pmo)))                                   : role == 'REV' ? 0 : -100,
           (wrapped(new VsOptionsMaxRevJobs(pmo)))                                : role == 'REV' ? -100 : 0,
           (wrapped(new VsBanned(project, job)))                                  : -100,
-          (wrapped(new VsVacation(pmo)))                                         : -100,
+          (wrapped(new VsVacation(farm)))                                         : -100,
           (wrapped(new VsWorkload(farm, logins)))                                : 1,
           (wrapped(new VsWorkload(farm, project, logins)))                       : 1,
           (wrapped(new VsSpeed(pmo, logins)))                                    : 3,

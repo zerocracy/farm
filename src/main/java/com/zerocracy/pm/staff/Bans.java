@@ -17,7 +17,6 @@
 package com.zerocracy.pm.staff;
 
 import com.zerocracy.ItemXml;
-import com.zerocracy.Par;
 import com.zerocracy.Project;
 import java.io.IOException;
 import java.util.List;
@@ -60,7 +59,8 @@ public final class Bans {
      */
     public List<String> reasons(final String job) throws IOException {
         return new Mapped<>(
-            node -> new Par("@%s: %s").say(
+            node -> String.format(
+                "@%s: %s",
                 node.xpath("login/text()").get(0),
                 node.xpath("reason/text()").get(0)
             ),

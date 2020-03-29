@@ -76,6 +76,7 @@ public final class RqWithUser extends RqWrap {
      * With initialized user and repo.
      */
     public static final class WithInit implements Request {
+
         /**
          * Underlying request.
          */
@@ -111,7 +112,7 @@ public final class RqWithUser extends RqWrap {
                             farm.find(String.format("@id='%s'", pid))
                                 .iterator().next()
                         ).bootstrap().assign(uid, "PO");
-                        new People(new Pmo(farm)).bootstrap()
+                        new People(farm).bootstrap()
                             .invite(uid, "mentor");
                         return new RqWithUser(farm, req, uid);
                     }
@@ -129,5 +130,4 @@ public final class RqWithUser extends RqWrap {
             return this.req.value().body();
         }
     }
-
 }

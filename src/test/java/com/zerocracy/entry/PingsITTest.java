@@ -18,10 +18,10 @@ package com.zerocracy.entry;
 
 import com.jcabi.aspects.Tv;
 import com.jcabi.xml.XML;
+import com.zerocracy.FkFarm;
 import com.zerocracy.Project;
 import com.zerocracy.claims.ClaimIn;
 import com.zerocracy.claims.ClaimsItem;
-import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.pmo.Catalog;
 import java.util.Date;
 import java.util.Properties;
@@ -43,15 +43,18 @@ import org.quartz.impl.StdSchedulerFactory;
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class PingsITTest {
+
     /**
      * Database URL.
      */
     private static final String PG_URL =
         "jdbc:postgresql://localhost/farm_quartz";
+
     /**
      * Database username.
      */
     private static final String PG_USER = "username";
+
     /**
      * Database password.
      */

@@ -94,5 +94,4 @@ public final class OrdersGivenByWeek implements FtReport {
             "during that time periods."
         ).say();
     }
-
 }

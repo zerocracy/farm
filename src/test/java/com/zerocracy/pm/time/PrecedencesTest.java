@@ -17,7 +17,7 @@
 package com.zerocracy.pm.time;
 
 import com.jcabi.xml.XML;
-import com.zerocracy.farm.fake.FkProject;
+import com.zerocracy.FkProject;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;

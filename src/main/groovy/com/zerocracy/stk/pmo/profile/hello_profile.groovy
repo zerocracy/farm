@@ -19,10 +19,10 @@ package com.zerocracy.stk.pmo.profile
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Par
-import com.zerocracy.entry.ClaimsOf
-import com.zerocracy.farm.Assume
 import com.zerocracy.Project
 import com.zerocracy.claims.ClaimIn
+import com.zerocracy.entry.ClaimsOf
+import com.zerocracy.farm.Assume
 
 def exec(Project pmo, XML xml) {
   new Assume(pmo, xml).isPmo()

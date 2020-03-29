@@ -17,12 +17,13 @@
 package com.zerocracy.pmo;
 
 import com.jcabi.aspects.Tv;
+import com.zerocracy.Farm;
+import com.zerocracy.FkFarm;
+import com.zerocracy.FkProject;
 import com.zerocracy.Project;
 import com.zerocracy.SoftException;
 import com.zerocracy.TextItem;
 import com.zerocracy.cash.Cash;
-import com.zerocracy.farm.fake.FkFarm;
-import com.zerocracy.farm.fake.FkProject;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -61,7 +62,7 @@ public final class PeopleTest {
 
     @Test
     public void addsAndFindsPeople() throws Exception {
-        final FkFarm farm = new FkFarm(new FkProject());
+        final Farm farm = FkFarm.props();
         final People people = new People(farm).bootstrap();
         final String uid = "yegor256";
         final String rel = "slack";
@@ -84,7 +85,7 @@ public final class PeopleTest {
 
     @Test
     public void setsUserRate() throws Exception {
-        final FkFarm farm = new FkFarm(new FkProject());
+        final Farm farm = FkFarm.props();
         final People people = new People(farm).bootstrap();
         final String uid = "alex-palevsky";
         people.rate(uid, new Cash.S("$35"));
@@ -97,7 +98,7 @@ public final class PeopleTest {
 
     @Test
     public void readsUnsetRate() throws Exception {
-        final FkFarm farm = new FkFarm(new FkProject());
+        final Farm farm = FkFarm.props();
         final People people = new People(farm).bootstrap();
         final String uid = "dmarkov9";
         MatcherAssert.assertThat(
@@ -114,7 +115,7 @@ public final class PeopleTest {
             "http://datum.zerocracy.com/0.7.1",
             "/xsd/project/people.xsd'/>"
         );
-        final FkFarm farm = new FkFarm(project);
+        final Farm farm = new FkFarm(project);
         final People people = new People(farm).bootstrap();
         final String uid = "karato90";
         people.rate(uid, new Cash.S("$27"));
@@ -122,7 +123,7 @@ public final class PeopleTest {
 
     @Test
     public void invitesFriend() throws Exception {
-        final FkFarm farm = new FkFarm(new FkProject());
+        final Farm farm = FkFarm.props();
         final People people = new People(farm).bootstrap();
         final String uid = "jack";
         final String friend = "friend";
@@ -136,7 +137,7 @@ public final class PeopleTest {
 
     @Test
     public void vacationTest() throws Exception {
-        final FkFarm farm = new FkFarm(new FkProject());
+        final Farm farm = FkFarm.props();
         final People people = new People(farm).bootstrap();
         final String uid = "g4s8";
         MatcherAssert.assertThat(
@@ -157,7 +158,7 @@ public final class PeopleTest {
 
     @Test
     public void breakupTest() throws Exception {
-        final FkFarm farm = new FkFarm(new FkProject());
+        final Farm farm = FkFarm.props();
         final People people = new People(farm).bootstrap();
         final String uid = "john";
         final String friend = "jimmy";
@@ -171,7 +172,7 @@ public final class PeopleTest {
 
     @Test
     public void updateProjectsCount() throws Exception {
-        final People people = new People(new FkFarm()).bootstrap();
+        final People people = new People(FkFarm.props()).bootstrap();
         final String user = "user31461";
         final int count = 1024;
         people.touch(user);
@@ -183,7 +184,7 @@ public final class PeopleTest {
 
     @Test
     public void mentorTest() throws Exception {
-        final FkFarm farm = new FkFarm(new FkProject());
+        final Farm farm = FkFarm.props();
         final People people = new People(farm).bootstrap();
         final String uid = "datum";
         final String mentor = "0crat";
@@ -196,7 +197,7 @@ public final class PeopleTest {
 
     @Test
     public void studentsTest() throws Exception {
-        final FkFarm farm = new FkFarm(new FkProject());
+        final Farm farm = FkFarm.props();
         final People ppl = new People(farm).bootstrap();
         final String mentor = "mentor";
         final List<String> students = new ListOf<>(
@@ -219,7 +220,7 @@ public final class PeopleTest {
     @Test(expected = SoftException.class)
     public void inviteSixteen() throws Exception {
         final String mentor = "mnt";
-        final FkFarm farm = new FkFarm(new FkProject());
+        final Farm farm = FkFarm.props();
         final People people = new People(farm).bootstrap();
         new And(
             (String std) -> people.invite(std, mentor),
@@ -234,7 +235,7 @@ public final class PeopleTest {
     @Test
     public void inviteForce() throws Exception {
         final String mentor = "supermentor";
-        final People people = new People(new FkFarm()).bootstrap();
+        final People people = new People(FkFarm.props()).bootstrap();
         final int size = 16;
         final String format = "std%d";
         final Iterable<Integer> range = new RangeOf<>(0, size, x -> x + 1);
@@ -260,7 +261,7 @@ public final class PeopleTest {
 
     @Test
     public void graduate() throws Exception {
-        final FkFarm farm = new FkFarm(new FkProject());
+        final Farm farm = FkFarm.props();
         final People people = new People(farm).bootstrap();
         final String uid = "yegor11";
         people.invite(uid, "the-mentor");
@@ -273,7 +274,7 @@ public final class PeopleTest {
 
     @Test
     public void reputation() throws Exception {
-        final FkFarm farm = new FkFarm(new FkProject());
+        final Farm farm = FkFarm.props();
         final People people = new People(farm).bootstrap();
         final String uid = "user2345";
         people.invite(uid, uid);
@@ -287,7 +288,7 @@ public final class PeopleTest {
 
     @Test
     public void remove() throws Exception {
-        final FkFarm farm = new FkFarm(new FkProject());
+        final Farm farm = FkFarm.props();
         final People people = new People(farm).bootstrap();
         final String uid = "remove";
         people.invite(uid, "mentor11");
@@ -300,7 +301,7 @@ public final class PeopleTest {
 
     @Test
     public void getSingleLink() throws Exception {
-        final FkFarm farm = new FkFarm(new FkProject());
+        final Farm farm = FkFarm.props();
         final People people = new People(farm).bootstrap();
         final String uid = "linker";
         people.invite(uid, uid);
@@ -315,7 +316,7 @@ public final class PeopleTest {
 
     @Test
     public void canApply() throws Exception {
-        final FkFarm farm = new FkFarm(new FkProject());
+        final Farm farm = FkFarm.props();
         final People people = new People(farm).bootstrap();
         final String uid = "user3236";
         final Instant when = Instant.ofEpochMilli(0L);
@@ -335,7 +336,7 @@ public final class PeopleTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void throwIfApplyButDoesntExist() throws Exception {
-        final FkFarm farm = new FkFarm(new FkProject());
+        final Farm farm = FkFarm.props();
         new People(farm).bootstrap()
             .apply("user124", Instant.ofEpochMilli(0L));
     }
@@ -343,7 +344,7 @@ public final class PeopleTest {
     @Test(expected = IllegalArgumentException.class)
     public void throwIfgetAppliedDateIfNotApplied() throws Exception {
         final FkProject project = new FkProject();
-        final FkFarm farm = new FkFarm(project);
+        final Farm farm = new FkFarm(project);
         final People people = new People(farm).bootstrap();
         final String uid = "user3236";
         people.invite(uid, uid);
@@ -352,7 +353,7 @@ public final class PeopleTest {
 
     @Test
     public void readsEmptyDetails() throws Exception {
-        final FkFarm farm = new FkFarm(new FkProject());
+        final Farm farm = FkFarm.props();
         final People people = new People(farm).bootstrap();
         final String uid = "read-empty-details";
         people.invite(uid, uid);
@@ -364,7 +365,7 @@ public final class PeopleTest {
 
     @Test
     public void setsDetails() throws Exception {
-        final FkFarm farm = new FkFarm(new FkProject());
+        final Farm farm = FkFarm.props();
         final People people = new People(farm).bootstrap();
         final String uid = "detailed";
         people.invite(uid, uid);
@@ -379,7 +380,7 @@ public final class PeopleTest {
     @Test
     public void setsJobs() throws Exception {
         final People people =
-            new People(new FkFarm(new FkProject())).bootstrap();
+            new People(FkFarm.props()).bootstrap();
         final String uid = "jobs";
         people.invite(uid, uid);
         final int jobs = Tv.TEN;
@@ -392,20 +393,20 @@ public final class PeopleTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void throwsIfFetchingJobsOfNonExistentUser() throws Exception {
-        new People(new FkFarm(new FkProject())).bootstrap()
+        new People(FkFarm.props()).bootstrap()
             .jobs("jobs1");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void throwsIfSettingJobsOfNonExistentUser() throws Exception {
-        new People(new FkFarm(new FkProject())).bootstrap()
+        new People(FkFarm.props()).bootstrap()
             .jobs("jobs2", 1);
     }
 
     @Test
     public void setsSpeed() throws Exception {
         final People people =
-            new People(new FkFarm(new FkProject())).bootstrap();
+            new People(FkFarm.props()).bootstrap();
         final String uid = "speed";
         people.invite(uid, uid);
         final double speed = 5.5;
@@ -418,19 +419,19 @@ public final class PeopleTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void throwsIfFetchingSpeedOfNonExistentUser() throws Exception {
-        new People(new FkFarm(new FkProject())).bootstrap()
+        new People(FkFarm.props()).bootstrap()
             .speed("speed1");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void throwsIfSettingSpeedOfNonExistentUser() throws Exception {
-        new People(new FkFarm(new FkProject())).bootstrap()
+        new People(FkFarm.props()).bootstrap()
             .speed("speed2", 1.0);
     }
 
     @Test
     public void throwIfTryToSetDetailsButNotApplied() throws Exception {
-        final FkFarm farm = new FkFarm(new FkProject());
+        final Farm farm = FkFarm.props();
         final People people = new People(farm).bootstrap();
         final String uid = "not-applied";
         this.thrown.expect(SoftException.class);
@@ -445,7 +446,7 @@ public final class PeopleTest {
 
     @Test
     public void throwIfTryToSetEmptyDetails() throws Exception {
-        final FkFarm farm = new FkFarm(new FkProject());
+        final Farm farm = FkFarm.props();
         final People people = new People(farm).bootstrap();
         final String uid = "set-empty-details";
         this.thrown.expect(SoftException.class);
@@ -461,7 +462,7 @@ public final class PeopleTest {
 
     @Test
     public void setsLinks() throws Exception {
-        final FkFarm farm = new FkFarm(new FkProject());
+        final Farm farm = FkFarm.props();
         final People people = new People(farm).bootstrap();
         final String uid = "yegor256";
         final String srel = "slack";
@@ -488,7 +489,7 @@ public final class PeopleTest {
     @Test
     public void setsSkills() throws IOException {
         final People people = new People(
-            new FkFarm(new FkProject())
+            FkFarm.props()
         ).bootstrap();
         final String uid = "user";
         people.invite(uid, "0crat");
@@ -503,7 +504,7 @@ public final class PeopleTest {
     @Test
     public void getsEmptySkillList() throws IOException {
         final People people = new People(
-            new FkFarm(new FkProject())
+            FkFarm.props()
         ).bootstrap();
         final String uid = "user";
         people.invite(uid, "0crat");
@@ -515,7 +516,7 @@ public final class PeopleTest {
 
     @Test
     public void collectsActive() throws Exception {
-        final People people = new People(new FkFarm()).bootstrap();
+        final People people = new People(FkFarm.props()).bootstrap();
         final String active = "active";
         people.invite(active, "0crat");
         people.reputation(active, 257);
@@ -529,7 +530,7 @@ public final class PeopleTest {
 
     @Test
     public void collectsVisible() throws Exception {
-        final People people = new People(new FkFarm()).bootstrap();
+        final People people = new People(FkFarm.props()).bootstrap();
         final String visible = "visible";
         people.invite(visible, "0crat");
         people.reputation(visible, 1);
@@ -542,7 +543,7 @@ public final class PeopleTest {
 
     @Test
     public void totalReputation() throws Exception {
-        final People people = new People(new FkFarm()).bootstrap();
+        final People people = new People(FkFarm.props()).bootstrap();
         final int total = 10;
         for (int num = 0; num < total; ++num) {
             final String login = String.format("user%d", num);
@@ -557,7 +558,7 @@ public final class PeopleTest {
 
     @Test
     public void changeActiveFlag() throws Exception {
-        final People people = new People(new FkFarm()).bootstrap();
+        final People people = new People(FkFarm.props()).bootstrap();
         final String login = "theuser123";
         people.touch(login);
         MatcherAssert.assertThat(

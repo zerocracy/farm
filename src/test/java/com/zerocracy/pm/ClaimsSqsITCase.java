@@ -25,15 +25,14 @@ import com.amazonaws.services.sqs.model.Message;
 import com.amazonaws.services.sqs.model.ReceiveMessageRequest;
 import com.jcabi.aspects.Tv;
 import com.jcabi.log.Logger;
+import com.zerocracy.FkFarm;
+import com.zerocracy.FkProject;
 import com.zerocracy.claims.ClaimOut;
 import com.zerocracy.claims.Claims;
 import com.zerocracy.claims.ClaimsSqs;
 import com.zerocracy.claims.MsgPriority;
 import com.zerocracy.entry.PropsAwsCredentials;
-import com.zerocracy.farm.fake.FkFarm;
-import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.props.Props;
-import com.zerocracy.farm.props.PropsFarm;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
@@ -85,7 +84,7 @@ public final class ClaimsSqsITCase {
     public static void checkProps() throws Exception {
         Assume.assumeTrue(
             "sqs credentials are not provided",
-            new Props(new PropsFarm()).has("//sqs")
+            new Props(FkFarm.props()).has("//sqs")
         );
     }
 
@@ -94,7 +93,7 @@ public final class ClaimsSqsITCase {
         this.client = AmazonSQSClient.builder()
             .withCredentials(
                 new AWSStaticCredentialsProvider(
-                    new PropsAwsCredentials(new PropsFarm(), "sqs")
+                    new PropsAwsCredentials(FkFarm.props(), "sqs")
                 )
             ).withRegion(Regions.DEFAULT_REGION)
             .build();

@@ -16,9 +16,9 @@
  */
 package com.zerocracy.pm.cost;
 
+import com.zerocracy.FkFarm;
+import com.zerocracy.FkProject;
 import com.zerocracy.cash.Cash;
-import com.zerocracy.farm.fake.FkProject;
-import com.zerocracy.farm.props.PropsFarm;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -34,7 +34,7 @@ public final class LedgerTest {
     @Test
     public void addsTransactions() throws Exception {
         final Ledger ledger =
-            new Ledger(new PropsFarm(), new FkProject()).bootstrap();
+            new Ledger(FkFarm.props(), new FkProject()).bootstrap();
         MatcherAssert.assertThat(ledger.cash(), Matchers.equalTo(Cash.ZERO));
         ledger.add(
             new Ledger.Transaction(
@@ -67,7 +67,7 @@ public final class LedgerTest {
     @Test
     public void addsOneTransactions() throws Exception {
         final Ledger ledger =
-            new Ledger(new PropsFarm(), new FkProject()).bootstrap();
+            new Ledger(FkFarm.props(), new FkProject()).bootstrap();
         ledger.add(
             new Ledger.Transaction(
                 new Cash.S("$77"),
@@ -85,7 +85,7 @@ public final class LedgerTest {
     @Test
     public void modifiesDeficit() throws Exception {
         final Ledger ledger =
-            new Ledger(new PropsFarm(), new FkProject()).bootstrap();
+            new Ledger(FkFarm.props(), new FkProject()).bootstrap();
         ledger.deficit(true);
         MatcherAssert.assertThat(
             ledger.deficit(),
@@ -97,5 +97,4 @@ public final class LedgerTest {
             Matchers.equalTo(false)
         );
     }
-
 }

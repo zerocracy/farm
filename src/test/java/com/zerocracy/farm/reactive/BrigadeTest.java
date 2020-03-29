@@ -19,15 +19,15 @@ package com.zerocracy.farm.reactive;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.zerocracy.Farm;
+import com.zerocracy.FkFarm;
+import com.zerocracy.FkProject;
 import com.zerocracy.Project;
 import com.zerocracy.Stakeholder;
 import com.zerocracy.claims.ClaimOut;
 import com.zerocracy.claims.ClaimsItem;
 import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.farm.MismatchException;
-import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.fake.FkStakeholder;
-import com.zerocracy.farm.props.PropsFarm;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -74,7 +74,7 @@ public final class BrigadeTest {
             )
         ).intValue();
         final Project project = new FkProject();
-        final Farm farm = new PropsFarm();
+        final Farm farm = FkFarm.props();
         new ClaimOut().type("just some fun")
             .postTo(new ClaimsOf(farm, project));
         final ClaimsItem claims = new ClaimsItem(project).bootstrap();
@@ -96,14 +96,14 @@ public final class BrigadeTest {
     public void runsGroovyScript() throws Exception {
         final Project project = new FkProject();
         new ClaimOut().type("Hello").token("test;notoken").postTo(
-            new ClaimsOf(new PropsFarm(), project)
+            new ClaimsOf(FkFarm.props(), project)
         );
         final ClaimsItem claims = new ClaimsItem(project).bootstrap();
         final XML xml = claims.iterate().iterator().next();
         final Brigade brigade = new Brigade(
             new StkRuntime(
                 com.zerocracy.stk.hello.class,
-                new PropsFarm()
+                FkFarm.props()
             )
         );
         brigade.apply(project, xml);
@@ -135,5 +135,4 @@ public final class BrigadeTest {
         brigade.apply(project, claim);
         MatcherAssert.assertThat(hits.get(), Matchers.equalTo(1));
     }
-
 }

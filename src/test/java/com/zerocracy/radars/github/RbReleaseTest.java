@@ -20,7 +20,7 @@ import com.jcabi.github.Github;
 import com.jcabi.github.Repos;
 import com.jcabi.github.mock.MkGithub;
 import com.zerocracy.Farm;
-import com.zerocracy.farm.props.PropsFarm;
+import com.zerocracy.FkFarm;
 import javax.json.Json;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -32,11 +32,12 @@ import org.junit.Test;
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class RbReleaseTest {
+
     @Test
     public void acceptsRelease() throws Exception {
         final int id = 1;
         final String tag = "0.0.1";
-        final Farm farm = new PropsFarm();
+        final Farm farm = FkFarm.props();
         final Github github = new MkGithub().relogin("test");
         github.repos().create(new Repos.RepoCreate("one", false));
         MatcherAssert.assertThat(

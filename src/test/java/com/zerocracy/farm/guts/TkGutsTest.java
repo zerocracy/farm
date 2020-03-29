@@ -18,8 +18,8 @@ package com.zerocracy.farm.guts;
 
 import com.jcabi.matchers.XhtmlMatchers;
 import com.zerocracy.Farm;
+import com.zerocracy.FkFarm;
 import com.zerocracy.farm.SmartFarm;
-import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.pm.staff.Roles;
 import com.zerocracy.pmo.Pmo;
 import com.zerocracy.tk.RqWithUser;

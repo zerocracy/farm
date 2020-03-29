@@ -16,7 +16,7 @@
  */
 package com.zerocracy.pmo;
 
-import com.zerocracy.farm.fake.FkFarm;
+import com.zerocracy.FkFarm;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;

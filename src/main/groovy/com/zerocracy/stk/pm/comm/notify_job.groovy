@@ -18,10 +18,10 @@ package com.zerocracy.stk.pm.comm
 
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
-import com.zerocracy.entry.ClaimsOf
-import com.zerocracy.farm.Assume
 import com.zerocracy.Project
 import com.zerocracy.claims.ClaimIn
+import com.zerocracy.entry.ClaimsOf
+import com.zerocracy.farm.Assume
 
 // The token must look like: job;gh:zerocracy/farm#123
 

@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pm.cost;
 
+import com.zerocracy.Farm;
 import com.zerocracy.ItemXml;
 import com.zerocracy.Par;
 import com.zerocracy.Policy;
@@ -59,10 +60,13 @@ public final class Rates {
      * Set rate of a person.
      * @param login User GitHub login
      * @param rate His rate
+     * @param farm Farm
      * @throws IOException If fails
      */
-    public void set(final String login, final Cash rate) throws IOException {
-        final Cash max = new Policy().get("16.max", new Cash.S("$256"));
+    public void set(final String login, final Cash rate, final Farm farm)
+        throws IOException {
+        final Policy policy = new Policy(farm);
+        final Cash max = policy.get("16.max", new Cash.S("$256"));
         if (rate.compareTo(max) > 0) {
             throw new SoftException(
                 new Par(
@@ -71,7 +75,7 @@ public final class Rates {
                 ).say(rate, max)
             );
         }
-        final Cash min = new Policy().get("16.min", Cash.ZERO);
+        final Cash min = policy.get("16.min", Cash.ZERO);
         if (!rate.equals(Cash.ZERO) && rate.compareTo(min) < 0) {
             throw new SoftException(
                 new Par(

@@ -17,15 +17,11 @@
 package com.zerocracy.stk.pmo.profile
 
 import com.jcabi.xml.XML
-import com.zerocracy.Farm
-import com.zerocracy.Par
-import com.zerocracy.Policy
-import com.zerocracy.Project
-import com.zerocracy.SoftException
+import com.zerocracy.*
 import com.zerocracy.cash.Cash
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
-import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pm.staff.Applications
 import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pmo.Awards
@@ -60,7 +56,7 @@ def exec(Project pmo, XML xml) {
       ).say(std, rate, pid)
     )
   }
-  if (rate > new Policy().get('33.max-sandbox-rate', Cash.ZERO)
+  if (rate > new Policy(farm).get('33.max-sandbox-rate', Cash.ZERO)
     && catalog.sandbox(pid)) {
     throw new SoftException(
       new Par(
@@ -81,7 +77,7 @@ def exec(Project pmo, XML xml) {
   Roles roles = new Roles(farm.find("@id='${pid}'")[0]).bootstrap()
   if (!roles.hasAnyRole(author)) {
     int reputation = new Awards(farm, author).bootstrap().total()
-    if (reputation < new Policy().get('33.min-live', 256)
+    if (reputation < new Policy(farm).get('33.min-live', 256)
       && !catalog.sandbox(pid)) {
       throw new SoftException(
         new Par(
@@ -91,7 +87,7 @@ def exec(Project pmo, XML xml) {
         ).say(reputation, pid)
       )
     }
-    if (reputation > new Policy().get('33.max-sandbox-rep', 256)
+    if (reputation > new Policy(farm).get('33.max-sandbox-rep', 256)
       && catalog.sandbox(pid)) {
       throw new SoftException(
         new Par(

@@ -19,12 +19,12 @@ package com.zerocracy.tk.project;
 import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
+import com.zerocracy.FkFarm;
 import com.zerocracy.Project;
 import com.zerocracy.claims.ClaimOut;
 import com.zerocracy.claims.ClaimsItem;
 import com.zerocracy.claims.Footprint;
 import com.zerocracy.entry.ClaimsOf;
-import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.tk.RqWithUser;
 import com.zerocracy.tk.TkApp;
@@ -66,7 +66,7 @@ public final class TkFootprintTest {
 
     @Test
     public void rendersListOfClaimsAsText() throws Exception {
-        final Farm farm = new PropsFarm();
+        final Farm farm = FkFarm.props();
         final Project project = farm.find("@id='C00000000'").iterator().next();
         new ClaimOut().type("Hello").postTo(new ClaimsOf(farm, project));
         final XML xml = new ClaimsItem(project).iterate().iterator().next();

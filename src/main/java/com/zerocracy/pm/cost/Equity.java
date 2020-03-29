@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pm.cost;
 
+import com.zerocracy.Farm;
 import com.zerocracy.ItemXml;
 import com.zerocracy.Par;
 import com.zerocracy.Project;
@@ -59,10 +60,11 @@ public final class Equity {
     /**
      * Get ownership of the user, in PDF.
      * @param login The GitHub login
+     * @param farm Farm
      * @return PDF document
      * @throws IOException If fails
      */
-    public Input pdf(final String login) throws IOException {
+    public Input pdf(final String login, final Farm farm) throws IOException {
         final double share = this.share(login);
         if (share == 0.0d) {
             throw new IllegalArgumentException(
@@ -93,7 +95,8 @@ public final class Equity {
                         this.project.pid(), login,
                         entity, ceo,
                         this.ownership(login)
-                    )
+                    ),
+                    farm
                 ).pdf();
             }
         );
