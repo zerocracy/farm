@@ -28,9 +28,12 @@ import com.jcabi.s3.Region;
 import com.jcabi.s3.cached.CdRegion;
 import com.jcabi.s3.retry.ReRegion;
 import com.zerocracy.Farm;
+import com.zerocracy.Item;
 import com.zerocracy.Project;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.farm.props.PropsFarm;
+import java.io.IOException;
+import java.util.Collections;
 import org.cactoos.Scalar;
 import org.cactoos.func.SolidFunc;
 import org.cactoos.func.UncheckedFunc;
@@ -112,8 +115,18 @@ public final class ExtBucket implements Scalar<Bucket> {
 
         @Override
         public Iterable<Project> find(final String xpath) {
-            throw new IllegalStateException("Should not be called here");
+            return Collections.singleton(new ExtBucket.AnyProject());
         }
     }
 
+    /**
+     * Any project.
+     */
+    private static final class AnyProject implements Project {
+
+        @Override
+        public Item acq(final String file) throws IOException {
+            throw new IllegalStateException("Should not be called here");
+        }
+    }
 }
