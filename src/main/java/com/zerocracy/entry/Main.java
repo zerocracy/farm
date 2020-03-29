@@ -40,8 +40,6 @@ import com.zerocracy.tk.TkApp;
 import com.zerocracy.tk.TkSentry;
 import com.zerocracy.tk.TkZoldCallback;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collections;
 import javax.ws.rs.HttpMethod;
 import org.cactoos.func.AsyncFunc;
@@ -104,14 +102,6 @@ public final class Main {
      */
     @SuppressWarnings("unchecked")
     public void exec() throws IOException {
-        final Path temp = Paths.get("./s3farm").normalize();
-        if (!temp.toFile().mkdir()) {
-            throw new IllegalStateException(
-                String.format(
-                    "Failed to mkdir \"%s\"", temp
-                )
-            );
-        }
         Logger.info(this, "Farm is ready to start");
         final ShutdownFarm.Hook shutdown = new ShutdownFarm.Hook();
         final ClaimGuts cgts = new ClaimGuts();
