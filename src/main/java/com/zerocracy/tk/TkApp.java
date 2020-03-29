@@ -366,6 +366,10 @@ public final class TkApp extends TkWrap {
                                                                     new FkRegex(
                                                                         "/health",
                                                                         new TkHealth(farm)
+                                                                    ),
+                                                                    new FkRegex(
+                                                                        "/logs",
+                                                                        new TkLog(farm)
                                                                     )
                                                                 )
                                                             )
