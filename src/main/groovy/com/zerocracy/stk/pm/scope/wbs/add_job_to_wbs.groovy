@@ -77,4 +77,10 @@ def exec(Project project, XML xml) {
     .type('Job was added to WBS')
     .param('role', role)
     .postTo(new ClaimsOf(farm, project))
+  if (role == 'REV') {
+    claim.copy()
+      .type('Elect performer')
+      .param('reason', 'PR added to WBS')
+      .postTo(new ClaimsOf(farm, project))
+  }
 }

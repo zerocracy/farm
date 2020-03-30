@@ -72,7 +72,7 @@ def exec(Project project, XML xml) {
   Orders ord = new Orders(farm, project).bootstrap()
   Collection<String> orders
   if (claim.hasParam('job')) {
-    if (!claim.param('reason', 'none') == 'start order') {
+    if (claim.param('reason', 'none') != 'PR added to WBS') {
       new Assume(project, xml).roles('ARC', 'PO')
     }
     orders = Collections.singletonList(claim.param('job'))
