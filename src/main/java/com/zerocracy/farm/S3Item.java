@@ -20,7 +20,11 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.jcabi.s3.Ocket;
 import com.zerocracy.Item;
 import com.zerocracy.TempFiles;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
@@ -87,13 +91,16 @@ final class S3Item implements Item {
         final Path tmp = S3Item.tempFiles();
         try {
             if (this.ocket.exists()) {
-                this.ocket.read(
-                    Files.newOutputStream(
-                        tmp,
-                        StandardOpenOption.CREATE,
-                        StandardOpenOption.TRUNCATE_EXISTING
+                try (
+                    final OutputStream out = new BufferedOutputStream(
+                        Files.newOutputStream(
+                            tmp, StandardOpenOption.CREATE,
+                            StandardOpenOption.TRUNCATE_EXISTING
+                        )
                     )
-                );
+                ) {
+                    this.ocket.read(out);
+                }
             }
             final Md5DigestOf mdsum = new Md5DigestOf(new InputOf(tmp));
             final byte[] hbefore = mdsum.asBytes();
@@ -108,10 +115,13 @@ final class S3Item implements Item {
             if (Thread.currentThread().isInterrupted()) {
                 return;
             }
-            this.ocket.write(
-                Files.newInputStream(tmp, StandardOpenOption.READ),
-                meta
-            );
+            try (
+                final InputStream src = new BufferedInputStream(
+                    Files.newInputStream(tmp, StandardOpenOption.READ)
+                )
+            ) {
+                this.ocket.write(src, meta);
+            }
         } finally {
             TempFiles.INSTANCE.dispose(tmp);
         }

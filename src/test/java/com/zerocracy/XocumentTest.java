@@ -18,6 +18,7 @@ package com.zerocracy;
 
 import com.jcabi.aspects.Tv;
 import com.jcabi.matchers.XhtmlMatchers;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.CountDownLatch;
@@ -91,12 +92,16 @@ public final class XocumentTest {
             new Thread(
                 () -> {
                     phaser.arriveAndAwaitAdvance();
-                    xocument.modify(
-                        new Directives().xpath("/roles")
-                            .add("person")
-                            .attr("id", id)
-                            .addIf("role").set("DEV")
-                    );
+                    try {
+                        xocument.modify(
+                            new Directives().xpath("/roles")
+                                .add("person")
+                                .attr("id", id)
+                                .addIf("role").set("DEV")
+                        );
+                    } catch (final IOException err) {
+                        throw new IllegalStateException("Thread failed", err);
+                    }
                     end.countDown();
                 }
             ).start();

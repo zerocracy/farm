@@ -33,7 +33,6 @@ import java.nio.file.StandardOpenOption;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
-import org.cactoos.Scalar;
 import org.cactoos.cache.SoftFunc;
 import org.cactoos.func.SyncFunc;
 import org.cactoos.func.UncheckedFunc;
@@ -110,29 +109,21 @@ public final class Xocument {
     /**
      * File.
      */
-    private final UncheckedScalar<Path> file;
+    private final Path file;
 
     /**
      * Ctor.
      * @param path File
      */
     public Xocument(final Path path) {
-        this((Scalar<Path>) () -> path);
-    }
-
-    /**
-     * Ctor.
-     * @param path File
-     */
-    private Xocument(final Scalar<Path> path) {
-        this.file = new UncheckedScalar<>(path);
+        this.file = path;
     }
 
     @Override
     public String toString() {
         return new UncheckedText(
             new TextOf(
-                new InputOf(this.file.value())
+                new InputOf(this.file)
             )
         ).asString();
     }
@@ -154,7 +145,7 @@ public final class Xocument {
         final String uri = Xocument.url(
             String.format("/%s/xsd/%s.xsd", Xocument.VERSION, xsd)
         ).toString();
-        final Path path = this.file.value();
+        final Path path = this.file;
         if (!path.toFile().exists() || Files.size(path) == 0L) {
             Files.write(
                 path,
@@ -183,7 +174,7 @@ public final class Xocument {
             );
             Logger.info(
                 this, "XSD upgraded to \"%s\" in %s", uri,
-                this.file.value().getFileName()
+                this.file.getFileName()
             );
         }
         return this;
@@ -197,7 +188,7 @@ public final class Xocument {
      */
     public List<String> xpath(final String xpath) throws FileNotFoundException {
         final XML xml = new StrictXML(
-            new XMLDocument(this.file.value().toFile()),
+            new XMLDocument(this.file.toFile()),
             Xocument.RESOLVER
         );
         return xml.xpath(xpath);
@@ -238,7 +229,7 @@ public final class Xocument {
      */
     public List<XML> nodes(final String xpath) throws FileNotFoundException {
         final XML xml = new StrictXML(
-            new XMLDocument(this.file.value().toFile()),
+            new XMLDocument(this.file.toFile()),
             Xocument.RESOLVER
         );
         return xml.nodes(xpath);
@@ -247,8 +238,9 @@ public final class Xocument {
     /**
      * Modify it.
      * @param dirs Directives
+     * @throws IOException On failure
      */
-    public void modify(final Iterable<Directive> dirs) {
+    public void modify(final Iterable<Directive> dirs) throws IOException {
         final XML before = new XMLDocument(this.toString());
         final Node node = before.node();
         new Xembler(dirs).applyQuietly(node);
@@ -260,11 +252,13 @@ public final class Xocument {
         );
         final String after = xml.toString();
         if (!before.toString().equals(after)) {
-            new LengthOf(new TeeInput(after, this.file.value())).intValue();
+            Files.write(
+                this.file, after.getBytes(StandardCharsets.UTF_8)
+            );
             Logger.info(
                 this,
                 "modified '%s': %s",
-                this.file.value(),
+                this.file,
                 String.join(
                     ";", new Mapped<>(Object::toString, dirs)
                 )
@@ -307,7 +301,7 @@ public final class Xocument {
                             Logger.info(
                                 this,
                                 "XML %s.xml upgraded to \"%s\" by %s in %s",
-                                xsd, ver, url, this.file.value().getFileName()
+                                xsd, ver, url, this.file.getFileName()
                             );
                         }
                         return output;
@@ -323,7 +317,7 @@ public final class Xocument {
                 )
             ).value();
             new LengthOf(
-                new TeeInput(after.toString(), this.file.value())
+                new TeeInput(after.toString(), this.file)
             ).intValue();
         }
         return after;
