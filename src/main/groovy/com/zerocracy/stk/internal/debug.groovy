@@ -51,6 +51,7 @@ def exec(Project project, XML xml) {
   String out = new TextOf(new InputOf(proc.inputStream)).asString()
   String err = new TextOf(new InputOf(proc.errorStream)).asString()
   claim.copy()
+    .type('DebugResponse')
     .param('out', out)
     .param('err', err)
     .postTo(new ClaimsOf(farm, project))
