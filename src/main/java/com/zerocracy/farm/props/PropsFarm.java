@@ -30,6 +30,7 @@ import org.cactoos.io.LengthOf;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.io.TeeInput;
 import org.cactoos.iterable.Mapped;
+import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.scalar.SyncScalar;
 import org.cactoos.scalar.UncheckedScalar;
 import org.cactoos.text.TextOf;
@@ -40,7 +41,7 @@ import org.xembly.Xembler;
 /**
  * Props farm.
  *
- * <p>This {@link com.zerocracy.Farm} decorator will make sure all the Projects
+ * <p>This {@link Farm} decorator will make sure all the Projects
  * have their {@code _props.xml} file loaded and accessible, by using the Props
  * class.</p>
  *
@@ -68,21 +69,29 @@ public final class PropsFarm implements Farm {
     private final Scalar<Path> props;
 
     /**
+     * Temp file provider.
+     */
+    private final Scalar<Path> tmp;
+
+    /**
      * Ctor.
      * @param farm Original farm
      */
     public PropsFarm(final Farm farm) {
-        this(farm, new Directives());
+        this(farm, new Directives(), () -> PropsFarm.TMP);
     }
 
     /**
      * Ctor.
      * @param farm Original farm
      * @param dirs Post processing dirs
+     * @param tmp Temporary file
      */
-    public PropsFarm(final Farm farm, final Iterable<Directive> dirs) {
+    public PropsFarm(final Farm farm, final Iterable<Directive> dirs,
+        final Scalar<Path> tmp) {
         this.origin = farm;
-        this.props = new SyncScalar<>(() -> PropsFarm.loadProps(dirs));
+        this.props = new SyncScalar<>(() -> this.loadProps(dirs));
+        this.tmp = tmp;
     }
 
     @Override
@@ -112,9 +121,9 @@ public final class PropsFarm implements Farm {
      * @return Path with props
      * @throws IOException On failure
      */
-    private static Path loadProps(final Iterable<Directive> post)
+    private Path loadProps(final Iterable<Directive> post)
         throws IOException {
-        final Path path = PropsFarm.TMP;
+        final Path path = new IoCheckedScalar<>(this.tmp).value();
         if (!Files.exists(path) || Files.size(path) == 0L) {
             final Directives dirs = new Directives();
             if (PropsFarm.class.getResource("/org/junit/Test.class") != null) {

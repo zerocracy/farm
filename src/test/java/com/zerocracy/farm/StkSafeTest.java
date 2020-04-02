@@ -28,6 +28,8 @@ import com.zerocracy.claims.ClaimsItem;
 import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.farm.props.PropsFarm;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import org.cactoos.iterable.LengthOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -127,7 +129,15 @@ public final class StkSafeTest {
         NonTestingFarm() {
             this.frm = new PropsFarm(
                 new FkFarm(),
-                new Directives().xpath("/props/testing").remove()
+                new Directives().xpath("/props/testing").remove(),
+                () -> {
+                    final Path tmp = Files.createTempFile(
+                        StkSafeTest.class.getSimpleName(),
+                        ".tmp"
+                    );
+                    tmp.toFile().deleteOnExit();
+                    return tmp;
+                }
             );
         }
 

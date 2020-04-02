@@ -18,6 +18,7 @@ package com.zerocracy;
 
 import com.zerocracy.farm.props.PropsFarm;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Map;
@@ -27,6 +28,7 @@ import lombok.EqualsAndHashCode;
 import org.cactoos.Func;
 import org.cactoos.func.IoCheckedFunc;
 import org.cactoos.func.StickyFunc;
+import org.xembly.Directives;
 
 /**
  * Fake {@link Farm}.
@@ -189,6 +191,16 @@ public final class FkFarm implements Farm {
      * @return Farm instance
      */
     public static Farm props() {
-        return new PropsFarm(new FkFarm());
+        return new PropsFarm(
+            new FkFarm(),
+            new Directives(),
+            () -> {
+                final Path tmp = Files.createTempFile(
+                    FkFarm.class.getSimpleName(), ".tmp"
+                );
+                tmp.toFile().deleteOnExit();
+                return tmp;
+            }
+        );
     }
 }
