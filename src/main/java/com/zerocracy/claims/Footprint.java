@@ -20,6 +20,7 @@ import com.jcabi.aspects.Tv;
 import com.jcabi.xml.XML;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 import com.zerocracy.Farm;
@@ -29,7 +30,6 @@ import com.zerocracy.farm.props.Props;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -113,19 +113,22 @@ public final class Footprint implements Closeable {
             final MongoCollection<Document> col =
                 this.mongo.getDatabase("footprint")
                     .getCollection("claims");
-            final Iterator<Document> found = col.find(
-                Filters.and(
-                    Filters.eq("cid", cid),
-                    Filters.eq("project", this.pid)
-                )
-            ).iterator();
-            if (found.hasNext() && !claim.type().equals("Ping")) {
-                throw new IllegalArgumentException(
-                    String.format(
-                        "Claim #%s (%s) already exists for %s",
-                        cid, claim.type(), this.pid
+            try (
+                final MongoCursor<Document> found = col.find(
+                    Filters.and(
+                        Filters.eq("cid", cid),
+                        Filters.eq("project", this.pid)
                     )
-                );
+                ).iterator()
+            ) {
+                if (found.hasNext() && !claim.type().equals("Ping")) {
+                    throw new IllegalArgumentException(
+                        String.format(
+                            "Claim #%s (%s) already exists for %s",
+                            cid, claim.type(), this.pid
+                        )
+                    );
+                }
             }
             Document doc = new Document()
                 .append("cid", cid)

@@ -72,13 +72,7 @@ final class S3Item implements Item {
         final Path tmp = S3Item.tempFiles();
         try {
             if (this.ocket.exists()) {
-                this.ocket.read(
-                    Files.newOutputStream(
-                        tmp,
-                        StandardOpenOption.CREATE,
-                        StandardOpenOption.TRUNCATE_EXISTING
-                    )
-                );
+                new OcketExt(this.ocket).read(tmp);
             }
             return new IoCheckedFunc<>(reader).apply(tmp);
         } finally {
@@ -91,16 +85,7 @@ final class S3Item implements Item {
         final Path tmp = S3Item.tempFiles();
         try {
             if (this.ocket.exists()) {
-                try (
-                    final OutputStream out = new BufferedOutputStream(
-                        Files.newOutputStream(
-                            tmp, StandardOpenOption.CREATE,
-                            StandardOpenOption.TRUNCATE_EXISTING
-                        )
-                    )
-                ) {
-                    this.ocket.read(out);
-                }
+                new OcketExt(this.ocket).read(tmp);
             }
             final Md5DigestOf mdsum = new Md5DigestOf(new InputOf(tmp));
             final byte[] hbefore = mdsum.asBytes();
@@ -115,13 +100,7 @@ final class S3Item implements Item {
             if (Thread.currentThread().isInterrupted()) {
                 return;
             }
-            try (
-                final InputStream src = new BufferedInputStream(
-                    Files.newInputStream(tmp, StandardOpenOption.READ)
-                )
-            ) {
-                this.ocket.write(src, meta);
-            }
+            new OcketExt(this.ocket).write(tmp, meta);
         } finally {
             TempFiles.INSTANCE.dispose(tmp);
         }
@@ -134,5 +113,59 @@ final class S3Item implements Item {
      */
     private static Path tempFiles() throws IOException {
         return TempFiles.INSTANCE.newFile(S3Item.class);
+    }
+
+    /**
+     * Ocket extensions.
+     */
+    private static final class OcketExt {
+
+        /**
+         * Ocket.
+         */
+        private final Ocket ocket;
+
+        /**
+         * Ctor.
+         * @param ocket Ocket
+         */
+        OcketExt(final Ocket ocket) {
+            this.ocket = ocket;
+        }
+
+        /**
+         * Read ocket to file.
+         * @param file Output
+         * @throws IOException On IO error
+         */
+        public void read(final Path file) throws IOException {
+            try (
+                final OutputStream out = new BufferedOutputStream(
+                    Files.newOutputStream(
+                        file, StandardOpenOption.CREATE,
+                        StandardOpenOption.TRUNCATE_EXISTING
+                    )
+                )
+            ) {
+                this.ocket.read(out);
+            }
+        }
+
+        /**
+         * Write file to ocket.
+         * @param file File to write
+         * @param meta S3 object metadata
+         * @throws IOException On IO error
+         */
+        public void write(final Path file, final ObjectMetadata meta)
+            throws IOException {
+            try (
+                final InputStream src = new BufferedInputStream(
+                    Files.newInputStream(file, StandardOpenOption.READ)
+                )
+            ) {
+                this.ocket.write(src, meta);
+            }
+        }
     }
 }
