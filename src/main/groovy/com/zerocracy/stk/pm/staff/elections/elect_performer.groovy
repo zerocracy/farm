@@ -24,6 +24,7 @@ import com.zerocracy.Farm
 import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.claims.ClaimIn
+import com.zerocracy.claims.MsgPriority
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
@@ -173,6 +174,14 @@ def exec(Project project, XML xml) {
         .param('reason', result.reason())
         .postTo(new ClaimsOf(farm, project))
       break
+    } else if (claim.hasParam('job')) {
+      claim.copy()
+        .type('Performer was not elected')
+        .param('job', job)
+        .param('role', role)
+        .param('reason', result.reason())
+        .priority(MsgPriority.LOW)
+        .postTo(new ClaimsOf(farm, project))
     }
   }
   if (Logger.isInfoEnabled(ltag)) {
