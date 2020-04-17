@@ -16,7 +16,6 @@
  */
 package com.zerocracy.stk.pm.staff.elections
 
-import com.jcabi.aspects.Tv
 import com.jcabi.github.Github
 import com.jcabi.log.Logger
 import com.jcabi.xml.XML
@@ -40,6 +39,7 @@ import com.zerocracy.pm.staff.votes.*
 import com.zerocracy.pmo.Pmo
 import com.zerocracy.radars.github.Quota
 import org.cactoos.iterable.Mapped
+import org.cactoos.text.TextOf
 
 @SuppressWarnings('CyclomaticComplexity')
 def exec(Project project, XML xml) {
@@ -47,7 +47,7 @@ def exec(Project project, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   Farm farm = binding.variables.farm
   Github ghb = new ExtGithub(farm).value()
-  if (!new Quota(ghb).quiet()) {
+  if (new Quota(ghb).over(new TextOf('elect_performer: quota is over'))) {
     return
   }
   boolean deficit = new Ledger(farm, project).bootstrap().deficit()
@@ -62,14 +62,6 @@ def exec(Project project, XML xml) {
   //  as a performer for few jobs and another project may elect same user
   //  before jobs from first project will be assigned to the performer.
   Wbs wbs = new Wbs(project).bootstrap()
-  if (wbs.size() > Tv.FIFTY && !claim.hasParam('job')) {
-    // @todo #2194:30min Election is disabled for huge WBS (> 50 items).
-    //  Analyze the bottleneck of election performance, most
-    //  probably it can be solved by caching some external resources,
-    //  such as Github labels etc.
-    //  Then optimize election process and enable it back.
-    return
-  }
   Orders ord = new Orders(farm, project).bootstrap()
   Collection<String> orders
   if (claim.hasParam('job')) {
@@ -143,24 +135,24 @@ def exec(Project project, XML xml) {
       new Election(
         job, logins,
         [
-          (wrapped(new VsHardCap(pmo, max)))                                     : -100,
-          (wrapped(new VsReputation(pmo, logins)))                               : 4,
+          (wrapped(new VsHardCap(pmo, max)))                                         : -100,
+          (wrapped(new VsReputation(pmo, logins)))                                   : 4,
           (wrapped(new VsLosers(pmo, new Policy(farm).get('3.low-threshold', -128)))): -100,
-          (wrapped(new VsRate(project, logins)))                                 : 2,
-          (wrapped(new VsBigDebt(pmo)))                                          : -100,
-          (wrapped(new VsNoRoom(pmo)))                                           : role == 'REV' ? 0 : -100,
-          (wrapped(new VsOptionsMaxJobs(pmo)))                                   : role == 'REV' ? 0 : -100,
-          (wrapped(new VsOptionsMaxRevJobs(pmo)))                                : role == 'REV' ? -100 : 0,
-          (wrapped(new VsBanned(project, job)))                                  : -100,
-          (wrapped(new VsVacation(farm)))                                         : -100,
-          (wrapped(new VsWorkload(farm, logins)))                                : 1,
-          (wrapped(new VsWorkload(farm, project, logins)))                       : 1,
-          (wrapped(new VsSpeed(pmo, logins)))                                    : 3,
-          (wrapped(new VsBalance(project, farm, logins)))                        : 3,
-          (wrapped(new VsRandom()))                                              : 1,
-          (wrapped(new VsBlanks(pmo, logins)))                                   : -1,
-          (wrapped(new VsNegligence(pmo, logins)))                               : -1,
-          (wrapped(new VsVerbosity(pmo, logins)))                                : -1
+          (wrapped(new VsRate(project, logins)))                                     : 2,
+          (wrapped(new VsBigDebt(pmo)))                                              : -100,
+          (wrapped(new VsNoRoom(pmo)))                                               : role == 'REV' ? 0 : -100,
+          (wrapped(new VsOptionsMaxJobs(pmo)))                                       : role == 'REV' ? 0 : -100,
+          (wrapped(new VsOptionsMaxRevJobs(pmo)))                                    : role == 'REV' ? -100 : 0,
+          (wrapped(new VsBanned(project, job)))                                      : -100,
+          (wrapped(new VsVacation(farm)))                                            : -100,
+          (wrapped(new VsWorkload(farm, logins)))                                    : 1,
+          (wrapped(new VsWorkload(farm, project, logins)))                           : 1,
+          (wrapped(new VsSpeed(pmo, logins)))                                        : 3,
+          (wrapped(new VsBalance(project, farm, logins)))                            : 3,
+          (wrapped(new VsRandom()))                                                  : 1,
+          (wrapped(new VsBlanks(pmo, logins)))                                       : -1,
+          (wrapped(new VsNegligence(pmo, logins)))                                   : -1,
+          (wrapped(new VsVerbosity(pmo, logins)))                                    : -1
         ]
       )
     )
