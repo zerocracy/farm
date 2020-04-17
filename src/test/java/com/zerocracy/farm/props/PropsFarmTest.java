@@ -32,7 +32,7 @@ public final class PropsFarmTest {
     @Test
     public void retrievesProps() throws Exception {
         MatcherAssert.assertThat(
-            new Props(new PropsFarm(new FkFarm())).get("/props/testing"),
+            new Props(FkFarm.props()).get("/props/testing"),
             Matchers.equalTo("yes")
         );
     }
