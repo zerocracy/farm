@@ -18,7 +18,6 @@ package com.zerocracy.tk;
 
 import com.zerocracy.Farm;
 import com.zerocracy.FkFarm;
-import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pmo.People;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -47,7 +46,7 @@ public final class TkJoinPostTest {
 
     @Test
     public void acceptRequestAndRedirectOnPost() throws Exception {
-        final Farm farm = new PropsFarm(new FkFarm());
+        final Farm farm = FkFarm.props();
         MatcherAssert.assertThat(
             new TkApp(farm).act(
                 new RqWithBody(
@@ -67,7 +66,7 @@ public final class TkJoinPostTest {
 
     @Test
     public void rejectsIfAlreadyApplied() throws Exception {
-        final Farm farm = new PropsFarm(new FkFarm());
+        final Farm farm = FkFarm.props();
         final People people = new People(farm).bootstrap();
         final String uid = "yegor256";
         people.touch(uid);
@@ -90,7 +89,7 @@ public final class TkJoinPostTest {
 
     @Test
     public void acceptIfNeverApplied() throws Exception {
-        final Farm farm = new PropsFarm(new FkFarm());
+        final Farm farm = FkFarm.props();
         final People people = new People(farm).bootstrap();
         final String uid = "yegor256";
         people.touch(uid);
@@ -126,7 +125,7 @@ public final class TkJoinPostTest {
     @Test
     @SuppressWarnings("unchecked")
     public void showsThatUserAlreadyHasMentor() throws IOException {
-        final Farm farm = new PropsFarm(new FkFarm());
+        final Farm farm = FkFarm.props();
         final People people = new People(farm).bootstrap();
         final String mentor = "yoda";
         final String applicant = "luke";

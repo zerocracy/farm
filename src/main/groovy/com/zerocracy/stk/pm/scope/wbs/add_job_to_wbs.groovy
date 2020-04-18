@@ -29,6 +29,7 @@ import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.scope.Wbs
+import com.zerocracy.pm.staff.Bans
 import com.zerocracy.pm.staff.Roles
 import com.zerocracy.radars.github.Job
 
@@ -79,10 +80,26 @@ def exec(Project project, XML xml) {
     .param('role', role)
     .postTo(new ClaimsOf(farm, project))
   if (role == 'REV') {
+    banReporter(project, job, claim)
     claim.copy()
       .type('Elect performer')
       .param('reason', 'PR added to WBS')
       .priority(MsgPriority.HIGH)
+      .postTo(new ClaimsOf(farm, project))
+  }
+}
+
+def banReporter(Project project, String job, ClaimIn claim) {
+  Farm farm = binding.variables.farm
+  Github github = new ExtGithub(farm).value()
+  Issue.Smart issue = new Issue.Smart(new Job.Issue(github, job))
+  String author = issue.author().login().toLowerCase(Locale.ENGLISH)
+  Bans bans = new Bans(project).bootstrap()
+  if (!bans.exists(job, author)) {
+    bans.ban(job, author, 'This user reported the ticket')
+    claim.copy()
+      .type('User was banned')
+      .param('reason', 'The user reported GitHub issue')
       .postTo(new ClaimsOf(farm, project))
   }
 }

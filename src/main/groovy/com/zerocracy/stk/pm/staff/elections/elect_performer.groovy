@@ -48,6 +48,9 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Github ghb = new ExtGithub(farm).value()
   if (new Quota(ghb).over(new TextOf('elect_performer: quota is over'))) {
+    claim.reply('Election failed: GitHub quota is over')
+      .priority(MsgPriority.LOW)
+      .postTo(new ClaimsOf(farm, project))
     return
   }
   boolean deficit = new Ledger(farm, project).bootstrap().deficit()
@@ -55,6 +58,9 @@ def exec(Project project, XML xml) {
   Rates rates = new Rates(project).bootstrap()
   int zeroRates = roles.everybody().count { uid -> !rates.exists(uid) }
   if (deficit && zeroRates == 0) {
+    claim.reply('Election failed: project is in deficit')
+      .priority(MsgPriority.LOW)
+      .postTo(new ClaimsOf(farm, project))
     return
   }
   // @todo #926:30min we should synchronize elected, but not assigned jobs
@@ -129,6 +135,9 @@ def exec(Project project, XML xml) {
       logins.addAll(allogins)
     }
     if (logins.empty) {
+      claim.reply('Election failed: no available performers')
+        .priority(MsgPriority.LOW)
+        .postTo(new ClaimsOf(farm, project))
       return
     }
     ElectionResult result = new ElectionResult(
@@ -167,10 +176,7 @@ def exec(Project project, XML xml) {
         .postTo(new ClaimsOf(farm, project))
       break
     } else if (claim.hasParam('job')) {
-      claim.copy()
-        .type('Performer was not elected')
-        .param('job', job)
-        .param('role', role)
+      claim.reply('Election failed: performer was not elected (see footprint for details)')
         .param('reason', result.reason())
         .priority(MsgPriority.LOW)
         .postTo(new ClaimsOf(farm, project))
