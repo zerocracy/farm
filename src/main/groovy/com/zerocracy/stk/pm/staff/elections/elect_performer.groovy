@@ -16,6 +16,7 @@
  */
 package com.zerocracy.stk.pm.staff.elections
 
+import com.jcabi.aspects.Tv
 import com.jcabi.github.Github
 import com.jcabi.log.Logger
 import com.jcabi.xml.XML
@@ -68,6 +69,11 @@ def exec(Project project, XML xml) {
   //  as a performer for few jobs and another project may elect same user
   //  before jobs from first project will be assigned to the performer.
   Wbs wbs = new Wbs(project).bootstrap()
+  if (wbs.size() > Tv.HUNDRED) {
+    claim.reply('Election failed: WBS is too big')
+      .priority(MsgPriority.LOW)
+      .postTo(new ClaimsOf(farm, project))
+  }
   Orders ord = new Orders(farm, project).bootstrap()
   Collection<String> orders
   if (claim.hasParam('job')) {
