@@ -44,7 +44,7 @@ import org.cactoos.text.TextOf
 
 @SuppressWarnings('CyclomaticComplexity')
 def exec(Project project, XML xml) {
-  new Assume(project, xml).notPmo().type('Ping', 'Elect performer')
+  new Assume(project, xml).notPmo().type('Ping hourly', 'Elect performer')
   ClaimIn claim = new ClaimIn(xml)
   Farm farm = binding.variables.farm
   Github ghb = new ExtGithub(farm).value()
@@ -80,7 +80,11 @@ def exec(Project project, XML xml) {
     if (claim.param('reason', 'none') != 'PR added to WBS') {
       new Assume(project, xml).roles('ARC', 'PO')
     }
-    orders = Collections.singletonList(claim.param('job'))
+    if (claim.hasParam('role') && claim.param('role') == 'DEV') {
+      orders = ord.iterate()
+    } else {
+      orders = Collections.singletonList(claim.param('job'))
+    }
   } else {
     orders = ord.iterate()
   }

@@ -79,14 +79,13 @@ def exec(Project project, XML xml) {
     .type('Job was added to WBS')
     .param('role', role)
     .postTo(new ClaimsOf(farm, project))
-  if (role == 'REV') {
-    banReporter(project, job, claim)
-    claim.copy()
-      .type('Elect performer')
-      .param('reason', 'PR added to WBS')
-      .priority(MsgPriority.HIGH)
-      .postTo(new ClaimsOf(farm, project))
-  }
+  banReporter(project, job, claim)
+  claim.copy()
+    .type('Elect performer')
+    .param('reason', 'PR added to WBS')
+    .param('role', role)
+    .priority(MsgPriority.HIGH)
+    .postTo(new ClaimsOf(farm, project))
 }
 
 def banReporter(Project project, String job, ClaimIn claim) {
