@@ -40,18 +40,14 @@ import com.zerocracy.pm.staff.votes.*
 import com.zerocracy.pmo.Pmo
 import com.zerocracy.radars.github.Quota
 import org.cactoos.iterable.Mapped
-import org.cactoos.text.TextOf
 
 @SuppressWarnings('CyclomaticComplexity')
 def exec(Project project, XML xml) {
-  new Assume(project, xml).notPmo().type('Ping hourly', 'Elect performer')
+  new Assume(project, xml).notPmo().type('Ping', 'Elect performer')
   ClaimIn claim = new ClaimIn(xml)
   Farm farm = binding.variables.farm
   Github ghb = new ExtGithub(farm).value()
-  if (new Quota(ghb).over(new TextOf('elect_performer: quota is over'))) {
-    claim.reply('Election failed: GitHub quota is over')
-      .priority(MsgPriority.LOW)
-      .postTo(new ClaimsOf(farm, project))
+  if (!new Quota(ghb).quiet()) {
     return
   }
   boolean deficit = new Ledger(farm, project).bootstrap().deficit()
@@ -59,9 +55,6 @@ def exec(Project project, XML xml) {
   Rates rates = new Rates(project).bootstrap()
   int zeroRates = roles.everybody().count { uid -> !rates.exists(uid) }
   if (deficit && zeroRates == 0) {
-    claim.reply('Election failed: project is in deficit')
-      .priority(MsgPriority.LOW)
-      .postTo(new ClaimsOf(farm, project))
     return
   }
   // @todo #926:30min we should synchronize elected, but not assigned jobs
@@ -69,10 +62,13 @@ def exec(Project project, XML xml) {
   //  as a performer for few jobs and another project may elect same user
   //  before jobs from first project will be assigned to the performer.
   Wbs wbs = new Wbs(project).bootstrap()
-  if (wbs.size() > Tv.HUNDRED) {
-    claim.reply('Election failed: WBS is too big')
-      .priority(MsgPriority.LOW)
-      .postTo(new ClaimsOf(farm, project))
+  if (wbs.size() > Tv.FIFTY && !claim.hasParam('job')) {
+    // @todo #2194:30min Election is disabled for huge WBS (> 50 items).
+    //  Analyze the bottleneck of election performance, most
+    //  probably it can be solved by caching some external resources,
+    //  such as Github labels etc.
+    //  Then optimize election process and enable it back.
+    return
   }
   Orders ord = new Orders(farm, project).bootstrap()
   Collection<String> orders
@@ -80,11 +76,7 @@ def exec(Project project, XML xml) {
     if (claim.param('reason', 'none') != 'PR added to WBS') {
       new Assume(project, xml).roles('ARC', 'PO')
     }
-    if (claim.hasParam('role') && claim.param('role') == 'DEV') {
-      orders = ord.iterate()
-    } else {
-      orders = Collections.singletonList(claim.param('job'))
-    }
+    orders = Collections.singletonList(claim.param('job'))
   } else {
     orders = ord.iterate()
   }
@@ -145,33 +137,30 @@ def exec(Project project, XML xml) {
       logins.addAll(allogins)
     }
     if (logins.empty) {
-      claim.reply('Election failed: no available performers')
-        .priority(MsgPriority.LOW)
-        .postTo(new ClaimsOf(farm, project))
       return
     }
     ElectionResult result = new ElectionResult(
       new Election(
         job, logins,
         [
-          (wrapped(new VsHardCap(pmo, max)))                                         : -100,
-          (wrapped(new VsReputation(pmo, logins)))                                   : 4,
+          (wrapped(new VsHardCap(pmo, max)))                                     : -100,
+          (wrapped(new VsReputation(pmo, logins)))                               : 4,
           (wrapped(new VsLosers(pmo, new Policy(farm).get('3.low-threshold', -128)))): -100,
-          (wrapped(new VsRate(project, logins)))                                     : 2,
-          (wrapped(new VsBigDebt(pmo)))                                              : -100,
-          (wrapped(new VsNoRoom(pmo)))                                               : role == 'REV' ? 0 : -100,
-          (wrapped(new VsOptionsMaxJobs(pmo)))                                       : role == 'REV' ? 0 : -100,
-          (wrapped(new VsOptionsMaxRevJobs(pmo)))                                    : role == 'REV' ? -100 : 0,
-          (wrapped(new VsBanned(project, job)))                                      : -100,
-          (wrapped(new VsVacation(farm)))                                            : -100,
-          (wrapped(new VsWorkload(farm, logins)))                                    : 1,
-          (wrapped(new VsWorkload(farm, project, logins)))                           : 1,
-          (wrapped(new VsSpeed(pmo, logins)))                                        : 3,
-          (wrapped(new VsBalance(project, farm, logins)))                            : 3,
-          (wrapped(new VsRandom()))                                                  : 1,
-          (wrapped(new VsBlanks(pmo, logins)))                                       : -1,
-          (wrapped(new VsNegligence(pmo, logins)))                                   : -1,
-          (wrapped(new VsVerbosity(pmo, logins)))                                    : -1
+          (wrapped(new VsRate(project, logins)))                                 : 2,
+          (wrapped(new VsBigDebt(pmo)))                                          : -100,
+          (wrapped(new VsNoRoom(pmo)))                                           : role == 'REV' ? 0 : -100,
+          (wrapped(new VsOptionsMaxJobs(pmo)))                                   : role == 'REV' ? 0 : -100,
+          (wrapped(new VsOptionsMaxRevJobs(pmo)))                                : role == 'REV' ? -100 : 0,
+          (wrapped(new VsBanned(project, job)))                                  : -100,
+          (wrapped(new VsVacation(farm)))                                         : -100,
+          (wrapped(new VsWorkload(farm, logins)))                                : 1,
+          (wrapped(new VsWorkload(farm, project, logins)))                       : 1,
+          (wrapped(new VsSpeed(pmo, logins)))                                    : 3,
+          (wrapped(new VsBalance(project, farm, logins)))                        : 3,
+          (wrapped(new VsRandom()))                                              : 1,
+          (wrapped(new VsBlanks(pmo, logins)))                                   : -1,
+          (wrapped(new VsNegligence(pmo, logins)))                               : -1,
+          (wrapped(new VsVerbosity(pmo, logins)))                                : -1
         ]
       )
     )
@@ -186,7 +175,10 @@ def exec(Project project, XML xml) {
         .postTo(new ClaimsOf(farm, project))
       break
     } else if (claim.hasParam('job')) {
-      claim.reply('Election failed: performer was not elected (see footprint for details)')
+      claim.copy()
+        .type('Performer was not elected')
+        .param('job', job)
+        .param('role', role)
         .param('reason', result.reason())
         .priority(MsgPriority.LOW)
         .postTo(new ClaimsOf(farm, project))

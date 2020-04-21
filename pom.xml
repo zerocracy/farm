@@ -537,7 +537,7 @@ SOFTWARE.
                       <limit>
                         <counter>LINE</counter>
                         <value>COVEREDRATIO</value>
-                        <minimum>0.64</minimum>
+                        <minimum>0.65</minimum>
                       </limit>
                       <!--
                          @todo #1083:30min Continue to increase the coverages to reach
