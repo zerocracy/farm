@@ -64,7 +64,7 @@ public final class TkProfileTest {
 
     @Test
     public void rendersHomePage() throws Exception {
-        final Farm farm = new PropsFarm(new FkFarm());
+        final Farm farm = FkFarm.props();
         final String uid = "yegor";
         new Awards(farm, uid).bootstrap().add(
             new FkProject(), 1, "gh:test/test#1", "reason"
@@ -80,7 +80,7 @@ public final class TkProfileTest {
 
     @Test
     public void rendersProfilePageWithRateInFirefox() throws Exception {
-        final Farm farm = new PropsFarm(new FkFarm());
+        final Farm farm = FkFarm.props();
         final double rate = 99.99;
         final People people = new People(farm).bootstrap();
         people.rate(
@@ -99,7 +99,7 @@ public final class TkProfileTest {
 
     @Test
     public void rendersProfilePageInFirefoxWithReputation() throws Exception {
-        final Farm farm = new PropsFarm(new FkFarm());
+        final Farm farm = FkFarm.props();
         final String user = "yegor256";
         MatcherAssert.assertThat(
             new View(farm, String.format("/u/%s", user)).html(),
@@ -114,7 +114,7 @@ public final class TkProfileTest {
 
     @Test
     public void rendersProfilePageWithoutRateInFirefox() throws Exception {
-        final Farm farm = new PropsFarm(new FkFarm());
+        final Farm farm = FkFarm.props();
         final String uid = "yegor256";
         MatcherAssert.assertThat(
             new View(farm, String.format("/u/%s", uid)).html(),
@@ -124,7 +124,7 @@ public final class TkProfileTest {
 
     @Test
     public void rendersDebts() throws Exception {
-        final Farm farm = new PropsFarm(new FkFarm());
+        final Farm farm = FkFarm.props();
         final Debts debts = new Debts(farm).bootstrap();
         final String uid = "yegor256";
         final String first = "details 1";
@@ -204,7 +204,7 @@ public final class TkProfileTest {
             // @checkstyle LineLength (1 line)
             "@nvseenu is not invited to us yet, see <a href=\"www.zerocracy.com/policy.html#1\">§1</a>";
         MatcherAssert.assertThat(
-            new View(new PropsFarm(new FkFarm()), "/").html(
+            new View(FkFarm.props(), "/").html(
                 new FormattedText(
                     "Cookie: RsFlash=%s/WARNING",
                     URLEncoder.encode(flash, StandardCharsets.UTF_8.toString())

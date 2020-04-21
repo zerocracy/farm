@@ -21,7 +21,6 @@ import com.jcabi.http.response.RestResponse;
 import com.jcabi.http.response.XmlResponse;
 import com.jcabi.matchers.XhtmlMatchers;
 import com.zerocracy.FkFarm;
-import com.zerocracy.farm.props.PropsFarm;
 import java.net.HttpURLConnection;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
@@ -46,7 +45,7 @@ public final class TkAppTest {
 
     @Test
     public void rendersHomePage() throws Exception {
-        final Take take = new TkApp(new PropsFarm(new FkFarm()));
+        final Take take = new TkApp(FkFarm.props());
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
                 new RsPrint(
@@ -68,7 +67,7 @@ public final class TkAppTest {
 
     @Test
     public void rendersHomePageViaHttp() throws Exception {
-        final Take app = new TkApp(new PropsFarm(new FkFarm()));
+        final Take app = new TkApp(FkFarm.props());
         new FtRemote(app).exec(
             home -> new JdkRequest(home)
                 .fetch()
@@ -86,7 +85,7 @@ public final class TkAppTest {
     @Test
     @Ignore
     public void redirectOnError() throws Exception {
-        final Take take = new TkApp(new PropsFarm(new FkFarm()));
+        final Take take = new TkApp(FkFarm.props());
         final String message = "Internal application error";
         MatcherAssert.assertThat(
             "Could not redirect on error",
