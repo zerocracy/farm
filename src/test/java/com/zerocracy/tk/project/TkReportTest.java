@@ -23,7 +23,6 @@ import com.zerocracy.Project;
 import com.zerocracy.claims.ClaimOut;
 import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.farm.footprint.FtFarm;
-import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.tk.View;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
@@ -38,7 +37,7 @@ public final class TkReportTest {
 
     @Test
     public void rendersReport() throws Exception {
-        final Farm farm = new FtFarm(new PropsFarm(new FkFarm()));
+        final Farm farm = new FtFarm(FkFarm.props());
         final String uid = "yegor256";
         final Project project = farm.find("@id='C00000000'").iterator().next();
         new ClaimOut()

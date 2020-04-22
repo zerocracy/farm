@@ -24,7 +24,6 @@ import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.SoftException
 import com.zerocracy.claims.ClaimIn
-import com.zerocracy.claims.MsgPriority
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
@@ -78,11 +77,4 @@ def exec(Project project, XML xml) {
     .type('Job was added to WBS')
     .param('role', role)
     .postTo(new ClaimsOf(farm, project))
-  if (role == 'REV') {
-    claim.copy()
-      .type('Elect performer')
-      .param('reason', 'PR added to WBS')
-      .priority(MsgPriority.HIGH)
-      .postTo(new ClaimsOf(farm, project))
-  }
 }

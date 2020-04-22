@@ -19,8 +19,6 @@ package com.zerocracy.tk;
 import com.jcabi.matchers.XhtmlMatchers;
 import com.zerocracy.Farm;
 import com.zerocracy.FkFarm;
-import com.zerocracy.farm.footprint.FtFarm;
-import com.zerocracy.farm.props.PropsFarm;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 
@@ -34,11 +32,10 @@ public final class TkIndexTest {
 
     @Test
     public void rendersIndexPage() throws Exception {
-        final Farm farm = new FtFarm(new PropsFarm(new FkFarm()));
+        final Farm farm = FkFarm.props();
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(new View(farm, "/").xml()),
             XhtmlMatchers.hasXPaths("/page/alive")
         );
     }
-
 }

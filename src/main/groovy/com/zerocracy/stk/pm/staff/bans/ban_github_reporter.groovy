@@ -22,6 +22,7 @@ import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.claims.ClaimIn
+import com.zerocracy.claims.MsgPriority
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
@@ -29,8 +30,7 @@ import com.zerocracy.pm.staff.Bans
 import com.zerocracy.radars.github.Job
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Job was added to WBS')
+  new Assume(project, xml).notPmo().type('Job was added to WBS')
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
   if (!job.startsWith('gh:')) {
@@ -46,6 +46,14 @@ def exec(Project project, XML xml) {
     claim.copy()
       .type('User was banned')
       .param('reason', 'The user reported GitHub issue')
+      .postTo(new ClaimsOf(farm, project))
+  }
+  String role = claim.param('role', 'DEV')
+  if (role == 'REV') {
+    claim.copy()
+      .type('Elect performer')
+      .param('reason', 'PR added to WBS')
+      .priority(MsgPriority.HIGH)
       .postTo(new ClaimsOf(farm, project))
   }
 }
