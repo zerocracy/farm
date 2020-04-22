@@ -35,7 +35,7 @@ release:
     git commit -am "${tag}"
     cp ../settings.xml settings.xml
     mvn clean package -Pqulice,codenarc,zc-farm --errors --batch-mode --quiet --settings ../settings.xml
-    git remote add dokku dokku@dokku.0crat.com:zerocrat
+    git remote add heroku git@heroku.com:zerocrat.git
     mkdir ~/.ssh
     mv ../id_rsa ../id_rsa.pub ~/.ssh
     chmod -R 600 ~/.ssh/*
