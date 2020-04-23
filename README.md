@@ -5,8 +5,7 @@
 [![DevOps By Rultor.com](http://www.rultor.com/b/zerocracy/farm)](http://www.rultor.com/p/zerocracy/farm)
 [![We recommend IntelliJ IDEA](https://www.elegantobjects.org/intellij-idea.svg)](https://www.jetbrains.com/idea/)
 
-[![Build Status](https://travis-ci.org/zerocracy/farm.svg?branch=master)](https://travis-ci.org/zerocracy/farm)
-[![Build status](https://ci.appveyor.com/api/projects/status/yrnrhc44a09u3g59?svg=true)](https://ci.appveyor.com/project/yegor256/farm)
+[![Maven Build](https://github.com/zerocracy/farm/workflows/Maven%20Build/badge.svg)](https://github.com/zerocracy/farm/actions?query=workflow%3A%22Maven+Build%22)
 [![PDD status](http://www.0pdd.com/svg?name=zerocracy/farm)](http://www.0pdd.com/p?name=zerocracy/farm)
 [![Hits-of-Code](https://hitsofcode.com/github/zerocracy/farm)](https://hitsofcode.com/view/github/zerocracy/farm)
 
