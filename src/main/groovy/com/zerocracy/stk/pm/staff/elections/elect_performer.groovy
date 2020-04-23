@@ -23,6 +23,7 @@ import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Policy
 import com.zerocracy.Project
+import com.zerocracy.SoftException
 import com.zerocracy.claims.ClaimIn
 import com.zerocracy.claims.MsgPriority
 import com.zerocracy.entry.ClaimsOf
@@ -40,6 +41,7 @@ import com.zerocracy.pm.staff.votes.*
 import com.zerocracy.pmo.Pmo
 import com.zerocracy.radars.github.Quota
 import org.cactoos.iterable.Mapped
+import org.cactoos.text.TextOf
 
 @SuppressWarnings('CyclomaticComplexity')
 def exec(Project project, XML xml) {
@@ -47,8 +49,8 @@ def exec(Project project, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   Farm farm = binding.variables.farm
   Github ghb = new ExtGithub(farm).value()
-  if (!new Quota(ghb).quiet()) {
-    return
+  if (new Quota(ghb).over(new TextOf('elect_performer: Github quota is over'))) {
+    throw new SoftException('Unable to elect performer: GitHub quota is over')
   }
   boolean deficit = new Ledger(farm, project).bootstrap().deficit()
   Roles roles = new Roles(project).bootstrap()
