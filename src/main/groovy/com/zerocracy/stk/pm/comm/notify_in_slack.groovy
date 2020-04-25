@@ -18,8 +18,6 @@ package com.zerocracy.stk.pm.comm
 
 import com.jcabi.log.Logger
 import com.jcabi.xml.XML
-import com.ullink.slack.simpleslackapi.SlackChannel
-import com.ullink.slack.simpleslackapi.SlackUser
 import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.claims.ClaimIn
@@ -28,6 +26,7 @@ import com.zerocracy.entry.ExtSlack
 import com.zerocracy.farm.Assume
 import com.zerocracy.farm.props.Props
 import com.zerocracy.radars.slack.SkSession
+import com.zerocracy.radars.slack.SkSession.SkUser
 
 // Token must look like: slack;C43789437;yegor256;direct
 
@@ -49,36 +48,25 @@ def exec(Project project, XML xml) {
     Logger.info(this, 'Message to Slack [%s]: %s', claim.token(), message)
     return
   }
-  SkSession session = session(parts[1])
+  String cid = parts[1]
+  SkSession session = session(cid)
   if (parts.length > 2) {
+    String uid = parts[2]
+    SkUser user = session.user(uid)
+    if (user == null) {
+      claim.copy()
+        .type('Error')
+        .param('message', "Can't find ${uid} in Slack session for ${cid}")
+        .postTo(new ClaimsOf(farm, project))
+      return
+    }
     if (parts.length > 3) {
-      SlackUser user = session.user(parts[2])
-      if (user == null) {
-        claim.copy()
-          .type('Error')
-          .param('message', "Can't find ${parts[2]} in Slack session for ${parts[1]}")
-          .postTo(new ClaimsOf(farm, project))
-        return
-      }
-      session.send(
-        session.openDirectMessageChannel(user).reply.slackChannel,
-        message
-      )
+      user.send(message)
     } else {
-      SlackChannel channel = session.channel(parts[1])
-      SlackUser user = session.user(parts[2])
-      if (user == null) {
-        claim.copy()
-          .type('Error')
-          .param('message', "Can't find ${parts[2]} in Slack session for ${parts[1]}")
-          .postTo(new ClaimsOf(farm, project))
-        return
-      }
-      session.send(channel, "<@${user.id}> ${message}")
+      session.channel(cid).send("<@${uid}> ${message}")
     }
   } else {
-    SlackChannel channel = session.channel(parts[1])
-    session.send(channel, message)
+    session.channel(cid).send(message)
   }
 }
 

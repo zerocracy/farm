@@ -57,16 +57,15 @@ public final class ReSafe implements Reaction<SlackMessagePosted> {
                     try {
                         result = this.origin.react(farm, event, session);
                     } catch (final SoftException ex) {
-                        session.send(
-                            event.getChannel(), ex.getMessage()
+                        session.channel(event.getChannel().getId()).send(
+                            ex.getMessage()
                         );
                     }
                     return result;
                 },
                 new FuncOf<>(
                     throwable -> {
-                        session.send(
-                            event.getChannel(),
+                        session.channel(event.getChannel().getId()).send(
                             new TxtUnrecoverableError(
                                 throwable, new Props(farm),
                                 String.format(

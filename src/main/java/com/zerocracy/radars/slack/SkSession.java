@@ -16,14 +16,10 @@
  */
 package com.zerocracy.radars.slack;
 
-import com.ullink.slack.simpleslackapi.SlackChannel;
-import com.ullink.slack.simpleslackapi.SlackMessageHandle;
 import com.ullink.slack.simpleslackapi.SlackPersona;
 import com.ullink.slack.simpleslackapi.SlackTeam;
-import com.ullink.slack.simpleslackapi.SlackUser;
 import com.ullink.slack.simpleslackapi.listeners.SlackChannelJoinedListener;
 import com.ullink.slack.simpleslackapi.listeners.SlackMessagePostedListener;
-import com.ullink.slack.simpleslackapi.replies.SlackChannelReply;
 import java.io.Closeable;
 import java.io.IOException;
 
@@ -32,35 +28,20 @@ import java.io.IOException;
  *
  * @since 1.0
  */
-@SuppressWarnings("PMD.TooManyMethods")
 public interface SkSession extends Closeable {
     /**
      * Find channel by its identifier.
      * @param id Channel identifier
      * @return Slack channel
      */
-    SlackChannel channel(String id);
+    SkChannel channel(String id);
 
     /**
      * Find user by its identifier.
      * @param id Channel identifier
      * @return Slack user
      */
-    SlackUser user(String id);
-
-    /**
-     * Send a message to specific channel.
-     * @param channel Slack channel
-     * @param message Message
-     */
-    void send(SlackChannel channel, String message);
-
-    /**
-     * Send a message to specific user.
-     * @param user Slack user
-     * @param message Message
-     */
-    void send(SlackUser user, String message);
+    SkUser user(String id);
 
     /**
      * Check whether the current session belongs to a channel with specific
@@ -107,11 +88,24 @@ public interface SkSession extends Closeable {
     void addChannelJoinedListener(SlackChannelJoinedListener listener);
 
     /**
-     * Opens direct message channel for user.
-     * @param user User for direct message channel
-     * @return Message channel
+     * USer in Slack.
      */
-    SlackMessageHandle<SlackChannelReply> openDirectMessageChannel(
-        SlackUser user
-    );
+    interface SkUser {
+        /**
+         * Sends direct message channel for user.
+         * @param message Message
+         */
+        void send(String message);
+    }
+
+    /**
+     *Channel in Slack.
+     */
+    interface SkChannel {
+        /**
+         * Send a message to specific channel.
+         * @param message Message
+         */
+        void send(String message);
+    }
 }

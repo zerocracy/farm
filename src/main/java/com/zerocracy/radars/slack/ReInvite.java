@@ -31,8 +31,7 @@ final class ReInvite implements Reaction<SlackChannelJoined> {
     @Override
     public boolean react(final Farm farm, final SlackChannelJoined event,
         final SkSession session) throws IOException {
-        session.send(
-            event.getSlackChannel(),
+        session.channel(event.getSlackChannel().getId()).send(
             new Par(
                 "Thanks for inviting me here;",
                 "now you have to bootstrap the project, as explained in §12;",

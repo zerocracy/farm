@@ -17,15 +17,14 @@
 package com.zerocracy.radars.slack;
 
 import com.ullink.slack.simpleslackapi.SlackChannel;
-import com.ullink.slack.simpleslackapi.SlackMessageHandle;
 import com.ullink.slack.simpleslackapi.SlackPersona;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.SlackTeam;
 import com.ullink.slack.simpleslackapi.SlackUser;
 import com.ullink.slack.simpleslackapi.listeners.SlackChannelJoinedListener;
 import com.ullink.slack.simpleslackapi.listeners.SlackMessagePostedListener;
-import com.ullink.slack.simpleslackapi.replies.SlackChannelReply;
 import java.io.IOException;
+import java.util.Optional;
 
 /**
  * Real session in Slack.
@@ -49,28 +48,17 @@ public final class RealSkSession implements SkSession {
     }
 
     @Override
-    public SlackChannel channel(final String id) {
-        return this.origin.findChannelById(id);
+    public SkChannel channel(final String id) {
+        return Optional.ofNullable(this.origin.findChannelById(id))
+            .map(RealSkChannel::new)
+            .orElse(null);
     }
 
     @Override
-    public SlackUser user(final String id) {
-        return this.origin.findUserById(id);
-    }
-
-    @Override
-    public void send(final SlackChannel channel, final String message) {
-        this.origin.sendMessage(channel, message);
-    }
-
-    @Override
-    public void send(final SlackUser user, final String message) {
-        this.origin.sendMessage(
-            this.origin.openDirectMessageChannel(user)
-                .getReply()
-                .getSlackChannel(),
-            message
-        );
+    public SkUser user(final String id) {
+        return Optional.ofNullable(this.origin.findUserById(id))
+            .map(RealSkUser::new)
+            .orElse(null);
     }
 
     @Override
@@ -119,14 +107,64 @@ public final class RealSkSession implements SkSession {
     }
 
     @Override
-    public SlackMessageHandle<SlackChannelReply> openDirectMessageChannel(
-        final SlackUser user
-    ) {
-        return this.origin.openDirectMessageChannel(user);
-    }
-
-    @Override
     public void close() throws IOException {
         this.origin.disconnect();
+    }
+
+    /**
+     * Real user in Slack.
+     *
+     * @since 1.0
+     */
+    private final class RealSkUser implements SkUser {
+
+        /**
+         * Original slack user.
+         */
+        private final SlackUser origin;
+
+        /**
+         * Ctor.
+         * @param origin Original slack user
+         */
+        RealSkUser(final SlackUser origin) {
+            this.origin = origin;
+        }
+
+        @Override
+        public void send(final String message) {
+            RealSkSession.this.origin.sendMessage(
+                RealSkSession.this.origin.openDirectMessageChannel(this.origin)
+                    .getReply()
+                    .getSlackChannel(),
+                message
+            );
+        }
+    }
+
+    /**
+     * Real channel in Slack.
+     *
+     * @since 1.0
+     */
+    private final class RealSkChannel implements SkChannel {
+
+        /**
+         * Original slack channel.
+         */
+        private final SlackChannel origin;
+
+        /**
+         * Ctor.
+         * @param origin Original slack channel
+         */
+        RealSkChannel(final SlackChannel origin) {
+            this.origin = origin;
+        }
+
+        @Override
+        public void send(final String message) {
+            RealSkSession.this.origin.sendMessage(this.origin, message);
+        }
     }
 }

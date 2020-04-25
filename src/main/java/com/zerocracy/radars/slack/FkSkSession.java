@@ -16,45 +16,96 @@
  */
 package com.zerocracy.radars.slack;
 
-import com.ullink.slack.simpleslackapi.SlackChannel;
-import com.ullink.slack.simpleslackapi.SlackMessageHandle;
 import com.ullink.slack.simpleslackapi.SlackPersona;
 import com.ullink.slack.simpleslackapi.SlackTeam;
-import com.ullink.slack.simpleslackapi.SlackUser;
 import com.ullink.slack.simpleslackapi.listeners.SlackChannelJoinedListener;
 import com.ullink.slack.simpleslackapi.listeners.SlackMessagePostedListener;
-import com.ullink.slack.simpleslackapi.replies.SlackChannelReply;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Set;
 
 /**
  * Fake {@link SkSession}.
+ *
  * @since 0.28
+ * @todo #1544:30min Finish implementation of FkSkSession, FkTeam and
+ *  FkPersona, fake classes implementing SkSession, SlackTeam and
+ *  SlackPersona. Then use these classes to replace Mockito in tests.
+ *  In particular, try to remove from SkSession any reference to the
+ *  underlying com.ullink.slack library in the same way SkUser and
+ *  SkChannel abstracts over SlackUser and SlackChannel.
+ * @todo #1544:30min Remove the need for the ConfusingTernary
+ *  suppress warning caused by the if/else in channel and user. A good
+ *  solution would be not to return null and handle non-existence of
+ *  a channel or a user in a different more OO way. This would also
+ *  impact RealSkSession and its users.
  */
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals"})
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.ConfusingTernary"})
 public final class FkSkSession implements SkSession {
-    @Override
-    public SlackChannel channel(final String id) {
-        throw new IllegalStateException("Not implemented");
+
+    /**
+     * Users.
+     */
+    private final Set<String> users;
+
+    /**
+     * Channels.
+     */
+    private final Set<String> channels;
+
+    /**
+     * Ctor.
+     */
+    public FkSkSession() {
+        this(Collections.emptySet(), Collections.emptySet());
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param users Existing users.
+     * @param channels Existing channels.
+     */
+    public FkSkSession(final Set<String> users, final Set<String> channels) {
+        this.users = users;
+        this.channels = channels;
     }
 
     @Override
-    public SlackUser user(final String id) {
-        throw new IllegalStateException("Not implemented");
+    public SkChannel channel(final String id) {
+        final SkChannel channel;
+        if (!this.channels.contains(id)) {
+            channel =  null;
+        } else {
+            channel = new SkChannel() {
+                @Override
+                public void send(final String message) {
+                    throw new UnsupportedOperationException();
+                }
+            };
+        }
+        return channel;
     }
 
     @Override
-    public void send(final SlackChannel channel, final String message) {
-        throw new IllegalStateException("Not implemented");
-    }
-
-    @Override
-    public void send(final SlackUser user, final String message) {
-        throw new IllegalStateException("Not implemented");
+    public SkUser user(final String id) {
+        final SkUser user;
+        if (!this.users.contains(id)) {
+            user = null;
+        } else {
+            user = new SkUser() {
+                @Override
+                public void send(final String message) {
+                    throw new UnsupportedOperationException();
+                }
+            };
+        }
+        return user;
     }
 
     @Override
     public boolean hasChannel(final String id) {
-        throw new IllegalStateException("Not implemented");
+        return this.channels.contains(id);
     }
 
     @Override
@@ -64,12 +115,12 @@ public final class FkSkSession implements SkSession {
 
     @Override
     public void connect() throws IOException {
-        throw new IllegalStateException("Not implemented");
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void disconnect() throws IOException {
-        throw new IllegalStateException("Not implemented");
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -81,25 +132,18 @@ public final class FkSkSession implements SkSession {
     public void addMessagePostedListener(
         final SlackMessagePostedListener listener
     ) {
-        throw new IllegalStateException("Not implemented");
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void addChannelJoinedListener(
         final SlackChannelJoinedListener listener
     ) {
-        throw new IllegalStateException("Not implemented");
-    }
-
-    @Override
-    public SlackMessageHandle<SlackChannelReply> openDirectMessageChannel(
-        final SlackUser user
-    ) {
-        throw new IllegalStateException("Not implemented");
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void close() throws IOException {
-        throw new IllegalStateException("Not implemented");
+        throw new UnsupportedOperationException();
     }
 }

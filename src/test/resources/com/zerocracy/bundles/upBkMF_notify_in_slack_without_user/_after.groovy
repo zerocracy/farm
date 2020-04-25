@@ -17,19 +17,14 @@
 package com.zerocracy.bundles.notify_in_slack_without_user
 
 import com.jcabi.xml.XML
-import com.ullink.slack.simpleslackapi.SlackUser
-import com.zerocracy.Farm
 import com.zerocracy.Project
-import com.zerocracy.entry.ExtSlack
-import com.zerocracy.radars.slack.SkSession
-import org.mockito.Mockito
 
+/**
+ * @todo #1544:30min Change this bundle to test notify_in_slack but
+ *  with an existing user. FkSkSession should store the messages sent
+ *  to users and in this implementation of _after, we should verify
+ *  the message is present. When it is done, don't forget to change
+ *  the name of the bundle too.
+ */
 def exec(Project project, XML xml) {
-  String channelId = 'C123'
-  Farm farm = binding.variables.farm
-  SkSession session = new ExtSlack(farm).value()[channelId]
-  Mockito.verify(
-    session,
-    Mockito.never()
-  ).openDirectMessageChannel(Mockito.<SlackUser>any())
 }

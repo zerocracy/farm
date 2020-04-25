@@ -18,8 +18,6 @@ package com.zerocracy.radars.slack;
 
 import com.ullink.slack.simpleslackapi.SlackChannel;
 import com.ullink.slack.simpleslackapi.SlackSession;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.core.IsEqual;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -34,14 +32,11 @@ public final class RealSkSessionTest {
     @Test
     public void channelUsesOrigin() {
         final String id = "CHNNL";
+        final String message = "some message";
         final SlackSession session = Mockito.mock(SlackSession.class);
         final SlackChannel channel = Mockito.mock(SlackChannel.class);
-        Mockito.when(session.findChannelById(id))
-            .thenReturn(channel);
-        MatcherAssert.assertThat(
-            "Session returns incorrect channel by its ID",
-            new RealSkSession(session).channel(id),
-            new IsEqual<>(channel)
-        );
+        Mockito.when(session.findChannelById(id)).thenReturn(channel);
+        new RealSkSession(session).channel(id).send(message);
+        Mockito.verify(session).sendMessage(channel, message);
     }
 }
