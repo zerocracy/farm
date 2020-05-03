@@ -89,7 +89,7 @@ public final class Wbs {
     /**
      * Add job to WBS with an author.
      * @param job The job to add
-     * @param author the job author
+     * @param author The job author
      * @throws IOException If fails
      */
     public void add(final String job, final String author) throws IOException {
