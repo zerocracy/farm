@@ -30,6 +30,12 @@ import com.zerocracy.pmo.Catalog
 import com.zerocracy.pmo.People
 
 def exec(Project project, XML xml) {
+  // @todo #2237:30min Don't kickout graduates from sandbox projects
+  //  Instead of removing the script, we must add a way to enable and
+  //  disable a feature. Add Assume.feature method that will check for
+  //  the feature name in a list of enabled features. Then change claims.xml
+  //  type to `Ping hourly' to add dont_kickout_graduates_from_sandbox to
+  //  tests execution.
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Ping hourly')
   Farm farm = binding.variables.farm
