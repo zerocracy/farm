@@ -21,15 +21,16 @@ import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Item
 import com.zerocracy.Project
+import com.zerocracy.TextItem
 import com.zerocracy.pm.staff.Applications
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 
 def exec(Project pmo, XML claim) {
-  pmo.acq('test.txt').withCloseable { Item item ->
+  pmo.acq('test.txt').with { Item item ->
     MatcherAssert.assertThat(
       'user did\'t receive a message',
-      item.path().toFile().readLines(),
+      new TextItem(item).readLines(),
       Matchers.hasItem(Matchers.stringContainsInOrder(['The project', 'was notified about your desire to join them']))
     )
   }

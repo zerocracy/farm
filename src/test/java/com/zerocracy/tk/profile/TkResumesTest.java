@@ -17,7 +17,7 @@
 package com.zerocracy.tk.profile;
 
 import com.jcabi.matchers.XhtmlMatchers;
-import com.zerocracy.farm.props.PropsFarm;
+import com.zerocracy.FkFarm;
 import com.zerocracy.tk.View;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -36,7 +36,7 @@ public final class TkResumesTest {
     public void rendersXml() throws Exception {
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
-                new View(new PropsFarm(), "/u/yegor256/resumes").xml()
+                new View(FkFarm.props(), "/u/yegor256/resumes").xml()
             ),
             Matchers.allOf(
                 XhtmlMatchers.hasXPaths("/page/resumes"),
@@ -50,7 +50,7 @@ public final class TkResumesTest {
     public void rendersResumes() throws Exception {
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
-                new View(new PropsFarm(), "/u/yegor256/resumes").html()
+                new View(FkFarm.props(), "/u/yegor256/resumes").html()
             ),
             XhtmlMatchers.hasXPaths("//xhtml:body")
         );

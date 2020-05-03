@@ -17,15 +17,11 @@
 package com.zerocracy.stk.pm.in.orders
 
 import com.jcabi.xml.XML
-import com.zerocracy.Farm
-import com.zerocracy.Par
-import com.zerocracy.Policy
-import com.zerocracy.Project
-import com.zerocracy.SoftException
+import com.zerocracy.*
 import com.zerocracy.cash.Cash
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
-import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pm.cost.Estimates
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.qa.Reviews
@@ -51,7 +47,7 @@ def exec(Project project, XML xml) {
   String login = claim.param('login')
   Farm farm = binding.variables.farm
   int agenda = new Agenda(farm, login).bootstrap().jobs().size()
-  if (agenda > new Policy().get('3.absolute-max', 32)) {
+  if (agenda > new Policy(farm).get('3.absolute-max', 32)) {
     throw new SoftException(
       new Par(
         'User @%s already has %d jobs in the agenda already;',
@@ -60,7 +56,12 @@ def exec(Project project, XML xml) {
       ).say(login)
     )
   }
-  new Orders(farm, project).bootstrap().assign(job, login, claim.cid(), claim.created().toInstant())
+  Orders orders = new Orders(farm, project).bootstrap()
+  if (orders.assigned(job)) {
+    // already assigned
+    return
+  }
+  orders.assign(job, login, claim.cid(), claim.created().toInstant())
   String role = new Wbs(project).bootstrap().role(job)
   String msg
   if (role == 'REV') {

@@ -18,11 +18,7 @@ package com.zerocracy.stk.pmo.profile
 
 import com.jcabi.github.User
 import com.jcabi.xml.XML
-import com.zerocracy.Farm
-import com.zerocracy.Par
-import com.zerocracy.Policy
-import com.zerocracy.Project
-import com.zerocracy.SoftException
+import com.zerocracy.*
 import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.entry.ExtGithub
@@ -80,7 +76,7 @@ def exec(Project pmo, XML xml) {
     )
     .postTo(new ClaimsOf(farm))
   String reason = new Par('@%s resume examination').say(login)
-  int bonus = new Policy().get('1.bonus', 32)
+  int bonus = new Policy(farm).get('1.bonus', 32)
   claim.copy()
     .type('Add award points')
     .param('login', author)

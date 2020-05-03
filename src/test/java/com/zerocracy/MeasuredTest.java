@@ -19,7 +19,6 @@ package com.zerocracy;
 import com.mongodb.MongoClient;
 import com.zerocracy.entry.ExtMongo;
 import com.zerocracy.farm.fake.FkStakeholder;
-import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
 import org.hamcrest.MatcherAssert;
@@ -36,7 +35,7 @@ public final class MeasuredTest {
 
     @Test(expected = IllegalStateException.class)
     public void collectTimeTakenToExceute() throws IOException {
-        final Farm farm = new PropsFarm();
+        final Farm farm = FkFarm.props();
         final MongoClient client = new ExtMongo(farm).value();
         final long previous = client.getDatabase(
             Measured.COLLECTION

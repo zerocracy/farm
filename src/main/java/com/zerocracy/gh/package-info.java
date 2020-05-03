@@ -14,21 +14,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.update_heapdump
 
-import com.jcabi.xml.XML
-import com.zerocracy.Project
-import org.cactoos.io.LengthOf
-import org.cactoos.io.TeeInput
+/**
+ * Github objects.
+ * @since 1.0
+ */
+package com.zerocracy.gh;
 
-def exec(Project project, XML xml) {
-  project.acq('test/heap').withCloseable {
-    new LengthOf(
-      new TeeInput(
-        'This is a heap file for testing purposes',
-        it.path()
-      )
-    ).intValue()
-  }
-
-}

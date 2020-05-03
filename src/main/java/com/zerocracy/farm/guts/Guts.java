@@ -19,7 +19,6 @@ package com.zerocracy.farm.guts;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.zerocracy.Farm;
-import com.zerocracy.Item;
 import com.zerocracy.Project;
 import java.io.IOException;
 import org.cactoos.Func;
@@ -92,10 +91,7 @@ public final class Guts implements
 
     @Override
     public XML value() throws IOException {
-        try (final Item item =
-            this.farm.find(Guts.QUERY).iterator().next().acq("guts.xml")) {
-            return new XMLDocument(new TextOf(item.path()).asString());
-        }
+        return this.farm.find(Guts.QUERY).iterator().next().acq("guts.xml")
+            .read(path -> new XMLDocument(new TextOf(path).asString()));
     }
-
 }

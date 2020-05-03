@@ -16,7 +16,7 @@
  */
 package com.zerocracy.radars.github;
 
-import com.zerocracy.farm.props.PropsFarm;
+import com.zerocracy.FkFarm;
 import java.net.HttpURLConnection;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -33,11 +33,12 @@ import org.takes.rq.RqWithBody;
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class TkGithubTest {
+
     @Test
     public void parsesJson() throws Exception {
         MatcherAssert.assertThat(
             new TkGithub(
-                new PropsFarm(),
+                FkFarm.props(),
                 (farm, github, event) -> "nothing"
             ).act(
                 new RqWithBody(
@@ -58,7 +59,7 @@ public final class TkGithubTest {
     @Test(expected = HttpException.class)
     public void handleNonEncodedPayload() throws Exception {
         new TkGithub(
-            new PropsFarm(),
+            FkFarm.props(),
             (farm, github, event) -> "none"
         ).act(
             new RqWithBody(

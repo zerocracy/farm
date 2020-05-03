@@ -19,7 +19,7 @@ package com.zerocracy.tk;
 import com.jcabi.http.request.JdkRequest;
 import com.jcabi.http.response.RestResponse;
 import com.zerocracy.Farm;
-import com.zerocracy.farm.fake.FkFarm;
+import com.zerocracy.FkFarm;
 import com.zerocracy.pmo.People;
 import java.net.HttpURLConnection;
 import org.hamcrest.Matchers;
@@ -48,7 +48,7 @@ public final class TkKnownTest {
 
     @Test
     public void returnsNotFoundIfNotFound() throws Exception {
-        new FtRemote(TkKnownTest.take(new FkFarm())).exec(
+        new FtRemote(TkKnownTest.take(FkFarm.props())).exec(
             base -> new JdkRequest(base)
                 .uri().path("/known/unknown").back()
                 .fetch()
@@ -59,7 +59,7 @@ public final class TkKnownTest {
 
     @Test
     public void returnsDetils() throws Exception {
-        final Farm farm = new FkFarm();
+        final Farm farm = FkFarm.props();
         final String login = "user15";
         final People people = new People(farm).bootstrap();
         people.invite(login, TkKnownTest.ZEROCRAT);

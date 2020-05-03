@@ -24,9 +24,9 @@ import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.SoftException
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
-import com.zerocracy.claims.ClaimIn
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()

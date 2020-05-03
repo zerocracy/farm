@@ -17,14 +17,13 @@
 package com.zerocracy.farm.reactive;
 
 import com.zerocracy.Farm;
+import com.zerocracy.FkFarm;
+import com.zerocracy.FkProject;
 import com.zerocracy.Project;
 import com.zerocracy.SoftException;
 import com.zerocracy.claims.ClaimIn;
 import com.zerocracy.claims.ClaimsItem;
 import com.zerocracy.farm.MismatchException;
-import com.zerocracy.farm.fake.FkFarm;
-import com.zerocracy.farm.fake.FkProject;
-import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pmo.Pmo;
 import org.cactoos.io.InputOf;
 import org.cactoos.text.TextOf;
@@ -42,7 +41,7 @@ public final class StkGroovyTest {
 
     @Test
     public void parsesGroovy() throws Exception {
-        final Farm farm = new PropsFarm();
+        final Farm farm = FkFarm.props();
         final Project project = new Pmo(farm);
         new StkGroovy(
             new InputOf(

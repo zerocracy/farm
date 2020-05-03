@@ -19,7 +19,7 @@ package com.zerocracy;
 import com.jcabi.xml.XMLDocument;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.farm.props.Props;
-import com.zerocracy.farm.props.PropsFarm;
+import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Iterator;
@@ -41,21 +41,22 @@ public final class Policy {
     /**
      * Farm.
      */
-    private final Farm farm;
-
-    /**
-     * Ctor.
-     */
-    public Policy() {
-        this(new PropsFarm());
-    }
+    private final Pmo pmo;
 
     /**
      * Ctor.
      * @param frm The farm
      */
     public Policy(final Farm frm) {
-        this.farm = frm;
+        this(new Pmo(frm));
+    }
+
+    /**
+     * Ctor.
+     * @param pmo PMO
+     */
+    public Policy(final Pmo pmo) {
+        this.pmo = pmo;
     }
 
     /**
@@ -90,7 +91,7 @@ public final class Policy {
     public String get(final String param, final String test)
         throws IOException {
         final String result;
-        if (new Props(this.farm).has("//testing")) {
+        if (new Props(this.pmo).has("//testing")) {
             result = test;
         } else {
             final Iterator<String> items = new XMLDocument(
@@ -111,5 +112,4 @@ public final class Policy {
         }
         return result;
     }
-
 }

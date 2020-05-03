@@ -18,7 +18,7 @@ package com.zerocracy.pm.cost;
 
 import com.jcabi.jdbc.Preparation;
 import com.zerocracy.Farm;
-import com.zerocracy.Item;
+import com.zerocracy.ItemXml;
 import com.zerocracy.Par;
 import com.zerocracy.Project;
 import com.zerocracy.Xocument;
@@ -70,11 +70,7 @@ public final class Ledger {
      * @throws IOException If fails
      */
     public boolean deficit() throws IOException {
-        try (final Item item = this.item()) {
-            return !new Xocument(item).nodes(
-                "/ledger/deficit"
-            ).isEmpty();
-        }
+        return this.item().exists("/ledger/deficit");
     }
 
     /**
@@ -83,23 +79,21 @@ public final class Ledger {
      * @throws IOException If fails
      */
     public void deficit(final boolean def) throws IOException {
-        try (final Item item = this.item()) {
-            if (def) {
-                new Xocument(item).modify(
-                    new Directives()
-                        .xpath("/ledger[not(deficit)]")
-                        .strict(1)
-                        .add("deficit")
-                        .set(new DateAsText().asString())
-                );
-            } else {
-                new Xocument(item).modify(
-                    new Directives()
-                        .xpath("/ledger/deficit")
-                        .strict(1)
-                        .remove()
-                );
-            }
+        if (def) {
+            this.item().update(
+                new Directives()
+                    .xpath("/ledger[not(deficit)]")
+                    .strict(1)
+                    .add("deficit")
+                    .set(new DateAsText().asString())
+            );
+        } else {
+            this.item().update(
+                new Directives()
+                    .xpath("/ledger/deficit")
+                    .strict(1)
+                    .remove()
+            );
         }
     }
 
@@ -122,16 +116,19 @@ public final class Ledger {
      */
     @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
     public void add(final Ledger.Transaction... tns) throws IOException {
-        try (final Item item = this.item()) {
+        try {
             if (!new Props(this.farm).has("//testing")) {
                 new PgLedger(
                     new ExtDataSource(this.farm).value(), this.project
                 ).add(tns);
             }
-            final Xocument xoc = new Xocument(item);
-            for (final Transaction txn : tns) {
-                txn.update(xoc);
-            }
+            this.item().update(
+                xoc -> {
+                    for (final Transaction txn : tns) {
+                        txn.update(xoc);
+                    }
+                }
+            );
         } catch (final SQLException err) {
             throw new IOException("Failed to add transaction", err);
         }
@@ -143,14 +140,13 @@ public final class Ledger {
      * @throws IOException If fails
      */
     public Ledger bootstrap() throws IOException {
-        try (final Item xml = this.item()) {
-            new Xocument(xml.path()).bootstrap("pm/cost/ledger");
+        try {
             if (!new Props(this.farm).has("//testing")
                 || System.getProperty("pgsql.port") != null) {
                 new PgLedger(
                     new ExtDataSource(this.farm).value(),
                     this.project
-                ).bootstrap(xml);
+                ).bootstrap(this.item());
             }
         } catch (final SQLException err) {
             throw new IOException(
@@ -180,19 +176,17 @@ public final class Ledger {
      */
     @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
     private Cash sum(final String acc, final String col) throws IOException {
-        try (final Item item = this.item()) {
-            final Iterable<String> values = new Xocument(item).xpath(
-                String.format(
-                    "//balance/account[name='%s']/%s/text()",
-                    acc, col
-                )
-            );
-            Cash sum = Cash.ZERO;
-            for (final String val : values) {
-                sum = sum.add(new Cash.S(val));
-            }
-            return sum;
+        final Iterable<String> values = this.item().xpath(
+            String.format(
+                "//balance/account[name='%s']/%s/text()",
+                acc, col
+            )
+        );
+        Cash sum = Cash.ZERO;
+        for (final String val : values) {
+            sum = sum.add(new Cash.S(val));
         }
+        return sum;
     }
 
     /**
@@ -200,8 +194,8 @@ public final class Ledger {
      * @return Item
      * @throws IOException If fails
      */
-    private Item item() throws IOException {
-        return this.project.acq("ledger.xml");
+    private ItemXml item() throws IOException {
+        return new ItemXml(this.project.acq("ledger.xml"), "pm/cost/ledger");
     }
 
     /**

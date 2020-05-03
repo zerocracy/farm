@@ -16,7 +16,7 @@
  */
 package com.zerocracy.pm.staff.ranks;
 
-import com.zerocracy.farm.fake.FkProject;
+import com.zerocracy.FkProject;
 import com.zerocracy.pm.scope.Wbs;
 import java.util.Arrays;
 import java.util.List;

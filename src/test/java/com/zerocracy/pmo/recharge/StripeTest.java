@@ -16,8 +16,8 @@
  */
 package com.zerocracy.pmo.recharge;
 
+import com.zerocracy.FkFarm;
 import com.zerocracy.farm.props.Props;
-import com.zerocracy.farm.props.PropsFarm;
 import java.math.BigDecimal;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -37,14 +37,14 @@ public final class StripeTest {
     public static void setupClass() throws Exception {
         Assume.assumeTrue(
             "stripe secret is not configured",
-            new Props().has("//stripe/secret")
+            new Props(FkFarm.props()).has("//stripe/secret")
         );
     }
 
     @Test
     public void calculatesDailyRevenue() throws Exception {
         MatcherAssert.assertThat(
-            new Stripe(new PropsFarm()).dailyRevenue("USD")
+            new Stripe(FkFarm.props()).dailyRevenue("USD")
                 .compareTo(BigDecimal.ZERO),
             Matchers.equalTo(1)
         );

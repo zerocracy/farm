@@ -21,9 +21,9 @@ import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
-import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pm.cost.Boosts
 import com.zerocracy.pm.cost.Estimates
 import com.zerocracy.pm.cost.Rates
@@ -51,6 +51,7 @@ def exec(Project project, XML xml) {
   if (wbs.exists(job)) {
     items.add(
       new Par(
+        farm,
         'The job %s is [in scope](http://www.zerocracy.com/policy.html#14) for ' +
         Logger.format(
           '%[ms]s',

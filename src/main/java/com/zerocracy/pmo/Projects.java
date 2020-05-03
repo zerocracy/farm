@@ -17,8 +17,7 @@
 package com.zerocracy.pmo;
 
 import com.zerocracy.Farm;
-import com.zerocracy.Item;
-import com.zerocracy.Xocument;
+import com.zerocracy.ItemXml;
 import java.io.IOException;
 import org.xembly.Directives;
 
@@ -64,9 +63,7 @@ public final class Projects {
      * @throws IOException If fails
      */
     public Projects bootstrap() throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).bootstrap("pmo/projects");
-        }
+        this.item().update();
         return this;
     }
 
@@ -76,11 +73,7 @@ public final class Projects {
      * @throws IOException If fails
      */
     public Iterable<String> iterate() throws IOException {
-        try (final Item item = this.item()) {
-            return new Xocument(item.path()).xpath(
-                "/projects/project/text()"
-            );
-        }
+        return this.item().xpath("/projects/project/text()");
     }
 
     /**
@@ -89,14 +82,12 @@ public final class Projects {
      * @throws IOException If fails
      */
     public void add(final String pid) throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
-                new Directives()
-                    .xpath("/projects")
-                    .add("project")
-                    .set(pid)
-            );
-        }
+        this.item().update(
+            new Directives()
+                .xpath("/projects")
+                .add("project")
+                .set(pid)
+        );
     }
 
     /**
@@ -105,16 +96,11 @@ public final class Projects {
      * @throws IOException If fails
      */
     public void remove(final String pid) throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
-                new Directives().xpath(
-                    String.format(
-                        "/projects/project[.='%s']",
-                        pid
-                    )
-                ).remove()
-            );
-        }
+        this.item().update(
+            new Directives().xpath(
+                String.format("/projects/project[.='%s']", pid)
+            ).remove()
+        );
     }
 
     /**
@@ -124,14 +110,9 @@ public final class Projects {
      * @throws IOException If fails
      */
     public boolean exists(final String pid) throws IOException {
-        try (final Item item = this.item()) {
-            return !new Xocument(item.path()).nodes(
-                String.format(
-                    "/projects/project[.='%s' ]",
-                    pid
-                )
-            ).isEmpty();
-        }
+        return this.item().exists(
+            String.format("/projects/project[.='%s' ]", pid)
+        );
     }
 
     /**
@@ -139,9 +120,12 @@ public final class Projects {
      * @return Item
      * @throws IOException If fails
      */
-    private Item item() throws IOException {
-        return this.pmo.acq(
-            String.format("projects/%s.xml", this.login)
+    private ItemXml item() throws IOException {
+        return new ItemXml(
+            this.pmo.acq(
+                String.format("projects/%s.xml", this.login)
+            ),
+            "pmo/projects"
         );
     }
 }

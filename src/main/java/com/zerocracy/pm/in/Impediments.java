@@ -17,11 +17,10 @@
 package com.zerocracy.pm.in;
 
 import com.zerocracy.Farm;
-import com.zerocracy.Item;
+import com.zerocracy.ItemXml;
 import com.zerocracy.Par;
 import com.zerocracy.Project;
 import com.zerocracy.SoftException;
-import com.zerocracy.Xocument;
 import com.zerocracy.pm.scope.Wbs;
 import java.io.IOException;
 import org.cactoos.collection.CollectionOf;
@@ -58,12 +57,8 @@ public final class Impediments {
     /**
      * Bootstrap it.
      * @return Itself
-     * @throws IOException If fails
      */
-    public Impediments bootstrap() throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).bootstrap("pm/in/impediments");
-        }
+    public Impediments bootstrap() {
         return this;
     }
 
@@ -104,19 +99,17 @@ public final class Impediments {
                 ).say(job)
             );
         }
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
-                new Directives()
-                    .xpath("/impediments")
-                    .add("order")
-                    .attr("id", job)
-                    .add("impediment")
-                    .attr("type", "unknown")
-                    .set(new Par.ToText(reason).toString())
-                    .up()
-                    .up()
-            );
-        }
+        this.item().update(
+            new Directives()
+                .xpath("/impediments")
+                .add("order")
+                .attr("id", job)
+                .add("impediment")
+                .attr("type", "unknown")
+                .set(new Par.ToText(reason).toString())
+                .up()
+                .up()
+        );
     }
 
     /**
@@ -132,14 +125,12 @@ public final class Impediments {
                 ).say(job)
             );
         }
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
-                new Directives()
-                    .xpath(Impediments.order(job))
-                    .strict(1)
-                    .remove()
-            );
-        }
+        this.item().update(
+            new Directives()
+                .xpath(Impediments.order(job))
+                .strict(1)
+                .remove()
+        );
     }
 
     /**
@@ -149,11 +140,9 @@ public final class Impediments {
      * @throws IOException If fails
      */
     public boolean exists(final String job) throws IOException {
-        try (final Item item = this.item()) {
-            return !new Xocument(item.path()).nodes(
-                Impediments.order(job)
-            ).isEmpty();
-        }
+        return this.item().exists(
+            Impediments.order(job)
+        );
     }
 
     /**
@@ -162,10 +151,7 @@ public final class Impediments {
      * @throws IOException If fails
      */
     public Iterable<String> jobs() throws IOException {
-        try (final Item item = this.item()) {
-            return new Xocument(item.path())
-                .xpath("/impediments/order/@id");
-        }
+        return this.item().xpath("/impediments/order/@id");
     }
 
     /**
@@ -173,8 +159,10 @@ public final class Impediments {
      * @return Item
      * @throws IOException If fails
      */
-    private Item item() throws IOException {
-        return this.project.acq("impediments.xml");
+    private ItemXml item() throws IOException {
+        return new ItemXml(
+            this.project.acq("impediments.xml"), "pm/in/impediments"
+        );
     }
 
     /**

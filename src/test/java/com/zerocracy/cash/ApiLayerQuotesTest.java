@@ -16,6 +16,8 @@
  */
 package com.zerocracy.cash;
 
+import com.zerocracy.FkFarm;
+import com.zerocracy.farm.props.PropsFarm;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -35,7 +37,8 @@ public final class ApiLayerQuotesTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void noUsdIsNotAccepted() throws Exception {
-        new ApiLayerQuotes().quote(Currency.EUR, Currency.GBP);
+        new ApiLayerQuotes(new PropsFarm(new FkFarm()))
+            .quote(Currency.EUR, Currency.GBP);
     }
 
     /**
@@ -49,12 +52,13 @@ public final class ApiLayerQuotesTest {
         );
         new FtRemote(take).exec(
             home -> MatcherAssert.assertThat(
-                new LoggingQuotes(new ApiLayerQuotes(home))
+                new LoggingQuotes(
+                    new ApiLayerQuotes(home, new PropsFarm(new FkFarm()))
+                )
                     .quote(Currency.EUR, Currency.USD),
                 // @checkstyle MagicNumber (1 lines)
                 Matchers.equalTo(0.8d)
             )
         );
     }
-
 }

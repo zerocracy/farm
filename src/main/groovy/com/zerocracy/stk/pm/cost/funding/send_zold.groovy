@@ -21,10 +21,10 @@ import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.cash.Cash
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.farm.props.Props
-import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pm.cost.Vesting
 import com.zerocracy.pmo.banks.BnkZold
 

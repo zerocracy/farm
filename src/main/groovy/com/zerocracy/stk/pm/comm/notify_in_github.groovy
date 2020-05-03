@@ -16,11 +16,7 @@
  */
 package com.zerocracy.stk.pm.comm
 
-import com.jcabi.github.Comment
-import com.jcabi.github.Coordinates
-import com.jcabi.github.Github
-import com.jcabi.github.Issue
-import com.jcabi.github.Repo
+import com.jcabi.github.*
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
@@ -32,6 +28,7 @@ import com.zerocracy.farm.props.Props
 import com.zerocracy.radars.github.GhTube
 import com.zerocracy.radars.github.Quota
 import com.zerocracy.radars.github.ThrottledComments
+
 import java.util.concurrent.TimeUnit
 
 // Token must look like: zerocracy/farm;123;6

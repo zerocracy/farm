@@ -16,11 +16,11 @@
  */
 package com.zerocracy.pmo;
 
+import com.zerocracy.FkFarm;
+import com.zerocracy.FkProject;
 import com.zerocracy.Project;
 import com.zerocracy.claims.ClaimOut;
 import com.zerocracy.claims.ClaimsItem;
-import com.zerocracy.farm.fake.FkProject;
-import com.zerocracy.farm.props.PropsFarm;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -38,7 +38,7 @@ public final class HintTest {
     public void postsSimpleClaim() throws Exception {
         final Project project = new FkProject();
         final Hint hint = new Hint(
-            new PropsFarm(),
+            FkFarm.props(),
             100, 0,
             new ClaimOut()
                 .type("Notify user")
@@ -53,5 +53,4 @@ public final class HintTest {
             Matchers.iterableWithSize(1)
         );
     }
-
 }

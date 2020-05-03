@@ -16,8 +16,9 @@
  */
 package com.zerocracy.pm.cost;
 
+import com.zerocracy.FkFarm;
+import com.zerocracy.FkProject;
 import com.zerocracy.cash.Cash;
-import com.zerocracy.farm.fake.FkProject;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -37,7 +38,7 @@ public final class RatesTest {
         MatcherAssert.assertThat(
             rates.exists(login), Matchers.equalTo(false)
         );
-        rates.set(login, rate);
+        rates.set(login, rate, FkFarm.props());
         MatcherAssert.assertThat(
             rates.exists(login), Matchers.equalTo(true)
         );

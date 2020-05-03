@@ -21,7 +21,6 @@ import com.zerocracy.Par;
 import com.zerocracy.claims.ClaimOut;
 import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.pmo.People;
-import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
 import java.util.logging.Level;
 import org.takes.Request;
@@ -57,8 +56,7 @@ public final class TkAlias implements Take {
         final RqHref.Smart smart = new RqHref.Smart(new RqHref.Base(req));
         final String rel = smart.single("rel");
         final String href = smart.single("href");
-        final Pmo pmo = new Pmo(this.farm);
-        final People people = new People(pmo).bootstrap();
+        final People people = new People(this.farm).bootstrap();
         if (people.find(rel, href).iterator().hasNext()) {
             throw new RsForward(
                 new RsParFlash(

@@ -17,9 +17,9 @@
 package com.zerocracy.tk.project;
 
 import com.zerocracy.Farm;
+import com.zerocracy.FkFarm;
 import com.zerocracy.Project;
 import com.zerocracy.farm.SmartFarm;
-import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.pm.staff.Roles;
 import com.zerocracy.pmo.Catalog;
 import com.zerocracy.pmo.People;
@@ -53,7 +53,7 @@ public final class RqProjectTest {
             final Roles roles = new Roles(project).bootstrap();
             final String uid = "yegor256";
             roles.assign(uid, "PO");
-            new People(new Pmo(farm)).bootstrap().invite(uid, "mentor");
+            new People(farm).bootstrap().invite(uid, "mentor");
             MatcherAssert.assertThat(
                 new RqProject(
                     farm,
@@ -76,7 +76,7 @@ public final class RqProjectTest {
         final Farm raw = new FkFarm();
         new Roles(new Pmo(raw)).bootstrap().assign("yegor256", "PO");
         try (final Farm farm = new SmartFarm(raw)) {
-            new People(new Pmo(farm)).bootstrap().invite("yegor256", "mentor");
+            new People(farm).bootstrap().invite("yegor256", "mentor");
             MatcherAssert.assertThat(
                 new RqProject(
                     farm,
@@ -93,5 +93,4 @@ public final class RqProjectTest {
             );
         }
     }
-
 }

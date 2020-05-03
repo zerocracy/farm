@@ -17,7 +17,7 @@
 package com.zerocracy.pmo;
 
 import com.zerocracy.Farm;
-import com.zerocracy.Item;
+import com.zerocracy.ItemXml;
 import com.zerocracy.Par;
 import com.zerocracy.Project;
 import com.zerocracy.SoftException;
@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.Collection;
-import org.cactoos.text.JoinedText;
 import org.xembly.Directives;
 
 /**
@@ -100,9 +99,6 @@ public final class Agenda {
      * @throws IOException If fails
      */
     public Agenda bootstrap() throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).bootstrap("pmo/agenda");
-        }
         return this;
     }
 
@@ -112,11 +108,7 @@ public final class Agenda {
      * @throws IOException If fails
      */
     public Collection<String> jobs() throws IOException {
-        try (final Item item = this.item()) {
-            return new Xocument(item.path()).xpath(
-                "/agenda/order/@job"
-            );
-        }
+        return this.item().xpath("/agenda/order/@job");
     }
 
     /**
@@ -127,14 +119,12 @@ public final class Agenda {
      * @throws IOException If fails
      */
     public Collection<String> jobs(final Project pkt) throws IOException {
-        try (final Item item = this.item()) {
-            return new Xocument(item.path()).xpath(
-                String.format(
-                    "/agenda/order[project = '%s']/@job",
-                    pkt.pid()
-                )
-            );
-        }
+        return this.item().xpath(
+            String.format(
+                "/agenda/order[project = '%s']/@job",
+                pkt.pid()
+            )
+        );
     }
 
     /**
@@ -144,9 +134,7 @@ public final class Agenda {
      * @throws IOException If fails
      */
     public boolean exists(final String job) throws IOException {
-        try (final Item item = this.item()) {
-            return !new Xocument(item.path()).nodes(Agenda.path(job)).isEmpty();
-        }
+        return this.item().read(xoc -> Agenda.exists(xoc, job));
     }
 
     /**
@@ -156,11 +144,9 @@ public final class Agenda {
      * @throws IOException If fails
      */
     public boolean hasInspector(final String job) throws IOException {
-        try (final Item item = this.item()) {
-            return !new Xocument(item.path())
-                .nodes(String.format("%s/inspector", Agenda.path(job)))
-                .isEmpty();
-        }
+        return !this.item().empty(
+            String.format("%s/inspector", Agenda.path(job))
+        );
     }
 
     /**
@@ -170,27 +156,17 @@ public final class Agenda {
      * @throws IOException If fails
      */
     public Instant added(final String job) throws IOException {
-        if (!this.exists(job)) {
-            throw new SoftException(
-                new Par(
-                    new JoinedText(
-                        " ",
-                        "Job %s is not in the agenda of @%s,",
-                        "can't retrieve data and time of add"
-                    ).asString()
-                ).say(job, this.login)
-            );
-        }
-        try (final Item item = this.item()) {
-            return Instant.parse(
-                new Xocument(item.path()).nodes(
-                    String.format(
-                        "/agenda/order[@job='%s']/added",
-                        job
-                    )
-                ).get(0).node().getTextContent()
-            );
-        }
+        return Instant.parse(
+            this.item().read(
+                xoc -> this.ensureExists(xoc, job)
+                    .nodes(
+                        String.format(
+                            "/agenda/order[@job='%s']/added",
+                            job
+                        )
+                    ).get(0).node().getTextContent()
+            )
+        );
     }
 
     /**
@@ -203,26 +179,17 @@ public final class Agenda {
     @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     public void add(final Project project, final String job,
         final String role) throws IOException {
-        if (this.exists(job)) {
-            throw new SoftException(
-                new Par(
-                    "Job %s is already in the agenda of @%s"
-                ).say(job, this.login)
-            );
-        }
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
-                new Directives()
-                    .xpath("/agenda")
-                    .add("order")
-                    .attr("job", job)
-                    .add("role").set(role).up()
-                    .add("title").set("-").up()
-                    .add("added").set(Instant.now(this.clock)).up()
-                    .add("project")
-                    .set(project.pid())
-            );
-        }
+        this.item().update(
+            new Directives()
+                .xpath("/agenda")
+                .add("order")
+                .attr("job", job)
+                .add("role").set(role).up()
+                .add("title").set("-").up()
+                .add("added").set(Instant.now(this.clock)).up()
+                .add("project")
+                .set(project.pid())
+        );
     }
 
     /**
@@ -231,21 +198,14 @@ public final class Agenda {
      * @throws IOException If fails
      */
     public void remove(final String job) throws IOException {
-        if (!this.exists(job)) {
-            throw new SoftException(
-                new Par(
-                    "Job %s is not in the agenda of @%s, can't remove"
-                ).say(job, this.login)
-            );
-        }
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
+        this.item().update(
+            xoc -> this.ensureExists(xoc, job).modify(
                 new Directives()
                     .xpath(Agenda.path(job))
                     .strict(1)
                     .remove()
-            );
-        }
+            )
+        );
     }
 
     /**
@@ -253,13 +213,11 @@ public final class Agenda {
      * @throws IOException If fails.
      */
     public void removeAll() throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
-                new Directives()
-                    .xpath("/agenda/order")
-                    .remove()
-            );
-        }
+        this.item().update(
+            new Directives()
+                .xpath("/agenda/order")
+                .remove()
+        );
     }
 
     /**
@@ -269,22 +227,15 @@ public final class Agenda {
      * @throws IOException If fails
      */
     public void estimate(final String job, final Cash cash) throws IOException {
-        if (!this.exists(job)) {
-            throw new SoftException(
-                new Par(
-                    "Job %s is not in the agenda of @%s, can't set estimate"
-                ).say(job, this.login)
-            );
-        }
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
+        this.item().update(
+            xoc -> this.ensureExists(xoc, job).modify(
                 new Directives()
                     .xpath(Agenda.path(job))
                     .strict(1)
                     .addIf("estimate")
                     .set(cash)
-            );
-        }
+            )
+        );
     }
 
     /**
@@ -295,22 +246,15 @@ public final class Agenda {
      */
     public void impediment(final String job,
         final String reason) throws IOException {
-        if (!this.exists(job)) {
-            throw new SoftException(
-                new Par(
-                    "Job %s is not in the agenda of @%s, can't set impediment"
-                ).say(job, this.login)
-            );
-        }
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
+        this.item().update(
+            xoc -> this.ensureExists(xoc, job).modify(
                 new Directives()
                     .xpath(Agenda.path(job))
                     .strict(1)
                     .addIf("impediment")
                     .set(reason)
-            );
-        }
+            )
+        );
     }
 
     /**
@@ -321,22 +265,15 @@ public final class Agenda {
      */
     public void inspector(final String job,
         final String inspector) throws IOException {
-        if (!this.exists(job)) {
-            throw new SoftException(
-                new Par(
-                    "Job %s is not in the agenda of @%s, can't inspect"
-                ).say(job, this.login)
-            );
-        }
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
+        this.item().update(
+            xoc -> this.ensureExists(xoc, job).modify(
                 new Directives()
                     .xpath(Agenda.path(job))
                     .strict(1)
                     .addIf("inspector")
                     .set(inspector)
-            );
-        }
+            )
+        );
     }
 
     /**
@@ -347,22 +284,15 @@ public final class Agenda {
      */
     @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     public void title(final String job, final String title) throws IOException {
-        if (!this.exists(job)) {
-            throw new SoftException(
-                new Par(
-                    "Job %s is not in the agenda of @%s, can't set title"
-                ).say(job, this.login)
-            );
-        }
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
+        this.item().update(
+            xoc -> this.ensureExists(xoc, job).modify(
                 new Directives()
                     .xpath(Agenda.path(job))
                     .strict(1)
                     .addIf("title")
                     .set(title)
-            );
-        }
+            )
+        );
     }
 
     /**
@@ -372,21 +302,14 @@ public final class Agenda {
      * @throws IOException If fails
      */
     public String title(final String job) throws IOException {
-        if (!this.exists(job)) {
-            throw new SoftException(
-                new Par(
-                    "Job %s is not in the agenda of @%s, can't retrieve title"
-                ).say(job, this.login)
-            );
-        }
-        try (final Item item = this.item()) {
-            return new Xocument(item.path()).nodes(
+        return this.item().read(
+            xoc -> this.ensureExists(xoc, job).nodes(
                 String.format(
                     "/agenda/order[@job='%s']/title",
                     job
                 )
-            ).get(0).node().getTextContent();
-        }
+            )
+        ).get(0).node().getTextContent();
     }
 
     /**
@@ -396,21 +319,14 @@ public final class Agenda {
      * @throws IOException If fails.
      */
     public String role(final String job) throws IOException {
-        if (!this.exists(job)) {
-            throw new SoftException(
-                new Par(
-                    "Job %s is not in the agenda of @%s, can't retrieve role"
-                ).say(job, this.login)
-            );
-        }
-        try (final Item item = this.item()) {
-            return new Xocument(item.path()).nodes(
+        return this.item().read(
+            xoc -> this.ensureExists(xoc, job).nodes(
                 String.format(
                     "/agenda/order[@job='%s']/role",
                     job
                 )
-            ).get(0).node().getTextContent();
-        }
+            )
+        ).get(0).node().getTextContent();
     }
 
     /**
@@ -418,9 +334,10 @@ public final class Agenda {
      * @return Item
      * @throws IOException If fails
      */
-    private Item item() throws IOException {
-        return this.pmo.acq(
-            String.format("agenda/%s.xml", this.login)
+    private ItemXml item() throws IOException {
+        return new ItemXml(
+            this.pmo.acq(String.format("agenda/%s.xml", this.login)),
+            "pmo/agenda"
         );
     }
 
@@ -434,5 +351,36 @@ public final class Agenda {
             "/agenda/order[@job='%s']",
             job
         );
+    }
+
+    /**
+     * Check if job exists in xocument.
+     * @param xoc Xocument
+     * @param job Job
+     * @return True if exists
+     * @throws IOException On failure
+     */
+    private static boolean exists(final Xocument xoc, final String job)
+        throws IOException {
+        return !xoc.nodes(Agenda.path(job)).isEmpty();
+    }
+
+    /**
+     * Ensure job exists in xocument.
+     * @param xoc Xocument
+     * @param job Job id
+     * @return Same xocument
+     * @throws IOException If doesn't exist
+     */
+    private Xocument ensureExists(final Xocument xoc, final String job)
+        throws IOException {
+        if (!Agenda.exists(xoc, job)) {
+            throw new SoftException(
+                new Par(
+                    "Job %s is not in the agenda of @%s, can't set title"
+                ).say(job, this.login)
+            );
+        }
+        return xoc;
     }
 }

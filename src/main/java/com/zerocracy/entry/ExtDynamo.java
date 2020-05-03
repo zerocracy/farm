@@ -23,7 +23,6 @@ import com.jcabi.dynamo.mock.MkRegion;
 import com.jcabi.dynamo.retry.ReRegion;
 import com.zerocracy.Farm;
 import com.zerocracy.farm.props.Props;
-import com.zerocracy.farm.props.PropsFarm;
 import org.cactoos.Scalar;
 import org.cactoos.func.SolidFunc;
 import org.cactoos.func.UncheckedFunc;
@@ -54,7 +53,7 @@ public final class ExtDynamo implements Scalar<Region> {
                                 new H2Data()
                                     .with(
                                         "0crat-hints",
-                                        new String[] {"mnemo"},
+                                        new String[]{"mnemo"},
                                         "when", "ttl"
                                     )
                             );
@@ -84,13 +83,6 @@ public final class ExtDynamo implements Scalar<Region> {
      * The farm.
      */
     private final Farm farm;
-
-    /**
-     * Ctor.
-     */
-    public ExtDynamo() {
-        this(new PropsFarm());
-    }
 
     /**
      * Ctor.

@@ -23,8 +23,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import lombok.EqualsAndHashCode;
-import org.cactoos.io.LengthOf;
-import org.cactoos.io.TeeInput;
 
 /**
  * Footprint project.
@@ -65,13 +63,8 @@ final class FtProject implements Project {
         Item item = this.origin.acq(file);
         if ("claims.xml".equals(file)) {
             final Path temp = Files.createTempFile("footprint", ".xml");
-            final Path before = item.path();
-            if (before.toFile().exists()) {
-                new LengthOf(new TeeInput(item.path(), temp)).intValue();
-            }
             item = new FtItem(this, item, this.farm, temp);
         }
         return item;
     }
-
 }

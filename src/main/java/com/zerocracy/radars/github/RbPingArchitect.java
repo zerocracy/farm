@@ -106,9 +106,7 @@ public final class RbPingArchitect implements Rebound {
                 ).say(intro)
             );
             if (!new Roles(project).bootstrap().hasAnyRole(author)
-                && !"0pdd".equals(author)
-                && new Catalog(farm).bootstrap()
-                .fee(project.pid()).equals(Cash.ZERO)) {
+                && RbPingArchitect.pingAuthor(farm, project, author)) {
                 new ThrottledComments(issue.comments()).post(
                     new Par(
                         "@%s this project will fix the problem faster",
@@ -123,4 +121,22 @@ public final class RbPingArchitect implements Rebound {
         }
         return String.format("Architects notified: %s", arcs);
     }
+
+    /**
+     * Check do we need to ping ticket author.
+     * @param farm Farm
+     * @param pkt Project
+     * @param author Author username
+     * @return True if ping
+     * @throws IOException In case of failure
+     */
+    private static boolean pingAuthor(final Farm farm,
+        final Project pkt, final String author) throws IOException {
+        final Catalog catalog = new Catalog(farm).bootstrap();
+        final String pid = pkt.pid();
+        return catalog.verbose(pid)
+            && !"0pdd".equals(author)
+            && catalog.fee(pid).equals(Cash.ZERO);
+    }
 }
+

@@ -16,17 +16,15 @@
  */
 package com.zerocracy.pm.staff;
 
-import com.zerocracy.Item;
+import com.zerocracy.ItemXml;
 import com.zerocracy.Par;
 import com.zerocracy.Project;
 import com.zerocracy.SoftException;
-import com.zerocracy.Xocument;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
-import org.cactoos.iterable.IterableOf;
-import org.cactoos.iterable.LengthOf;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.list.SolidList;
 import org.cactoos.text.JoinedText;
@@ -63,12 +61,8 @@ public final class Roles {
     /**
      * Bootstrap it.
      * @return Itself
-     * @throws IOException If fails
      */
-    public Roles bootstrap() throws IOException {
-        try (final Item team = this.item()) {
-            new Xocument(team).bootstrap("pm/staff/roles");
-        }
+    public Roles bootstrap() {
         return this;
     }
 
@@ -78,9 +72,7 @@ public final class Roles {
      * @throws IOException If fails
      */
     public boolean isEmpty() throws IOException {
-        try (final Item roles = this.item()) {
-            return new Xocument(roles).nodes("/roles/person").isEmpty();
-        }
+        return this.item().empty("/roles/person");
     }
 
     /**
@@ -89,11 +81,7 @@ public final class Roles {
      * @throws IOException If fails
      */
     public Collection<String> everybody() throws IOException {
-        try (final Item roles = this.item()) {
-            return new Xocument(roles).xpath(
-                "/roles/person/@id"
-            );
-        }
+        return this.item().xpath("/roles/person/@id");
     }
 
     /**
@@ -153,29 +141,27 @@ public final class Roles {
                 )
             );
         }
-        try (final Item roles = this.item()) {
-            final String login = person.toLowerCase(Locale.ENGLISH);
-            new Xocument(roles.path()).modify(
-                new Directives()
-                    .xpath(
-                        String.format(
-                            "/roles[not(person[@id='%s'])]",
-                            login
-                        )
+        final String login = person.toLowerCase(Locale.ENGLISH);
+        this.item().update(
+            new Directives()
+                .xpath(
+                    String.format(
+                        "/roles[not(person[@id='%s'])]",
+                        login
                     )
-                    .add("person")
-                    .attr("id", login)
-                    .xpath(
-                        String.format(
-                            "/roles/person[@id='%s']",
-                            login
-                        )
+                )
+                .add("person")
+                .attr("id", login)
+                .xpath(
+                    String.format(
+                        "/roles/person[@id='%s']",
+                        login
                     )
-                    .strict(1)
-                    .add("role")
-                    .set(role)
-            );
-        }
+                )
+                .strict(1)
+                .add("role")
+                .set(role)
+        );
     }
 
     /**
@@ -209,27 +195,24 @@ public final class Roles {
                 ).say()
             );
         }
-        try (final Item roles = this.item()) {
-            final Xocument xoc = new Xocument(roles.path());
-            xoc.modify(
-                new Directives()
-                    .xpath(
-                        String.format(
-                            "/roles/person[@id='%s']/role[.='%s']",
-                            person, role
-                        )
+        this.item().update(
+            new Directives()
+                .xpath(
+                    String.format(
+                        "/roles/person[@id='%s']/role[.='%s']",
+                        person, role
                     )
-                    .strict(1)
-                    .remove()
-                    .xpath(
-                        String.format(
-                            "/roles/person[@id='%s' and not(role)]",
-                            person
-                        )
+                )
+                .strict(1)
+                .remove()
+                .xpath(
+                    String.format(
+                        "/roles/person[@id='%s' and not(role)]",
+                        person
                     )
-                    .remove()
-            );
-        }
+                )
+                .remove()
+        );
     }
 
     /**
@@ -239,45 +222,42 @@ public final class Roles {
      * @throws IOException If fails
      */
     public boolean hasAnyRole(final String person) throws IOException {
-        try (final Item roles = this.item()) {
-            return new Xocument(roles).nodes(
-                String.format(
-                    "/roles/person[@id = '%s']",
-                    person
-                )
-            ).iterator().hasNext();
-        }
+        return this.item().exists(
+            String.format(
+                "/roles/person[@id = '%s']",
+                person
+            )
+        );
     }
 
     /**
      * Does he have any of these roles?
      * @param person The person
-     * @param list Roles to find
+     * @param arr Roles to find
      * @return TRUE if it has a role
      * @throws IOException If fails
      */
-    public boolean hasRole(final String person, final String... list)
+    public boolean hasRole(final String person, final String... arr)
         throws IOException {
-        if (new LengthOf(new IterableOf<>(list)).intValue() == 0) {
+        final List<String> list = Arrays.asList(arr);
+        if (list.isEmpty()) {
             throw new IllegalArgumentException(
                 "The list of roles can't be empty, use hasAnyRoles() instead"
             );
         }
-        try (final Item roles = this.item()) {
-            return new Xocument(roles).nodes(
-                String.format(
-                    "/roles/person[@id='%s' and (%s)]",
-                    person,
-                    new JoinedText(
-                        " or ",
-                        new Mapped<>(
-                            role -> String.format("role='%s'", role),
-                            new SolidList<>(list)
-                        )
-                    ).asString()
-                )
-            ).iterator().hasNext();
-        }
+        return this.item().exists(
+            String.format(
+                "/roles/person[@id='%s' and (%s)]",
+                person,
+                new JoinedText(
+                    " or ",
+                    new Mapped<>(
+                        role -> String.format("role='%s'", role),
+                        new SolidList<>(list)
+                    )
+                ).asString()
+            )
+        );
     }
 
     /**
@@ -287,14 +267,12 @@ public final class Roles {
      * @throws IOException If fails
      */
     public List<String> findByRole(final String role) throws IOException {
-        try (final Item roles = this.item()) {
-            return new Xocument(roles).xpath(
-                String.format(
-                    "/roles/person[role='%s']/@id",
-                    role
-                )
-            );
-        }
+        return this.item().xpath(
+            String.format(
+                "/roles/person[role='%s']/@id",
+                role
+            )
+        );
     }
 
     /**
@@ -304,14 +282,12 @@ public final class Roles {
      * @throws IOException If fails
      */
     public Collection<String> allRoles(final String login) throws IOException {
-        try (final Item roles = this.item()) {
-            return new Xocument(roles).xpath(
-                String.format(
-                    "/roles/person[@id='%s']/role/text()",
-                    login
-                )
-            );
-        }
+        return this.item().xpath(
+            String.format(
+                "/roles/person[@id='%s']/role/text()",
+                login
+            )
+        );
     }
 
     /**
@@ -319,8 +295,7 @@ public final class Roles {
      * @return Item
      * @throws IOException If fails
      */
-    private Item item() throws IOException {
-        return this.project.acq("roles.xml");
+    private ItemXml item() throws IOException {
+        return new ItemXml(this.project.acq("roles.xml"), "pm/staff/roles");
     }
-
 }

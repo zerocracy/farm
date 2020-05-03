@@ -27,7 +27,9 @@ import com.zerocracy.claims.Footprint;
 import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.farm.S3Farm;
 import com.zerocracy.farm.props.PropsFarm;
+import com.zerocracy.farm.sync.Locks;
 import com.zerocracy.farm.sync.SyncFarm;
+import com.zerocracy.farm.sync.TestLocks;
 import java.nio.file.Files;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -50,14 +52,15 @@ public final class FtFarmTest {
             Files.createTempDirectory("").toFile(),
             "the-bucket"
         );
+        final Locks locks = new TestLocks();
         try (final Farm farm = new FtFarm(
-            new PropsFarm(new SyncFarm(new S3Farm(bucket)))
+            new PropsFarm(new SyncFarm(new S3Farm(bucket, locks)))
         )) {
             final String pid = "ABCZZTY03";
             final Project project = farm.find(
                 String.format("@id='%s'", pid)
             ).iterator().next();
-            final int threads = 10;
+            final int threads = 1;
             MatcherAssert.assertThat(
                 inc -> {
                     final String cid = UUID.randomUUID().toString();

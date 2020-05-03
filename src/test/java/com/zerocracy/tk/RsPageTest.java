@@ -17,7 +17,7 @@
 package com.zerocracy.tk;
 
 import com.jcabi.matchers.XhtmlMatchers;
-import com.zerocracy.farm.fake.FkFarm;
+import com.zerocracy.FkFarm;
 import com.zerocracy.farm.props.PropsFarm;
 import java.io.IOException;
 import java.io.InputStreamReader;

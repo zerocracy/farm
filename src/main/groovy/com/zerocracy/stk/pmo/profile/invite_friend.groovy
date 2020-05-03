@@ -109,7 +109,7 @@ def exec(Project pmo, XML xml) {
       ).say(author)
     ).postTo(new ClaimsOf(farm))
   String reason = new Par('@%s resume examination').say(login)
-  int bonus = new Policy().get('1.bonus', 32)
+  int bonus = new Policy(farm).get('1.bonus', 32)
   claim.copy()
     .type('Add award points')
     .param('login', author)

@@ -17,10 +17,10 @@
 package com.zerocracy.radars;
 
 import com.jcabi.xml.XMLDocument;
+import com.zerocracy.FkFarm;
+import com.zerocracy.FkProject;
 import com.zerocracy.claims.ClaimsItem;
 import com.zerocracy.entry.ClaimsOf;
-import com.zerocracy.farm.fake.FkProject;
-import com.zerocracy.farm.props.PropsFarm;
 import java.util.Collection;
 import org.cactoos.list.SolidList;
 import org.hamcrest.MatcherAssert;
@@ -62,12 +62,11 @@ public final class ClaimOnQuestionTest {
         );
         final FkProject project = new FkProject();
         new ClaimOnQuestion(question).claim()
-            .postTo(new ClaimsOf(new PropsFarm(), project));
+            .postTo(new ClaimsOf(FkFarm.props(), project));
         final ClaimsItem claims = new ClaimsItem(project).bootstrap();
         MatcherAssert.assertThat(
             claims.iterate(),
             Matchers.iterableWithSize(1)
         );
     }
-
 }

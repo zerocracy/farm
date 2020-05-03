@@ -18,8 +18,7 @@ package com.zerocracy.pmo;
 
 import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
-import com.zerocracy.Item;
-import com.zerocracy.Xocument;
+import com.zerocracy.ItemXml;
 import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -60,12 +59,8 @@ public final class Resumes {
     /**
      * Bootstrap it.
      * @return This
-     * @throws IOException If fails
      */
-    public Resumes bootstrap() throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).bootstrap("pmo/resumes");
-        }
+    public Resumes bootstrap() {
         return this;
     }
 
@@ -84,28 +79,26 @@ public final class Resumes {
     public void add(final String login, final LocalDateTime when,
         final String text, final String personality,
         final long stackoverflow, final String telegram) throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item).modify(
-                new Directives()
-                    .xpath("/resumes")
-                    .add("resume")
-                    .attr("login", login)
-                    .add("submitted")
-                    .set(when.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
-                    .up()
-                    .add("text")
-                    .set(text)
-                    .up()
-                    .add("personality")
-                    .set(personality)
-                    .up()
-                    .add("stackoverflow")
-                    .set(stackoverflow)
-                    .up()
-                    .add("telegram")
-                    .set(telegram)
-            );
-        }
+        this.item().update(
+            new Directives()
+                .xpath("/resumes")
+                .add("resume")
+                .attr("login", login)
+                .add("submitted")
+                .set(when.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+                .up()
+                .add("text")
+                .set(text)
+                .up()
+                .add("personality")
+                .set(personality)
+                .up()
+                .add("stackoverflow")
+                .set(stackoverflow)
+                .up()
+                .add("telegram")
+                .set(telegram)
+        );
     }
 
     /**
@@ -115,10 +108,8 @@ public final class Resumes {
      * @throws IOException If fails
      */
     public Iterable<String> unassigned() throws IOException {
-        try (final Item item = this.item()) {
-            return new Xocument(item)
-                .xpath("/resumes/resume[not(./examiner)]/@login");
-        }
+        return this.item()
+            .xpath("/resumes/resume[not(./examiner)]/@login");
     }
 
     /**
@@ -128,9 +119,7 @@ public final class Resumes {
      * @throws IOException If fails
      */
     public Iterable<String> all() throws IOException {
-        try (final Item item = this.item()) {
-            return new Xocument(item).xpath("/resumes/resume/@login");
-        }
+        return this.item().xpath("/resumes/resume/@login");
     }
 
     /**
@@ -142,15 +131,12 @@ public final class Resumes {
      */
     public void assign(final String login, final String examiner)
         throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item).modify(
-                new Directives()
-                    .xpath(
-                        String.format("/resumes/resume[@login = '%s']", login)
-                    ).addIf("examiner")
-                    .set(examiner)
-            );
-        }
+        this.item().update(
+            new Directives()
+                .xpath(String.format("/resumes/resume[@login = '%s']", login))
+                .addIf("examiner")
+                .set(examiner)
+        );
     }
 
     /**
@@ -160,14 +146,9 @@ public final class Resumes {
      * @throws IOException If fails
      */
     public boolean hasExaminer(final String login) throws IOException {
-        try (final Item item = this.item()) {
-            return !new Xocument(item.path()).nodes(
-                String.format(
-                    "/resumes/resume[@login='%s']/examiner",
-                    login
-                )
-            ).isEmpty();
-        }
+        return this.item().exists(
+            String.format("/resumes/resume[@login='%s']/examiner", login)
+        );
     }
 
     /**
@@ -178,14 +159,11 @@ public final class Resumes {
      * @throws IOException If fails
      */
     public String examiner(final String login) throws IOException {
-        try (final Item item = this.item()) {
-            return new Xocument(item.path()).xpath(
-                String.format(
-                    "/resumes/resume[@login='%s']/examiner/text()",
-                    login
-                )
-            ).get(0);
-        }
+        return this.item().xpath(
+            String.format(
+                "/resumes/resume[@login='%s']/examiner/text()", login
+            )
+        ).get(0);
     }
 
     /**
@@ -195,16 +173,14 @@ public final class Resumes {
      * @throws IOException If fails
      */
     public void remove(final String login) throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
-                new Directives().xpath(
-                    new FormattedText(
-                        "/resumes/resume[@login='%s']",
-                        login
-                    ).asString()
-                ).remove()
-            );
-        }
+        this.item().update(
+            new Directives().xpath(
+                new FormattedText(
+                    "/resumes/resume[@login='%s']",
+                    login
+                ).asString()
+            ).remove()
+        );
     }
 
     /**
@@ -215,16 +191,11 @@ public final class Resumes {
      * @throws IOException If fails or resume not found
      */
     public Resume resume(final String login) throws IOException {
-        try (final Item item = this.item()) {
-            return new ResumeXml(
-                new Xocument(item.path()).nodes(
-                    new FormattedText(
-                        "/resumes/resume[@login='%s' ]",
-                        login
-                    ).asString()
-                ).get(0)
-            );
-        }
+        return new ResumeXml(
+            this.item().nodes(
+                String.format("/resumes/resume[@login='%s' ]", login)
+            ).get(0)
+        );
     }
 
     /**
@@ -234,14 +205,9 @@ public final class Resumes {
      * @throws IOException If fails
      */
     public boolean exists(final String login) throws IOException {
-        try (final Item item = this.item()) {
-            return !new Xocument(item.path()).nodes(
-                new FormattedText(
-                    "/resumes/resume[@login='%s' ]",
-                    login
-                ).asString()
-            ).isEmpty();
-        }
+        return this.item().exists(
+            String.format("/resumes/resume[@login='%s' ]", login)
+        );
     }
 
     /**
@@ -252,36 +218,34 @@ public final class Resumes {
      */
     public Iterable<Directive> filter(final String expr) throws IOException {
         final Directives dirs = new Directives();
-        try (final Item item = this.item()) {
-            final List<XML> nodes = new Xocument(item.path()).nodes(
-                String.format("/resumes/resume[%s]", expr)
-            );
-            dirs.add("resumes");
-            for (final XML node : nodes) {
-                dirs.add("resume")
-                    .attr("login", node.xpath("@login").get(0))
-                    .add("text")
-                    .set(node.xpath("text/text()").get(0))
-                    .up()
-                    .add("personality")
-                    .set(node.xpath("personality/text()").get(0))
-                    .up()
-                    .add("stackoverflow")
-                    .set(node.xpath("stackoverflow/text()").get(0))
-                    .up()
-                    .add("telegram")
-                    .set(node.xpath("telegram/text()").get(0))
-                    .up()
-                    .add("examiner")
-                    .set(node.xpath("examiner/text()").get(0))
-                    .up()
-                    .add("submitted")
-                    .set(node.xpath("submitted/text()").get(0))
-                    .up()
-                    .up();
-            }
-            dirs.up();
+        final List<XML> nodes = this.item().nodes(
+            String.format("/resumes/resume[%s]", expr)
+        );
+        dirs.add("resumes");
+        for (final XML node : nodes) {
+            dirs.add("resume")
+                .attr("login", node.xpath("@login").get(0))
+                .add("text")
+                .set(node.xpath("text/text()").get(0))
+                .up()
+                .add("personality")
+                .set(node.xpath("personality/text()").get(0))
+                .up()
+                .add("stackoverflow")
+                .set(node.xpath("stackoverflow/text()").get(0))
+                .up()
+                .add("telegram")
+                .set(node.xpath("telegram/text()").get(0))
+                .up()
+                .add("examiner")
+                .set(node.xpath("examiner/text()").get(0))
+                .up()
+                .add("submitted")
+                .set(node.xpath("submitted/text()").get(0))
+                .up()
+                .up();
         }
+        dirs.up();
         return dirs;
     }
 
@@ -292,17 +256,15 @@ public final class Resumes {
      * @throws IOException If fails
      */
     public Iterable<String> olderThan(final Instant time) throws IOException {
-        try (final Item item = this.item()) {
-            return new Xocument(item.path()).xpath(
-                String.join(
-                    "",
-                    "/resumes/resume[",
-                    "xs:dateTime(submitted) < xs:dateTime('",
-                    time.toString(),
-                    "')]/@login"
-                )
-            );
-        }
+        return this.item().xpath(
+            String.join(
+                "",
+                "/resumes/resume[",
+                "xs:dateTime(submitted) < xs:dateTime('",
+                time.toString(),
+                "')]/@login"
+            )
+        );
     }
 
     /**
@@ -310,7 +272,10 @@ public final class Resumes {
      * @return Item
      * @throws IOException If fails
      */
-    private Item item() throws IOException {
-        return this.pmo.acq("resumes.xml");
+    private ItemXml item() throws IOException {
+        return new ItemXml(
+            this.pmo.acq("resumes.xml"),
+            "pmo/resumes"
+        );
     }
 }

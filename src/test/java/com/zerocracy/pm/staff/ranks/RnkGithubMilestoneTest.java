@@ -25,7 +25,6 @@ import com.jcabi.github.mock.MkGithub;
 import com.zerocracy.radars.github.Job;
 import java.util.LinkedList;
 import java.util.List;
-import org.cactoos.func.StickyBiFunc;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -37,6 +36,7 @@ import org.junit.Test;
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class RnkGithubMilestoneTest {
+
     @Test
     public void sortMilestonedIssuesFirst() throws Exception {
         final Github github = new MkGithub().relogin("test");
@@ -44,45 +44,22 @@ public final class RnkGithubMilestoneTest {
             new Repos.RepoCreate("milestones", false)
         );
         final List<String> jobs = new LinkedList<>();
-        jobs.add(
-            new Job(repo.issues().create("No milestone 1", ""))
-                .toString()
-        );
+        final Job first = new Job(repo.issues().create("No milestone 1", ""));
+        jobs.add(first.toString());
         final Issue milestoned = repo.issues().create("Has milestone", "");
         final Milestone milestone = repo.milestones().create("1.0");
         new Issue.Smart(milestoned).milestone(milestone);
         jobs.add(new Job(milestoned).toString());
-        jobs.add(
-            new Job(repo.issues().create("No milestone 2", ""))
-                .toString()
-        );
+        final Job third = new Job(repo.issues().create("No milestone 2", ""));
+        jobs.add(third.toString());
         jobs.sort(new RnkGithubMilestone(github));
         MatcherAssert.assertThat(
             jobs,
             Matchers.contains(
-                "gh:test/milestones#2",
-                "gh:test/milestones#1",
-                "gh:test/milestones#3"
+                new Job(milestoned).toString(),
+                first.toString(),
+                third.toString()
             )
-        );
-    }
-
-    @Test
-    public void evaluatesFromCache() throws Exception {
-        final String issue = "gh:test/cached#4";
-        final String milestoned = "gh:test/cached#5";
-        final StickyBiFunc<Github, String, Boolean> cache = new StickyBiFunc<>(
-            (ghb, job) -> job.equals(milestoned)
-        );
-        final RnkGithubMilestone rnk =
-            new RnkGithubMilestone(new MkGithub(), cache);
-        MatcherAssert.assertThat(
-            rnk.compare(issue, milestoned),
-            Matchers.greaterThan(0)
-        );
-        MatcherAssert.assertThat(
-            rnk.compare(milestoned, issue),
-            Matchers.lessThan(0)
         );
     }
 }

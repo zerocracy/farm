@@ -16,7 +16,7 @@
  */
 package com.zerocracy.pm.scope;
 
-import com.zerocracy.farm.fake.FkProject;
+import com.zerocracy.FkProject;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.core.IsCollectionContaining;

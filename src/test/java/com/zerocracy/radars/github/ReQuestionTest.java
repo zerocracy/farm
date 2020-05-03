@@ -23,7 +23,7 @@ import com.jcabi.github.Repo;
 import com.jcabi.github.Repos;
 import com.jcabi.github.mock.MkGithub;
 import com.zerocracy.Farm;
-import com.zerocracy.farm.props.PropsFarm;
+import com.zerocracy.FkFarm;
 import com.zerocracy.pmo.People;
 import org.junit.Test;
 
@@ -45,7 +45,7 @@ public final class ReQuestionTest {
             repo.issues().create("first title", "")
         );
         final Comment comment = issue.comments().post("@0crat hello");
-        final Farm farm = new PropsFarm();
+        final Farm farm = FkFarm.props();
         new People(farm).bootstrap().invite(uid, "yegor256");
         new ReQuestion().react(farm, new Comment.Smart(comment));
     }

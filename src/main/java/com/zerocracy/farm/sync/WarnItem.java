@@ -22,6 +22,8 @@ import com.zerocracy.Item;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
+import org.cactoos.Func;
+import org.cactoos.Proc;
 
 /**
  * Log warning if item was opened too long.
@@ -47,47 +49,45 @@ public final class WarnItem implements Item {
     private final Item origin;
 
     /**
-     * Opened time nanos.
-     */
-    private final long opened;
-
-    /**
-     * Trace.
-     */
-    private final Exception trace;
-
-    /**
      * Ctor.
      * @param name Item name to log
      * @param origin Origin item to wrap
-     * @param opened Open time nanos
      */
-    public WarnItem(final String name, final Item origin, final long opened) {
+    public WarnItem(final String name, final Item origin) {
         this.name = name;
         this.origin = origin;
-        this.opened = opened;
-        this.trace = new Exception("TRACE");
     }
 
     @Override
-    public Path path() throws IOException {
-        return this.origin.path();
+    public <T> T read(final Func<Path, T> reader) throws IOException {
+        final long opened = System.nanoTime();
+        final T res = this.origin.read(reader);
+        this.warn(opened);
+        return res;
     }
 
     @Override
-    public void close() throws IOException {
-        final long dur = System.nanoTime() - this.opened;
+    public void update(final Proc<Path> writer) throws IOException {
+        final long opened = System.nanoTime();
+        this.origin.update(writer);
+        this.warn(opened);
+    }
+
+    /**
+     * Warn if necessary.
+     * @param opened Opened time
+     */
+    private void warn(final long opened) {
+        final long dur = System.nanoTime() - opened;
         if (dur >= WarnItem.DUR_WARN) {
             Logger.warn(
                 this,
                 String.join(
                     "; ",
-                    "Item '%s' was opened too long: %[nano]s;",
-                    "acquired in %[exception]s"
+                    "Item '%s' was opened too long: %[nano]s;"
                 ),
-                this.name, dur, this.trace
+                this.name, dur
             );
         }
-        this.origin.close();
     }
 }

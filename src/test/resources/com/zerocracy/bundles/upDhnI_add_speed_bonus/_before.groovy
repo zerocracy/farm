@@ -50,9 +50,9 @@ def exec(Project project, XML xml) {
   String fast = 'fast-developer'
   String slow = 'slow-developer'
   new Projects(farm, fast).bootstrap().add(project.pid())
-  new Rates(project).bootstrap().set(fast, new Cash.S('$100'))
+  new Rates(project).bootstrap().set(fast, new Cash.S('$100'), farm)
   new Projects(farm, slow).bootstrap().add(project.pid())
-  new Rates(project).bootstrap().set(slow, new Cash.S('$200'))
+  new Rates(project).bootstrap().set(slow, new Cash.S('$200'), farm)
   [fast, slow].each {
     MatcherAssert.assertThat(
       new Awards(farm, it).bootstrap().total(),

@@ -16,6 +16,8 @@
  */
 package com.zerocracy.cash;
 
+import com.zerocracy.FkFarm;
+import com.zerocracy.farm.props.PropsFarm;
 import java.math.BigDecimal;
 import org.apache.commons.lang3.SerializationUtils;
 import org.hamcrest.MatcherAssert;
@@ -29,6 +31,7 @@ import org.takes.tk.TkText;
 /**
  * Test case for {@link Cash}.
  * @checkstyle MagicNumber (500 lines)
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @since 1.0
  */
 @SuppressWarnings("PMD.TooManyMethods")
@@ -47,7 +50,13 @@ public final class CashTest {
             home -> MatcherAssert.assertThat(
                 new Cash.S("USD 7")
                     .add(new Cash.S("EUR 11.3"))
-                    .quotes(new LoggingQuotes(new ApiLayerQuotes(home)))
+                    .quotes(
+                        new LoggingQuotes(
+                            new ApiLayerQuotes(
+                                home, new PropsFarm(new FkFarm())
+                            )
+                        )
+                    )
                     .compareTo(
                         new Cash.S("JPY 15").add(new Cash.S("GBP 1.5"))
                     ),
@@ -321,5 +330,4 @@ public final class CashTest {
             Matchers.equalTo(0.5d)
         );
     }
-
 }

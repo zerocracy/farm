@@ -22,10 +22,10 @@ import com.jcabi.http.response.RestResponse
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
-import com.zerocracy.claims.ClaimIn
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()

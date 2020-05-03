@@ -16,8 +16,7 @@
  */
 package com.zerocracy.tk;
 
-import com.zerocracy.farm.fake.FkFarm;
-import com.zerocracy.farm.props.PropsFarm;
+import com.zerocracy.FkFarm;
 import java.net.HttpURLConnection;
 import java.util.Arrays;
 import java.util.Collection;
@@ -46,7 +45,7 @@ public final class TkAppUrlTest {
     @Parameterized.Parameters(name = "{0}")
     public static Collection<Object[]> params() {
         return Arrays.asList(
-            new Object[][] {
+            new Object[][]{
                 {"/robots.txt"},
                 {"/css/main.css"},
                 {"/xsl/index.xsl"},
@@ -63,7 +62,7 @@ public final class TkAppUrlTest {
 
     @Test
     public void rendersAllPossibleUrls() throws Exception {
-        final Take take = new TkApp(new PropsFarm(new FkFarm()));
+        final Take take = new TkApp(FkFarm.props());
         MatcherAssert.assertThat(
             this.url,
             take.act(new RqFake("GET", this.url)),
@@ -74,5 +73,4 @@ public final class TkAppUrlTest {
             )
         );
     }
-
 }

@@ -18,9 +18,6 @@ package com.zerocracy.bundles.pr_assigns_performer
 
 import com.jcabi.xml.XML
 import com.zerocracy.Project
-import com.zerocracy.pm.cost.Boosts
-import com.zerocracy.pm.in.Orders
-import com.zerocracy.pm.scope.Wbs
 
 def exec(Project project, XML xml) {
   // @todo #1892:30min This test is failing on rultor but is working fine

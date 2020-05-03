@@ -14,10 +14,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.farm.fake;
+package com.zerocracy;
 
-import com.zerocracy.Item;
-import com.zerocracy.Project;
+import com.zerocracy.farm.fake.FkItem;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -32,7 +31,7 @@ import lombok.EqualsAndHashCode;
  *
  * @since 1.0
  */
-@EqualsAndHashCode(of = { "dir", "name" })
+@EqualsAndHashCode(of = {"dir", "name"})
 public final class FkProject implements Project {
 
     /**
@@ -103,11 +102,15 @@ public final class FkProject implements Project {
     }
 
     @Override
-    public Item acq(final String file) {
+    public Item acq(final String file) throws IOException {
         if (!this.items.containsKey(file)) {
-            this.items.put(file, new FkItem(this.dir.resolve(file)));
+            final Path resolve = this.dir.resolve(file);
+            if (!Files.exists(resolve)) {
+                Files.createDirectories(resolve.getParent());
+                Files.createFile(resolve);
+            }
+            this.items.put(file, new FkItem(resolve));
         }
         return this.items.get(file);
     }
-
 }

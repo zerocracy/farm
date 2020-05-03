@@ -16,10 +16,8 @@
  */
 package com.zerocracy.pm.staff;
 
-import com.zerocracy.Item;
-import com.zerocracy.Par;
+import com.zerocracy.ItemXml;
 import com.zerocracy.Project;
-import com.zerocracy.Xocument;
 import java.io.IOException;
 import java.util.List;
 import org.cactoos.list.Mapped;
@@ -48,12 +46,8 @@ public final class Bans {
     /**
      * Bootstrap it.
      * @return Itself
-     * @throws IOException If fails
      */
-    public Bans bootstrap() throws IOException {
-        try (final Item team = this.item()) {
-            new Xocument(team).bootstrap("pm/staff/bans");
-        }
+    public Bans bootstrap() {
         return this;
     }
 
@@ -64,20 +58,14 @@ public final class Bans {
      * @throws IOException If fails
      */
     public List<String> reasons(final String job) throws IOException {
-        try (final Item item = this.item()) {
-            return new Mapped<>(
-                node -> new Par("@%s: %s").say(
-                    node.xpath("login/text()").get(0),
-                    node.xpath("reason/text()").get(0)
-                ),
-                new Xocument(item).nodes(
-                    String.format(
-                        "/bans/ban[@job='%s']",
-                        job
-                    )
-                )
-            );
-        }
+        return new Mapped<>(
+            node -> String.format(
+                "@%s: %s",
+                node.xpath("login/text()").get(0),
+                node.xpath("reason/text()").get(0)
+            ),
+            this.item().nodes(String.format("/bans/ban[@job='%s']", job))
+        );
     }
 
     /**
@@ -89,15 +77,13 @@ public final class Bans {
      */
     public List<String> reasons(final String job, final String login)
         throws IOException {
-        try (final Item item = this.item()) {
-            return new Xocument(item).xpath(
-                String.format(
-                    "/bans/ban[@job='%s' and login/text()='%s']/reason/text()",
-                    job,
-                    login
-                )
-            );
-        }
+        return this.item().xpath(
+            String.format(
+                "/bans/ban[@job='%s' and login/text()='%s']/reason/text()",
+                job,
+                login
+            )
+        );
     }
 
     /**
@@ -109,18 +95,16 @@ public final class Bans {
      */
     public void ban(final String job, final String login,
         final String reason) throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item).modify(
-                new Directives()
-                    .xpath("/bans")
-                    .add("ban")
-                    .attr("job", job)
-                    .add("created").set(new DateAsText().asString()).up()
-                    .add("login").set(login).up()
-                    .add("reason").set(reason).up()
-                    .up()
-            );
-        }
+        this.item().update(
+            new Directives()
+                .xpath("/bans")
+                .add("ban")
+                .attr("job", job)
+                .add("created").set(new DateAsText().asString()).up()
+                .add("login").set(login).up()
+                .add("reason").set(reason).up()
+                .up()
+        );
     }
 
     /**
@@ -132,15 +116,13 @@ public final class Bans {
      */
     public boolean exists(final String job, final String login)
         throws IOException {
-        try (final Item item = this.item()) {
-            return !new Xocument(item).nodes(
-                String.format(
-                    "/bans/ban[@job = '%s' and login/text() = '%s']",
-                    job,
-                    login
-                )
-            ).isEmpty();
-        }
+        return this.item().exists(
+            String.format(
+                "/bans/ban[@job = '%s' and login/text() = '%s']",
+                job,
+                login
+            )
+        );
     }
 
     /**
@@ -148,7 +130,10 @@ public final class Bans {
      * @return Item
      * @throws IOException If fails
      */
-    private Item item() throws IOException {
-        return this.project.acq("bans.xml");
+    private ItemXml item() throws IOException {
+        return new ItemXml(
+            this.project.acq("bans.xml"),
+            "pm/staff/bans"
+        );
     }
 }

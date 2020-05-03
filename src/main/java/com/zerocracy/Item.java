@@ -16,29 +16,39 @@
  */
 package com.zerocracy;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.nio.file.Path;
+import org.cactoos.Func;
+import org.cactoos.Proc;
 
 /**
  * One item in a project.
  *
  * @since 1.0
  */
-public interface Item extends Closeable {
+public interface Item {
 
     /**
-     * Get path.
-     * @return File location
-     * @throws IOException If fails on I/O
+     * Read item data from path.
+     * <p>
+     * Path is a temporary item file location which can be deleted
+     * right after read.
+     * </p>
+     * @param reader Function to read
+     * @param <T> Returned type
+     * @throws IOException On failure
+     * @return Future of function type
      */
-    Path path() throws IOException;
+    <T> T read(Func<Path, T> reader) throws IOException;
 
-    @Override
-    default void close() throws IOException {
-        throw new UnsupportedOperationException(
-            "close() is not implemented, can't close this item."
-        );
-    }
-
+    /**
+     * Update the data of item.
+     * <p>
+     * Path is a temporary item file location, which will be save externally
+     * and removed after update.
+     * </p>
+     * @param writer Function to update
+     * @throws IOException On failure
+     */
+    void update(Proc<Path> writer) throws IOException;
 }

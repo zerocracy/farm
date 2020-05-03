@@ -16,7 +16,11 @@
  */
 package com.zerocracy.bundles.ping_after_pr_completed
 
-import com.jcabi.github.*
+
+import com.jcabi.github.Issue
+import com.jcabi.github.Pull
+import com.jcabi.github.Repo
+import com.jcabi.github.Repos
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project

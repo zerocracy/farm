@@ -23,9 +23,9 @@ import com.jcabi.github.Repos;
 import com.jcabi.github.mock.MkGithub;
 import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
+import com.zerocracy.FkFarm;
 import com.zerocracy.claims.ClaimIn;
 import com.zerocracy.claims.ClaimsItem;
-import com.zerocracy.farm.props.PropsFarm;
 import java.io.IOException;
 import java.util.Collection;
 import javax.json.Json;
@@ -52,7 +52,7 @@ public final class RbAddToMilestoneTest {
         final Milestone milestone =
             repo.milestones().create("milestone");
         new Issue.Smart(bug).milestone(milestone);
-        final Farm farm = new PropsFarm();
+        final Farm farm = FkFarm.props();
         MatcherAssert.assertThat(
             new RbAddToMilestone().react(
                 farm,

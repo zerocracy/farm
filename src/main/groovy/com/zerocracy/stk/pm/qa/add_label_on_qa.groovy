@@ -14,27 +14,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.update_heapdump
+package com.zerocracy.stk.pm.qa
 
-import com.jcabi.s3.Ocket
-import com.jcabi.s3.fake.FkBucket
+import com.jcabi.github.Github
+import com.jcabi.github.Issue
+import com.jcabi.github.IssueLabels
+import com.jcabi.log.Logger
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Project
-import org.hamcrest.MatcherAssert
-import org.hamcrest.core.IsEqual
+import com.zerocracy.claims.ClaimIn
+import com.zerocracy.entry.ExtGithub
+import com.zerocracy.farm.Assume
+import com.zerocracy.radars.github.Job
 
 def exec(Project project, XML xml) {
-  project.acq('test/bucket').withCloseable {
-    MatcherAssert.assertThat(
-      'Dumped wrong value to bucket',
-      new Ocket.Text(
-        new FkBucket(
-          it.path(),
-          'dumpbucket'
-        ).ocket('heap')
-      ).read(),
-      new IsEqual<>('This is a heap file for testing purposes')
-    )
+  new Assume(project, xml).notPmo().type('Start QA review')
+  Farm farm = binding.variables.farm
+  ClaimIn claim = new ClaimIn(xml)
+  String job = claim.param('job')
+  if (!job.startsWith('gh:')) {
+    return
   }
-
+  Github github = new ExtGithub(farm).value()
+  Issue.Smart issue = new Issue.Smart(new Job.Issue(github, job))
+  IssueLabels labels = new IssueLabels.Smart(issue.labels())
+  try {
+    labels.addIfAbsent('qa', '800040')
+  } catch (AssertionError ex) {
+    Logger.warn(this, "Can't add label to issue %s: %s", issue, ex.localizedMessage)
+  }
 }

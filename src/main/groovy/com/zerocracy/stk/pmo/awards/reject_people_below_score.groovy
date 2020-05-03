@@ -21,9 +21,9 @@ import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Policy
 import com.zerocracy.Project
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
-import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pmo.Awards
 import com.zerocracy.pmo.People
@@ -37,7 +37,7 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Awards awards = new Awards(farm, login).bootstrap()
   Integer current = awards.total()
-  if (current > new Policy().get('44.threshold', -256)) {
+  if (current > new Policy(farm).get('44.threshold', -256)) {
     return
   }
   People people = new People(farm).bootstrap()

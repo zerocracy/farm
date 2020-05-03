@@ -18,18 +18,20 @@ package com.zerocracy.farm.ruled;
 
 import com.zerocracy.Item;
 import com.zerocracy.Project;
+import com.zerocracy.TempFiles;
 import com.zerocracy.farm.fake.FkItem;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.FileTime;
 import java.util.Collection;
 import java.util.LinkedList;
 import lombok.EqualsAndHashCode;
+import org.cactoos.Func;
+import org.cactoos.Proc;
 import org.cactoos.io.LengthOf;
 import org.cactoos.io.TeeInput;
-import org.cactoos.scalar.IoCheckedScalar;
-import org.cactoos.scalar.SolidScalar;
 
 /**
  * Ruled item.
@@ -56,21 +58,6 @@ final class RdItem implements Item {
     private final String name;
 
     /**
-     * Temp file.
-     */
-    private final IoCheckedScalar<Path> temp;
-
-    /**
-     * Initial modification time.
-     */
-    private final IoCheckedScalar<FileTime> time;
-
-    /**
-     * Initial length.
-     */
-    private final IoCheckedScalar<Long> length;
-
-    /**
      * Ctor.
      * @param pkt Project
      * @param item Item
@@ -80,28 +67,6 @@ final class RdItem implements Item {
         this.origin = item;
         this.project = pkt;
         this.name = label;
-        this.temp = new IoCheckedScalar<>(
-            new SolidScalar<>(
-                () -> {
-                    final Path tmp = Files.createTempFile("rdfarm", ".xml");
-                    final Path src = this.origin.path();
-                    if (src.toFile().exists()) {
-                        new LengthOf(new TeeInput(src, tmp)).intValue();
-                    }
-                    return tmp;
-                }
-            )
-        );
-        this.time = new IoCheckedScalar<>(
-            new SolidScalar<>(
-                () -> Files.getLastModifiedTime(this.temp.value())
-            )
-        );
-        this.length = new IoCheckedScalar<>(
-            new SolidScalar<>(
-                () -> this.temp.value().toFile().length()
-            )
-        );
     }
 
     @Override
@@ -110,18 +75,42 @@ final class RdItem implements Item {
     }
 
     @Override
-    public Path path() throws IOException {
-        this.time.value();
-        this.length.value();
-        return this.temp.value();
+    public <T> T read(final Func<Path, T> reader) throws IOException {
+        return this.origin.read(reader);
     }
 
     @Override
-    public void close() throws IOException {
+    public void update(final Proc<Path> writer) throws IOException {
+        this.origin.update(
+            src -> {
+                final Path tmp = TempFiles.INSTANCE
+                    .newFile(this, ".xml");
+                if (src.toFile().exists()) {
+                    new LengthOf(new TeeInput(src, tmp)).intValue();
+                }
+                final FileTime time = Files.getLastModifiedTime(tmp);
+                final long length = Files.size(tmp);
+                writer.exec(tmp);
+                this.apply(src, tmp, time, length);
+            }
+        );
+    }
+
+    /**
+     * Apply rules to item.
+     * @param src Source path
+     * @param tmp Temprary path
+     * @param time File time
+     * @param length File length
+     * @throws IOException On failure
+     * @checkstyle ParameterNumberCheck (5 lines)
+     */
+    private void apply(final Path src, final Path tmp,
+        final FileTime time, final long length)
+        throws IOException {
         try {
-            final String dirty = this.dirty();
+            final String dirty = RdItem.dirty(tmp, time, length);
             if (!dirty.isEmpty()) {
-                final Path tmp = this.temp.value();
                 final Project proxy = file -> {
                     final Item item;
                     if (this.name.equals(file)) {
@@ -136,41 +125,42 @@ final class RdItem implements Item {
                     new RdAuto(proxy, tmp, dirty).propagate();
                     new RdRules(proxy, tmp, dirty).validate();
                 }
-                new LengthOf(new TeeInput(tmp, this.origin.path())).intValue();
+                Files.move(tmp, src, StandardCopyOption.REPLACE_EXISTING);
             }
         } finally {
-            this.origin.close();
-            this.temp.value().toFile().delete();
+            TempFiles.INSTANCE.dispose(tmp);
         }
     }
 
     /**
      * Is it dirty?
+     * @param path Path to check
+     * @param time Last access time
+     * @param length File length
      * @return Some text if it's dirty
      * @throws IOException If fails
      */
-    private String dirty() throws IOException {
-        final Path path = this.temp.value();
+    private static String dirty(final Path path,
+        final FileTime time, final long length) throws IOException {
         final Collection<String> dirty = new LinkedList<>();
         if (path.toFile().length() > 0L) {
-            if (!Files.getLastModifiedTime(path).equals(this.time.value())) {
+            if (!Files.getLastModifiedTime(path).equals(time)) {
                 dirty.add(
                     String.format(
                         "Time:%s!=%s",
-                        Files.getLastModifiedTime(path), this.time.value()
+                        Files.getLastModifiedTime(path), time
                     )
                 );
             }
-            if (path.toFile().length() != this.length.value()) {
+            if (path.toFile().length() != length) {
                 dirty.add(
                     String.format(
                         "Length:%s!=%s",
-                        path.toFile().length(), this.length.value()
+                        path.toFile().length(), length
                     )
                 );
             }
         }
         return String.join("; ", dirty);
     }
-
 }

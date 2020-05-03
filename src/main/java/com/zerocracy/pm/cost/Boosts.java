@@ -17,11 +17,10 @@
 package com.zerocracy.pm.cost;
 
 import com.zerocracy.Farm;
-import com.zerocracy.Item;
+import com.zerocracy.ItemXml;
 import com.zerocracy.Par;
 import com.zerocracy.Project;
 import com.zerocracy.SoftException;
-import com.zerocracy.Xocument;
 import com.zerocracy.pm.in.Orders;
 import java.io.IOException;
 import org.cactoos.iterable.ItemAt;
@@ -69,22 +68,20 @@ public final class Boosts {
      * @throws IOException If fails
      */
     public int factor(final String job) throws IOException {
-        try (final Item item = this.item()) {
-            return new UncheckedScalar<>(
-                new ItemAt<Integer>(
-                    src -> Boosts.FCT_DEFAULT,
-                    new Mapped<>(
-                        Integer::parseInt,
-                        new Xocument(item).xpath(
-                            String.format(
-                                "/boosts/boost[@id='%s']/text()",
-                                job
-                            )
+        return new UncheckedScalar<>(
+            new ItemAt<Integer>(
+                src -> Boosts.FCT_DEFAULT,
+                new Mapped<>(
+                    Integer::parseInt,
+                    this.item().xpath(
+                        String.format(
+                            "/boosts/boost[@id='%s']/text()",
+                            job
                         )
                     )
                 )
-            ).value();
-        }
+            )
+        ).value();
     }
 
     /**
@@ -121,37 +118,34 @@ public final class Boosts {
                 );
             }
         }
-        try (final Item item = this.item()) {
-            final Xocument xoc = new Xocument(item);
-            final String xpath = String.format("/boosts/boost[@id='%s']", job);
-            if (xoc.nodes(xpath).isEmpty()) {
-                xoc.modify(
-                    new Directives()
-                        .xpath("/boosts")
-                        .add("boost")
-                        .attr("id", job)
-                        .set(factor)
-                        .up()
-                );
-            } else {
-                xoc.modify(
-                    new Directives()
-                        .xpath(xpath)
-                        .set(factor)
-                );
+        final String xpath = String.format("/boosts/boost[@id='%s']", job);
+        this.item().update(
+            xoc -> {
+                if (xoc.nodes(xpath).isEmpty()) {
+                    xoc.modify(
+                        new Directives()
+                            .xpath("/boosts")
+                            .add("boost")
+                            .attr("id", job)
+                            .set(factor)
+                            .up()
+                    );
+                } else {
+                    xoc.modify(
+                        new Directives()
+                            .xpath(xpath)
+                            .set(factor)
+                    );
+                }
             }
-        }
+        );
     }
 
     /**
      * Bootstrap it.
      * @return Itself
-     * @throws IOException If fails
      */
-    public Boosts bootstrap() throws IOException {
-        try (final Item wbs = this.item()) {
-            new Xocument(wbs.path()).bootstrap("pm/cost/boosts");
-        }
+    public Boosts bootstrap() {
         return this;
     }
 
@@ -160,7 +154,7 @@ public final class Boosts {
      * @return Item
      * @throws IOException If fails
      */
-    private Item item() throws IOException {
-        return this.project.acq("boosts.xml");
+    private ItemXml item() throws IOException {
+        return new ItemXml(this.project.acq("boosts.xml"), "pm/cost/boosts");
     }
 }

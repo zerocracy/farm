@@ -20,9 +20,9 @@ import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Policy
 import com.zerocracy.Project
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
-import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pmo.Rfps
 
 import java.time.Duration
@@ -32,9 +32,9 @@ def exec(Project pmo, XML xml) {
   new Assume(pmo, xml).isPmo()
   new Assume(pmo, xml).type('Ping nightly')
   ClaimIn claim = new ClaimIn(xml)
-  Instant expiration = claim.created().toInstant() -
-    Duration.ofDays(new Policy().get('41.days', 32))
   Farm farm = binding.variables.farm
+  Instant expiration = claim.created().toInstant() -
+    Duration.ofDays(new Policy(farm).get('41.days', 32))
   Rfps rfps = new Rfps(farm).bootstrap()
   rfps.olderThan(expiration).each { rfp ->
     rfps.remove(rfp)

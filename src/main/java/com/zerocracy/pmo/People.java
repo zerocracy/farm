@@ -18,14 +18,12 @@ package com.zerocracy.pmo;
 
 import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
-import com.zerocracy.Item;
+import com.zerocracy.ItemXml;
 import com.zerocracy.Par;
 import com.zerocracy.Policy;
-import com.zerocracy.Project;
 import com.zerocracy.SoftException;
 import com.zerocracy.Xocument;
 import com.zerocracy.cash.Cash;
-import com.zerocracy.cash.CashParsingException;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.HashSet;
@@ -41,6 +39,7 @@ import org.xembly.Directives;
 /**
  * Data about people.
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @checkstyle LineLengthCheck (5000 lines)
  * @since 1.0
  */
 @SuppressWarnings
@@ -53,35 +52,23 @@ import org.xembly.Directives;
 public final class People {
 
     /**
-     * PMO.
+     * Farm.
      */
-    private final Project pmo;
+    private final Farm farm;
 
     /**
      * Ctor.
      * @param farm Farm
      */
     public People(final Farm farm) {
-        this(new Pmo(farm));
-    }
-
-    /**
-     * Ctor.
-     * @param pkt PMO
-     */
-    public People(final Project pkt) {
-        this.pmo = pkt;
+        this.farm = farm;
     }
 
     /**
      * Bootstrap it.
      * @return Itself
-     * @throws IOException If fails
      */
-    public People bootstrap() throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).bootstrap("pmo/people");
-        }
+    public People bootstrap() {
         return this;
     }
 
@@ -91,11 +78,7 @@ public final class People {
      * @throws IOException If fails
      */
     public Iterable<String> iterate() throws IOException {
-        try (final Item item = this.item()) {
-            return new Xocument(item.path()).xpath(
-                "/people/person/@id"
-            );
-        }
+        return this.item().read(xoc -> xoc.xpath("/people/person/@id"));
     }
 
     /**
@@ -104,13 +87,13 @@ public final class People {
      * @throws IOException If fails
      */
     public void remove(final String uid) throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
+        this.item().update(
+            xoc -> xoc.modify(
                 new Directives().xpath(
                     String.format("/people/person[@id='%s']", uid)
                 ).remove()
-            );
-        }
+            )
+        );
     }
 
     /**
@@ -119,11 +102,9 @@ public final class People {
      * @throws IOException If fails
      */
     public void touch(final String uid) throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
-                People.start(uid)
-            );
-        }
+        this.item().update(
+            xoc -> xoc.modify(People.start(uid))
+        );
     }
 
     /**
@@ -132,20 +113,13 @@ public final class People {
      * @throws IOException If fails
      */
     public void graduate(final String uid) throws IOException {
-        if (!this.hasMentor(uid)) {
-            throw new SoftException(
-                new Par(
-                    "User @%s is not with us yet"
-                ).say(uid)
-            );
-        }
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
+        this.item().update(
+            xoc -> People.requireMentor(xoc, uid).modify(
                 People.start(uid)
                     .addIf("mentor")
                     .set("0crat")
-            );
-        }
+            )
+        );
     }
 
     /**
@@ -156,13 +130,6 @@ public final class People {
      */
     public void details(final String uid, final String text)
         throws IOException {
-        if (!this.hasMentor(uid)) {
-            throw new SoftException(
-                new Par(
-                    "User @%s is not with us yet"
-                ).say(uid)
-            );
-        }
         if (text.isEmpty()) {
             throw new SoftException(
                 new Par(
@@ -170,13 +137,14 @@ public final class People {
                 ).say(uid)
             );
         }
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
-                People.start(uid)
-                    .addIf("details")
-                    .set(text)
-            );
-        }
+        this.item().update(
+            xoc -> People.requireMentor(xoc, uid)
+                .modify(
+                    People.start(uid)
+                        .addIf("details")
+                        .set(text)
+                )
+        );
     }
 
     /**
@@ -186,21 +154,23 @@ public final class People {
      * @throws IOException If fails
      */
     public String details(final String uid) throws IOException {
-        try (final Item item = this.item()) {
-            final Iterator<String> items = new Xocument(item.path()).xpath(
-                String.format(
-                    "/people/person[@id='%s']/details/text()",
-                    uid
-                )
-            ).iterator();
-            final String text;
-            if (items.hasNext()) {
-                text = items.next();
-            } else {
-                text = "";
+        return this.item().read(
+            xoc -> {
+                final Iterator<String> items = xoc.xpath(
+                    String.format(
+                        "/people/person[@id='%s']/details/text()",
+                        uid
+                    )
+                ).iterator();
+                final String text;
+                if (items.hasNext()) {
+                    text = items.next();
+                } else {
+                    text = "";
+                }
+                return text;
             }
-            return text;
-        }
+        );
     }
 
     /**
@@ -225,40 +195,42 @@ public final class People {
      */
     public void invite(final String uid, final String mentor,
         final boolean force) throws IOException {
-        if (this.hasMentor(uid)) {
-            throw new SoftException(
-                new Par(
-                    "@%s is already with us, no need to invite again"
-                ).say(uid)
-            );
-        }
-        try (final Item item = this.item()) {
-            final int max = new Policy().get("1.max-students", 16);
-            final int current = new Xocument(item.path())
-                .nodes(
+        this.item().update(
+            xoc -> {
+                if (People.hasMentor(xoc, uid)) {
+                    throw new SoftException(
+                        new Par(
+                            "@%s is already with us, no need to invite again"
+                        ).say(uid)
+                    );
+                }
+                final int max = new Policy(this.farm)
+                    .get("1.max-students", 16);
+                final int current = xoc.nodes(
                     String.format(
                         "/people/person[mentor/text()='%s']",
                         mentor
                     )
                 ).size();
-            if (!force && current >= max) {
-                throw new SoftException(
-                    new Par(
-                        "You can not invite more than %d students;",
-                        "you already have %d, see §1"
-                    ).say(max, current)
+                if (!force && current >= max) {
+                    throw new SoftException(
+                        new Par(
+                            "You can not invite more than %d students;",
+                            "you already have %d, see §1"
+                        ).say(max, current)
+                    );
+                }
+                xoc.modify(
+                    People.start(uid)
+                        .push()
+                        .xpath("mentor")
+                        .strict(0)
+                        .pop()
+                        .add("mentor")
+                        .set(mentor)
                 );
             }
-            new Xocument(item.path()).modify(
-                People.start(uid)
-                    .push()
-                    .xpath("mentor")
-                    .strict(0)
-                    .pop()
-                    .add("mentor")
-                    .set(mentor)
-            );
-        }
+        );
     }
 
     /**
@@ -268,14 +240,7 @@ public final class People {
      * @throws IOException If fails
      */
     public boolean hasMentor(final String uid) throws IOException {
-        try (final Item item = this.item()) {
-            return !new Xocument(item.path()).nodes(
-                String.format(
-                    "/people/person[@id='%s']/mentor",
-                    uid
-                )
-            ).isEmpty();
-        }
+        return this.item().read(xoc -> People.hasMentor(xoc, uid));
     }
 
     /**
@@ -285,14 +250,14 @@ public final class People {
      * @throws IOException If fails
      */
     public String mentor(final String uid) throws IOException {
-        try (final Item item = this.item()) {
-            return new Xocument(item.path()).xpath(
+        return this.item().read(
+            xoc -> xoc.xpath(
                 String.format(
                     "/people/person[@id='%s']/mentor/text()",
                     uid
                 )
-            ).get(0);
-        }
+            ).get(0)
+        );
     }
 
     /**
@@ -301,13 +266,13 @@ public final class People {
      * @throws IOException If fails
      */
     public void breakup(final String uid) throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
+        this.item().update(
+            xoc -> xoc.modify(
                 new Directives().xpath(
                     String.format("/people/person[@id='%s']/mentor", uid)
                 ).remove()
-            );
-        }
+            )
+        );
     }
 
     /**
@@ -317,7 +282,8 @@ public final class People {
      * @throws IOException If fails
      */
     public void rate(final String uid, final Cash rate) throws IOException {
-        final Cash max = new Policy().get("16.max", new Cash.S("$256"));
+        final Policy policy = new Policy(this.farm);
+        final Cash max = policy.get("16.max", new Cash.S("$256"));
         if (rate.compareTo(max) > 0) {
             throw new SoftException(
                 new Par(
@@ -326,7 +292,7 @@ public final class People {
                 ).say(rate, max)
             );
         }
-        final Cash min = new Policy().get("16.min", Cash.ZERO);
+        final Cash min = policy.get("16.min", Cash.ZERO);
         if (rate.compareTo(min) < 0) {
             throw new SoftException(
                 new Par(
@@ -335,13 +301,13 @@ public final class People {
                 ).say(rate, min)
             );
         }
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
+        this.item().update(
+            xoc -> xoc.modify(
                 People.start(uid)
                     .addIf("rate")
                     .set(rate)
-            );
-        }
+            )
+        );
     }
 
     /**
@@ -351,23 +317,23 @@ public final class People {
      * @throws IOException If fails
      */
     public Cash rate(final String uid) throws IOException {
-        try (final Item item = this.item()) {
-            final Iterator<XML> rates = new Xocument(item.path()).nodes(
-                String.format(
-                    "/people/person[@id='%s']/rate",
-                    uid
-                )
-            ).iterator();
-            final String rate;
-            if (rates.hasNext()) {
-                rate = rates.next().xpath("text()").get(0);
-            } else {
-                rate = Cash.ZERO.toString();
+        return this.item().read(
+            xoc -> {
+                final Iterator<XML> rates = xoc.nodes(
+                    String.format(
+                        "/people/person[@id='%s']/rate",
+                        uid
+                    )
+                ).iterator();
+                final String rate;
+                if (rates.hasNext()) {
+                    rate = rates.next().xpath("text()").get(0);
+                } else {
+                    rate = Cash.ZERO.toString();
+                }
+                return new Cash.S(rate);
             }
-            return new Cash.S(rate);
-        } catch (final CashParsingException ex) {
-            throw new IllegalStateException(ex);
-        }
+        );
     }
 
     /**
@@ -410,15 +376,13 @@ public final class People {
      */
     public void link(final String uid, final String rel,
         final String alias) throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
+        this.item().update(
+            xoc -> xoc.modify(
                 People.start(uid)
-                    .addIf("links")
-                    .add("link")
-                    .attr("rel", rel)
-                    .attr("href", alias)
-            );
-        }
+                    .addIf("links").add("link")
+                    .attr("rel", rel).attr("href", alias)
+            )
+        );
     }
 
     /**
@@ -430,14 +394,14 @@ public final class People {
      */
     public Iterable<String> find(final String rel,
         final String alias) throws IOException {
-        try (final Item item = this.item()) {
-            return new Xocument(item).xpath(
+        return this.item().read(
+            xoc -> xoc.xpath(
                 String.format(
                     "/people/person[links/link[@rel='%s' and @href='%s']]/@id",
                     rel, alias
                 )
-            );
-        }
+            )
+        );
     }
 
     /**
@@ -447,21 +411,21 @@ public final class People {
      * @throws IOException If fails
      */
     public Iterable<String> links(final String uid) throws IOException {
-        try (final Item item = this.item()) {
-            return new Mapped<>(
+        return this.item().read(
+            xoc -> new Mapped<>(
                 xml -> String.format(
                     "%s:%s",
                     xml.xpath("@rel").get(0),
                     xml.xpath("@href").get(0)
                 ),
-                new Xocument(item).nodes(
+                xoc.nodes(
                     String.format(
                         "/people/person[@id='%s']/links/link",
                         uid
                     )
                 )
-            );
-        }
+            )
+        );
     }
 
     /**
@@ -473,14 +437,14 @@ public final class People {
      */
     public Iterable<String> links(final String uid, final String rel)
         throws IOException {
-        try (final Item item = this.item()) {
-            return new Xocument(item).xpath(
+        return this.item().read(
+            xoc -> xoc.xpath(
                 String.format(
                     "/people/person[@id='%s']/links/link[@rel='%s']/@href",
                     uid, rel
                 )
-            );
-        }
+            )
+        );
     }
 
     /**
@@ -516,13 +480,11 @@ public final class People {
      */
     public void vacation(final String uid,
         final boolean mode) throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
-                People.start(uid)
-                    .addIf("vacation")
-                    .set(mode)
-            );
-        }
+        this.item().update(
+            xoc -> xoc.modify(
+                People.start(uid).addIf("vacation").set(mode)
+            )
+        );
     }
 
     /**
@@ -532,13 +494,13 @@ public final class People {
      * @throws IOException If fails
      */
     public boolean vacation(final String uid) throws IOException {
-        try (final Item item = this.item()) {
-            return new UncheckedScalar<>(
+        return this.item().read(
+            xoc -> new UncheckedScalar<>(
                 new ItemAt<>(
                     false,
                     new Mapped<>(
                         Boolean::parseBoolean,
-                        new Xocument(item).xpath(
+                        xoc.xpath(
                             String.format(
                                 "/people/person[@id='%s']/vacation/text()",
                                 uid
@@ -546,8 +508,8 @@ public final class People {
                         )
                     )
                 )
-            ).value();
-        }
+            ).value()
+        );
     }
 
     /**
@@ -557,14 +519,14 @@ public final class People {
      * @throws IOException If fails
      */
     public Iterable<String> students(final String uid) throws IOException {
-        try (final Item item = this.item()) {
-            return new Xocument(item.path()).xpath(
+        return this.item().read(
+            xoc -> xoc.xpath(
                 String.format(
                     "/people/person[mentor/text()='%s']/@id",
                     uid
                 )
-            );
-        }
+            )
+        );
     }
 
     /**
@@ -575,17 +537,16 @@ public final class People {
      */
     public void reputation(final String uid, final int rep)
         throws IOException {
-        this.checkExisting(uid);
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
+        this.item().update(
+            xoc -> People.checkExisting(xoc, uid).modify(
                 new Directives().xpath(
                     String.format(
                         "/people/person[@id='%s']",
                         uid
                     )
                 ).addIf("reputation").set(rep)
-            );
-        }
+            )
+        );
     }
 
     /**
@@ -595,18 +556,18 @@ public final class People {
      * @throws IOException If fails
      */
     public int reputation(final String uid) throws IOException {
-        this.checkExisting(uid);
-        try (final Item item = this.item()) {
-            return new NumberOf(
-                new Xocument(item.path()).xpath(
-                    String.format(
-                        "/people/person[@id='%s']/reputation/text()",
-                        uid
-                    ),
-                    "0"
-                )
-            ).intValue();
-        }
+        return this.item().read(
+            xoc -> new NumberOf(
+                People.checkExisting(xoc, uid)
+                    .xpath(
+                        String.format(
+                            "/people/person[@id='%s']/reputation/text()",
+                            uid
+                        ),
+                        "0"
+                    )
+            )
+        ).intValue();
     }
 
     /**
@@ -617,17 +578,16 @@ public final class People {
      */
     public void jobs(final String uid, final int jobs)
         throws IOException {
-        this.checkExisting(uid);
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
+        this.item().update(
+            xoc -> People.checkExisting(xoc, uid).modify(
                 new Directives().xpath(
                     String.format(
                         "/people/person[@id='%s']",
                         uid
                     )
                 ).addIf("jobs").set(jobs)
-            );
-        }
+            )
+        );
     }
 
     /**
@@ -637,18 +597,17 @@ public final class People {
      * @throws IOException If fails
      */
     public int jobs(final String uid) throws IOException {
-        this.checkExisting(uid);
-        try (final Item item = this.item()) {
-            return new NumberOf(
-                new Xocument(item.path()).xpath(
+        return this.item().read(
+            xoc -> new NumberOf(
+                People.checkExisting(xoc, uid).xpath(
                     String.format(
                         "/people/person[@id='%s']/jobs/text()",
                         uid
                     ),
                     "0"
                 )
-            ).intValue();
-        }
+            )
+        ).intValue();
     }
 
     /**
@@ -659,17 +618,16 @@ public final class People {
      */
     public void speed(final String uid, final double speed)
         throws IOException {
-        this.checkExisting(uid);
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
+        this.item().update(
+            xoc -> People.checkExisting(xoc, uid).modify(
                 new Directives().xpath(
                     String.format(
                         "/people/person[@id='%s']",
                         uid
                     )
                 ).addIf("speed").set(speed)
-            );
-        }
+            )
+        );
     }
 
     /**
@@ -679,18 +637,17 @@ public final class People {
      * @throws IOException If fails
      */
     public double speed(final String uid) throws IOException {
-        this.checkExisting(uid);
-        try (final Item item = this.item()) {
-            return new NumberOf(
-                new Xocument(item.path()).xpath(
+        return this.item().read(
+            xoc -> new NumberOf(
+                People.checkExisting(xoc, uid).xpath(
                     String.format(
                         "/people/person[@id='%s']/speed/text()",
                         uid
                     ),
                     "0.0"
                 )
-            ).doubleValue();
-        }
+            )
+        ).doubleValue();
     }
 
     /**
@@ -700,11 +657,7 @@ public final class People {
      * @throws IOException If fails
      */
     public boolean exists(final String uid) throws IOException {
-        try (final Item item = this.item()) {
-            return !new Xocument(item).nodes(
-                String.format("//people/person[@id  ='%s']", uid)
-            ).isEmpty();
-        }
+        return this.item().read(xoc -> People.exists(xoc, uid));
     }
 
     /**
@@ -714,14 +667,13 @@ public final class People {
      * @throws IOException If fails
      */
     public void apply(final String uid, final Instant when) throws IOException {
-        this.checkExisting(uid);
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
+        this.item().update(
+            xoc -> People.checkExisting(xoc, uid).modify(
                 new Directives().xpath(
                     String.format("//people/person[@id  ='%s']", uid)
                 ).addIf("applied").set(when.toString())
-            );
-        }
+            )
+        );
     }
 
     /**
@@ -731,12 +683,11 @@ public final class People {
      * @throws IOException If fails
      */
     public boolean applied(final String uid) throws IOException {
-        this.checkExisting(uid);
-        try (final Item item = this.item()) {
-            return !new Xocument(item).nodes(
+        return this.item().read(
+            xoc -> !People.checkExisting(xoc, uid).nodes(
                 String.format("//people/person[@id  ='%s']/applied", uid)
-            ).isEmpty();
-        }
+            ).isEmpty()
+        );
     }
 
     /**
@@ -746,22 +697,28 @@ public final class People {
      * @throws IOException If fails
      */
     public Instant appliedTime(final String uid) throws IOException {
-        this.checkExisting(uid);
-        if (!this.applied(uid)) {
-            throw new IllegalArgumentException(
-                new Par("Person @%s doesn't have apply-time").say(uid)
-            );
-        }
-        try (final Item item = this.item()) {
-            return Instant.parse(
-                new Xocument(item).xpath(
-                    String.format(
-                        "//people/person[@id  ='%s']/applied/text()",
-                        uid
-                    )
-                ).get(0)
-            );
-        }
+        return Instant.parse(
+            this.item().read(
+                xoc -> {
+                    People.checkExisting(xoc, uid);
+                    final boolean empty = xoc.nodes(
+                        String.format("//people/person[@id  ='%s']/applied", uid)
+                    ).isEmpty();
+                    if (empty) {
+                        throw new IllegalArgumentException(
+                            new Par("Person @%s doesn't have apply-time")
+                                .say(uid)
+                        );
+                    }
+                    return xoc.xpath(
+                        String.format(
+                            "//people/person[@id  ='%s']/applied/text()",
+                            uid
+                        )
+                    ).get(0);
+                }
+            )
+        );
     }
 
     /**
@@ -771,17 +728,17 @@ public final class People {
      * @throws IOException If fails
      */
     public Iterable<String> skills(final String user) throws IOException {
-        try (final Item item = this.item()) {
-            return new Mapped<>(
+        return this.item().read(
+            xoc -> new Mapped<>(
                 xml -> xml.node().getTextContent(),
-                new Xocument(item.path()).nodes(
+                xoc.nodes(
                     String.format(
                         "/people/person[@id = '%s']/skills/skill",
                         user
                     )
                 )
-            );
-        }
+            )
+        );
     }
 
     /**
@@ -792,15 +749,15 @@ public final class People {
      */
     public void skills(final String uid, final Iterable<String> skills)
         throws IOException {
-        this.checkExisting(uid);
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
-                new Directives().xpath(
-                    String.format(
-                        "/people/person[@id='%s']/skills",
-                        uid
+        this.item().update(
+            xoc -> People.checkExisting(xoc, uid).modify(
+                new Directives()
+                    .xpath(
+                        String.format(
+                            "/people/person[@id='%s']/skills",
+                            uid
+                        )
                     )
-                )
                     .remove()
                     .add("skills").attr("updated", Instant.now())
                     .append(
@@ -812,8 +769,8 @@ public final class People {
                             )
                         )
                     )
-            );
-        }
+            )
+        );
     }
 
     /**
@@ -822,13 +779,13 @@ public final class People {
      * @throws IOException If fails
      */
     public Set<String> hirep() throws IOException {
-        try (final Item item = this.item()) {
-            return new HashSet<>(
-                new Xocument(item).xpath(
+        return new HashSet<>(
+            this.item().read(
+                xoc -> xoc.xpath(
                     "/people/person[reputation > 256]/@id"
                 )
-            );
-        }
+            )
+        );
     }
 
     /**
@@ -839,14 +796,13 @@ public final class People {
      */
     public void activate(final String login, final boolean active)
         throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item).modify(
+        this.item().update(
+            xoc -> xoc.modify(
                 new Directives()
                     .xpath(String.format("/people/person[@id='%s']", login))
-                    .addIf("active")
-                    .set(active)
-            );
-        }
+                    .addIf("active").set(active)
+            )
+        );
     }
 
     /**
@@ -855,18 +811,17 @@ public final class People {
      * @return True if active
      * @throws IOException If fails
      */
-    public boolean active(final String login)
-        throws IOException {
-        try (final Item item = this.item()) {
-            return Boolean.parseBoolean(
-                new Xocument(item).xpath(
+    public boolean active(final String login) throws IOException {
+        return Boolean.parseBoolean(
+            this.item().read(
+                xoc -> xoc.xpath(
                     String.format(
                         "/people/person[@id='%s']/active/text()", login
                     ),
                     Boolean.toString(false)
                 )
-            );
-        }
+            )
+        );
     }
 
     /**
@@ -875,13 +830,13 @@ public final class People {
      * @throws IOException If fails
      */
     public Set<String> visible() throws IOException {
-        try (final Item item = this.item()) {
-            return new HashSet<>(
-                new Xocument(item).xpath(
+        return new HashSet<>(
+            this.item().read(
+                xoc -> xoc.xpath(
                     "/people/person[mentor and reputation > 0]/@id"
                 )
-            );
-        }
+            )
+        );
     }
 
     /**
@@ -890,14 +845,14 @@ public final class People {
      * @throws IOException If fails
      */
     public int totalReputation() throws IOException {
-        try (final Item item = this.item()) {
-            return new NumberOf(
-                new Xocument(item).xpath(
+        return this.item().read(
+            xoc -> new NumberOf(
+                xoc.xpath(
                     "sum(/people/person[mentor and reputation >0]/reputation)",
                     "0"
                 )
-            ).intValue();
-        }
+            )
+        ).intValue();
     }
 
     /**
@@ -907,13 +862,9 @@ public final class People {
      * @throws IOException If fails
      */
     public void projects(final String uid, final int count) throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
-                People.start(uid)
-                    .addIf("projects")
-                    .set(count)
-            );
-        }
+        this.item().update(
+            People.start(uid).addIf("projects").set(count)
+        );
     }
 
     /**
@@ -923,15 +874,13 @@ public final class People {
      * @throws IOException If fails
      */
     public int projects(final String uid) throws IOException {
-        try (final Item item = this.item()) {
-            return Integer.parseInt(
-                new Xocument(item.path()).xpath(
-                    String.format(
-                        "/people/person[@id='%s']/projects/text()", uid
-                    )
-                ).get(0)
-            );
-        }
+        return Integer.parseInt(
+            this.item().xpath(
+                String.format(
+                    "/people/person[@id='%s']/projects/text()", uid
+                )
+            ).get(0)
+        );
     }
 
     /**
@@ -939,8 +888,11 @@ public final class People {
      * @return Item
      * @throws IOException If fails
      */
-    private Item item() throws IOException {
-        return this.pmo.acq("people.xml");
+    private ItemXml item() throws IOException {
+        return new ItemXml(
+            new Pmo(this.farm).acq("people.xml"),
+            "pmo/people"
+        );
     }
 
     /**
@@ -956,8 +908,7 @@ public final class People {
                     uid
                 )
             )
-            .add("person")
-            .attr("id", uid)
+            .add("person").attr("id", uid)
             .add("reputation").set("0").up()
             .add("jobs").set("0").up()
             .add("projects").set("0").up()
@@ -968,25 +919,73 @@ public final class People {
             .add("link")
             .attr("rel", "github")
             .attr("href", uid)
-            .xpath(
-                String.format(
-                    "/people/person[@id='%s']",
-                    uid
-                )
-            )
+            .xpath(String.format("/people/person[@id='%s']", uid))
             .strict(1);
     }
 
     /**
-     * Check if user exists.
-     * @param uid UID of user
+     * Check if xocument has a user by id.
+     * @param xoc Xocument
+     * @param uid User id
+     * @return True if exists
+     * @throws IOException On failure
+     */
+    private static boolean exists(final Xocument xoc, final String uid) throws IOException {
+        return !xoc.nodes(
+            String.format("//people/person[@id  ='%s']", uid)
+        ).isEmpty();
+    }
+
+    /**
+     * Check person in xocument has a mentor and throw an exception if doesn't
+     * have.
+     * @param xoc Xocument
+     * @param uid User id
+     * @return Xocument
+     * @throws IOException If doesn't have
+     */
+    private static Xocument requireMentor(final Xocument xoc, final String uid)
+        throws IOException {
+        if (!People.hasMentor(xoc, uid)) {
+            throw new SoftException(
+                new Par(
+                    "User @%s is not with us yet"
+                ).say(uid)
+            );
+        }
+        return xoc;
+    }
+
+    /**
+     * This person in xocument has a mentor?
+     * @param xoc Xocument
+     * @param uid User ID
+     * @return TRUE if he has a mentor
      * @throws IOException If fails
      */
-    private void checkExisting(final String uid) throws IOException {
-        if (!this.exists(uid)) {
+    private static boolean hasMentor(final Xocument xoc, final String uid)
+        throws IOException {
+        return !xoc.nodes(
+            String.format(
+                "/people/person[@id='%s']/mentor",
+                uid
+            )
+        ).isEmpty();
+    }
+
+    /**
+     * Check document contains user.
+     * @param xoc Xocument
+     * @param uid UID of user
+     * @return Xocument
+     * @throws IOException If fails
+     */
+    private static Xocument checkExisting(final Xocument xoc, final String uid) throws IOException {
+        if (!People.exists(xoc, uid)) {
             throw new IllegalArgumentException(
                 new Par("Person @%s doesn't exist").say(uid)
             );
         }
+        return xoc;
     }
 }

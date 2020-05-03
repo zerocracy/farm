@@ -19,7 +19,7 @@ package com.zerocracy.farm;
 import com.jcabi.s3.Ocket;
 import com.jcabi.s3.Region;
 import com.zerocracy.Item;
-import com.zerocracy.Xocument;
+import com.zerocracy.ItemXml;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Ignore;
@@ -40,21 +40,16 @@ public final class S3ItemITCase {
             "AKIAIVWDGPW27GZ76BEQ",
             "-- secret --"
         ).bucket("data.0crat.com").ocket("test.xml");
-        try (final Item item = new S3Item(ocket)) {
-            new Xocument(item).bootstrap("pm/staff/roles");
-            new Xocument(item).modify(
-                new Directives().xpath("/roles")
-                    .add("person")
-                    .attr("id", "yegor256")
-                    .add("role").set("ARC")
-            );
-        }
-        try (final Item item = new S3Item(ocket)) {
-            MatcherAssert.assertThat(
-                new Xocument(item).xpath("/roles/text()"),
-                Matchers.not(Matchers.emptyIterable())
-            );
-        }
+        final Item item = new S3Item(ocket);
+        new ItemXml(item, "pm/staff/roles").update(
+            new Directives().xpath("/roles")
+                .add("person")
+                .attr("id", "yegor256")
+                .add("role").set("ARC")
+        );
+        MatcherAssert.assertThat(
+            new ItemXml(item).xpath("/roles/text()"),
+            Matchers.not(Matchers.emptyIterable())
+        );
     }
-
 }

@@ -44,7 +44,7 @@ def exec(Project pmo, XML xml) {
       return
     }
     int reputation = new Awards(farm, uid).bootstrap().total()
-    int threshold = new Policy().get('43.threshold', 2048)
+    int threshold = new Policy(farm).get('43.threshold', 2048)
     if (reputation < threshold) {
       return
     }

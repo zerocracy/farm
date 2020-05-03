@@ -18,9 +18,8 @@ package com.zerocracy.pmo;
 
 import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
-import com.zerocracy.Item;
+import com.zerocracy.ItemXml;
 import com.zerocracy.Project;
-import com.zerocracy.Xocument;
 import java.io.IOException;
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -62,12 +61,8 @@ public final class Vacancies {
     /**
      * Bootstrap it.
      * @return This
-     * @throws IOException If fails
      */
-    public Vacancies bootstrap() throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).bootstrap("pmo/vacancies");
-        }
+    public Vacancies bootstrap() {
         return this;
     }
 
@@ -94,22 +89,20 @@ public final class Vacancies {
      */
     public void add(final Project project, final String author,
         final String text, final ZonedDateTime added) throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
-                new Directives()
-                    .xpath("/vacancies")
-                    .add("vacancy")
-                    .attr("project", project.pid())
-                    .addIf("added")
-                    .set(added.format(DateTimeFormatter.ISO_DATE_TIME))
-                    .up()
-                    .add("author")
-                    .set(author)
-                    .up()
-                    .add("text")
-                    .set(text)
-            );
-        }
+        this.item().update(
+            new Directives()
+                .xpath("/vacancies")
+                .add("vacancy")
+                .attr("project", project.pid())
+                .addIf("added")
+                .set(added.format(DateTimeFormatter.ISO_DATE_TIME))
+                .up()
+                .add("author")
+                .set(author)
+                .up()
+                .add("text")
+                .set(text)
+        );
     }
 
     /**
@@ -119,11 +112,7 @@ public final class Vacancies {
      * @throws IOException If fails
      */
     public XML vacancy(final String pid) throws IOException {
-        try (final Item item = this.item()) {
-            return new Xocument(item.path())
-                .nodes(Vacancies.xpath(pid))
-                .get(0);
-        }
+        return this.item().nodes(Vacancies.xpath(pid)).get(0);
     }
 
     /**
@@ -132,13 +121,11 @@ public final class Vacancies {
      * @throws IOException If fails
      */
     public void remove(final Project project) throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
-                new Directives()
-                    .xpath(Vacancies.xpath(project.pid()))
-                    .remove()
-            );
-        }
+        this.item().update(
+            new Directives()
+                .xpath(Vacancies.xpath(project.pid()))
+                .remove()
+        );
     }
 
     /**
@@ -147,10 +134,7 @@ public final class Vacancies {
      * @throws IOException If fails
      */
     public Iterable<String> iterate() throws IOException {
-        try (final Item item = this.item()) {
-            return new Xocument(item.path())
-                .xpath("/vacancies/vacancy/@project");
-        }
+        return this.item().xpath("/vacancies/vacancy/@project");
     }
 
     /**
@@ -161,19 +145,17 @@ public final class Vacancies {
      */
     public Iterable<String> removeOlderThan(final Instant date)
         throws IOException {
-        try (final Item item = this.item()) {
-            final String xpath = new FormattedText(
-                "/vacancies/vacancy[xs:dateTime(added) < xs:dateTime('%s')]",
-                date
-            ).asString();
-            final List<String> pids = new Xocument(item.path()).xpath(
-                new JoinedText("", xpath, "/@project").asString()
-            );
-            new Xocument(item.path()).modify(
-                new Directives().xpath(xpath).remove()
-            );
-            return pids;
-        }
+        final String xpath = new FormattedText(
+            "/vacancies/vacancy[xs:dateTime(added) < xs:dateTime('%s')]",
+            date
+        ).asString();
+        final List<String> pids = this.item().xpath(
+            new JoinedText("", xpath, "/@project").asString()
+        );
+        this.item().update(
+            new Directives().xpath(xpath).remove()
+        );
+        return pids;
     }
 
     /**
@@ -181,8 +163,8 @@ public final class Vacancies {
      * @return Item
      * @throws IOException If fails
      */
-    private Item item() throws IOException {
-        return this.pmo.acq("vacancies.xml");
+    private ItemXml item() throws IOException {
+        return new ItemXml(this.pmo.acq("vacancies.xml"), "pmo/vacancies");
     }
 
     /**

@@ -23,24 +23,33 @@ import com.jcabi.log.Logger
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
-import com.zerocracy.claims.ClaimIn
 import com.zerocracy.radars.github.Job
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Job was added to WBS')
+  new Assume(project, xml).notPmo().type('Job was added to WBS')
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
   if (!job.startsWith('gh:')) {
     return
   }
+  String role = 'DEV'
+  if (claim.hasParam('role')) {
+    role = claim.param('role')
+  }
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
   Issue.Smart issue = new Issue.Smart(new Job.Issue(github, job))
+  IssueLabels labels = new IssueLabels.Smart(issue.labels())
   try {
-    new IssueLabels.Smart(issue.labels()).addIfAbsent('scope', '3a6622')
+    labels.addIfAbsent('scope', '3a6622')
+  } catch (AssertionError ex) {
+    Logger.warn(this, "Can't add label to issue %s: %s", issue, ex.localizedMessage)
+  }
+  try {
+    labels.addIfAbsent("role/${role}", '581249')
   } catch (AssertionError ex) {
     Logger.warn(this, "Can't add label to issue %s: %s", issue, ex.localizedMessage)
   }

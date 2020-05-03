@@ -16,11 +16,10 @@
  */
 package com.zerocracy.pm.scope;
 
-import com.zerocracy.Item;
+import com.zerocracy.ItemXml;
 import com.zerocracy.Par;
 import com.zerocracy.Project;
 import com.zerocracy.SoftException;
-import com.zerocracy.Xocument;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
@@ -60,12 +59,8 @@ public final class Wbs {
     /**
      * Bootstrap it.
      * @return Itself
-     * @throws IOException If fails
      */
-    public Wbs bootstrap() throws IOException {
-        try (final Item wbs = this.item()) {
-            new Xocument(wbs.path()).bootstrap("pm/scope/wbs");
-        }
+    public Wbs bootstrap() {
         return this;
     }
 
@@ -80,17 +75,15 @@ public final class Wbs {
                 new Par("Job %s is already in scope").say(job)
             );
         }
-        try (final Item wbs = this.item()) {
-            new Xocument(wbs.path()).modify(
-                new Directives()
-                    .xpath(String.format("/wbs[not(job[@id='%s'])]", job))
-                    .strict(1)
-                    .add("job")
-                    .attr("id", job)
-                    .add("role").set("DEV").up()
-                    .add("created").set(new DateAsText().asString())
-            );
-        }
+        this.item().update(
+            new Directives()
+                .xpath(String.format("/wbs[not(job[@id='%s'])]", job))
+                .strict(1)
+                .add("job")
+                .attr("id", job)
+                .add("role").set("DEV").up()
+                .add("created").set(new DateAsText().asString())
+        );
     }
 
     /**
@@ -114,11 +107,9 @@ public final class Wbs {
                 new Par("Job %s was not in scope").say(job)
             );
         }
-        try (final Item wbs = this.item()) {
-            new Xocument(wbs.path()).modify(
-                new Directives().xpath(Wbs.xpath(job)).strict(1).remove()
-            );
-        }
+        this.item().update(
+            new Directives().xpath(Wbs.xpath(job)).strict(1).remove()
+        );
     }
 
     /**
@@ -128,9 +119,7 @@ public final class Wbs {
      * @throws IOException If fails
      */
     public boolean exists(final String job) throws IOException {
-        try (final Item wbs = this.item()) {
-            return !new Xocument(wbs.path()).nodes(Wbs.xpath(job)).isEmpty();
-        }
+        return this.item().exists(Wbs.xpath(job));
     }
 
     /**
@@ -139,9 +128,7 @@ public final class Wbs {
      * @throws IOException If fails
      */
     public Collection<String> iterate() throws IOException {
-        try (final Item wbs = this.item()) {
-            return new Xocument(wbs.path()).xpath("/wbs/job/@id");
-        }
+        return this.item().xpath("/wbs/job/@id");
     }
 
     /**
@@ -156,13 +143,11 @@ public final class Wbs {
                 new Par("Job %s doesn't exist, can't set role").say(job)
             );
         }
-        try (final Item wbs = this.item()) {
-            new Xocument(wbs.path()).modify(
-                new Directives()
-                    .xpath(String.format("/wbs/job[@id='%s']/role", job))
-                    .set(role)
-            );
-        }
+        this.item().update(
+            new Directives()
+                .xpath(String.format("/wbs/job[@id='%s']/role", job))
+                .set(role)
+        );
     }
 
     /**
@@ -177,11 +162,9 @@ public final class Wbs {
                 new Par("Job %s doesn't exist, can't get role").say(job)
             );
         }
-        try (final Item wbs = this.item()) {
-            return new Xocument(wbs.path()).xpath(
-                String.format("/wbs/job[@id='%s']/role/text()", job)
-            ).get(0);
-        }
+        return this.item().xpath(
+            String.format("/wbs/job[@id='%s']/role/text()", job)
+        ).get(0);
     }
 
     /**
@@ -196,13 +179,11 @@ public final class Wbs {
                 new Par("Job %s doesn't exist, can't check date").say(job)
             );
         }
-        try (final Item wbs = this.item()) {
-            return new DateOf(
-                new Xocument(wbs.path()).xpath(
-                    String.format("/wbs/job[@id='%s']/created/text()", job)
-                ).get(0)
-            ).value();
-        }
+        return new DateOf(
+            this.item().xpath(
+                String.format("/wbs/job[@id='%s']/created/text()", job)
+            ).get(0)
+        ).value();
     }
 
     /**
@@ -221,11 +202,9 @@ public final class Wbs {
      * @throws IOException If faisls
      */
     public int size() throws IOException {
-        try (final Item wbs = this.item()) {
-            return new NumberOf(
-                new Xocument(wbs.path()).xpath("count(/wbs/job)").get(0)
-            ).intValue();
-        }
+        return new NumberOf(
+            this.item().xpath("count(/wbs/job)").get(0)
+        ).intValue();
     }
 
     /**
@@ -242,7 +221,7 @@ public final class Wbs {
      * @return Item
      * @throws IOException If fails
      */
-    private Item item() throws IOException {
-        return this.project.acq("wbs.xml");
+    private ItemXml item() throws IOException {
+        return new ItemXml(this.project.acq("wbs.xml"), "pm/scope/wbs");
     }
 }

@@ -18,8 +18,7 @@ package com.zerocracy.tk.project;
 
 import com.jcabi.matchers.XhtmlMatchers;
 import com.zerocracy.Farm;
-import com.zerocracy.farm.fake.FkFarm;
-import com.zerocracy.farm.props.PropsFarm;
+import com.zerocracy.FkFarm;
 import com.zerocracy.tk.RqWithUser;
 import com.zerocracy.tk.TkApp;
 import org.hamcrest.MatcherAssert;
@@ -37,7 +36,7 @@ public final class TkXmlTest {
 
     @Test
     public void rendersSingleArtifact() throws Exception {
-        final Farm farm = new PropsFarm(new FkFarm());
+        final Farm farm = FkFarm.props();
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
                 new RsPrint(

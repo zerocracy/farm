@@ -16,20 +16,19 @@
  */
 package com.zerocracy.pm;
 
-import com.jcabi.aspects.Tv;
 import com.jcabi.s3.Bucket;
 import com.jcabi.s3.fake.FkBucket;
 import com.zerocracy.Farm;
-import com.zerocracy.Item;
+import com.zerocracy.FkProject;
 import com.zerocracy.Project;
 import com.zerocracy.RunsInThreads;
-import com.zerocracy.Xocument;
 import com.zerocracy.claims.ClaimOut;
 import com.zerocracy.claims.ClaimsItem;
 import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.farm.S3Farm;
-import com.zerocracy.farm.fake.FkProject;
+import com.zerocracy.farm.sync.Locks;
 import com.zerocracy.farm.sync.SyncFarm;
+import com.zerocracy.farm.sync.TestLocks;
 import java.nio.file.Files;
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -39,13 +38,13 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.xembly.Directives;
 
 /**
  * Test case for {@link ClaimsItem}.
  * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @checkstyle LineLengthCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class ClaimsItemTest {
@@ -57,7 +56,8 @@ public final class ClaimsItemTest {
             Files.createTempDirectory("").toFile(),
             "the-bucket"
         );
-        try (final Farm farm = new SyncFarm(new S3Farm(bucket))) {
+        final Locks locks = new TestLocks();
+        try (final Farm farm = new SyncFarm(new S3Farm(bucket, locks))) {
             final Project project = farm.find("@id='ABCZZFE03'")
                 .iterator().next();
             MatcherAssert.assertThat(
@@ -76,21 +76,21 @@ public final class ClaimsItemTest {
     @Test
     public void opensExistingClaimsXml() throws Exception {
         final Project project = new FkProject();
-        try (final Item item = project.acq("claims.xml")) {
-            new LengthOf(
+        project.acq("claims.xml").update(
+            path -> new LengthOf(
                 new TeeInput(
                     String.join(
                         " ",
                         "<claims",
+                        // @checkstyle LineLength (10 line)
                         "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'",
-                        // @checkstyle LineLength (1 line)
                         "xsi:noNamespaceSchemaLocation='http://datum.zerocracy.com/0.27/xsd/pm/claims.xsd'",
                         "version='0.1' updated='2017-03-27T11:18:09.228Z'/>"
                     ),
-                    item.path()
+                    path
                 )
-            ).intValue();
-        }
+            ).intValue()
+        );
         final ClaimsItem claims = new ClaimsItem(project).bootstrap();
         claims.add(new ClaimOut().token("test;test;1").type("just hello"));
         MatcherAssert.assertThat(
@@ -134,27 +134,4 @@ public final class ClaimsItemTest {
             Matchers.iterableWithSize(1)
         );
     }
-
-    @Test
-    @Ignore
-    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
-    public void iteratesLargeSetOfClaims() throws Exception {
-        final Project project = new FkProject();
-        final int total = Tv.HUNDRED;
-        try (final Item item = project.acq("claims.xml")) {
-            final Xocument doc = new Xocument(item).bootstrap("pm/claims");
-            for (int idx = 0; idx < total; ++idx) {
-                doc.modify(
-                    new Directives().xpath("/claims").append(
-                        new ClaimOut().type("hello my future")
-                    )
-                );
-            }
-        }
-        MatcherAssert.assertThat(
-            new ClaimsItem(project).bootstrap().iterate().size(),
-            Matchers.equalTo(total)
-        );
-    }
-
 }

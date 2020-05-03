@@ -19,7 +19,6 @@ package com.zerocracy.tk.project;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.zerocracy.Farm;
-import com.zerocracy.Item;
 import com.zerocracy.Project;
 import com.zerocracy.pmo.Catalog;
 import com.zerocracy.tk.RsPage;
@@ -62,10 +61,8 @@ public final class TkFiles implements TkRegex {
             () -> {
                 final Project project = new RqProject(this.farm, req, "PO");
                 final Catalog catalog = new Catalog(this.farm).bootstrap();
-                final XML list;
-                try (final Item item = project.acq("_list.xml")) {
-                    list = new XMLDocument(item.path());
-                }
+                final XML list = project.acq("_list.xml")
+                    .read(XMLDocument::new);
                 return new XeChain(
                     new XeAppend("project", project.pid()),
                     new XeAppend("title", catalog.title(project.pid())),
@@ -74,5 +71,4 @@ public final class TkFiles implements TkRegex {
             }
         );
     }
-
 }

@@ -167,7 +167,7 @@ public final class TkApp extends TkWrap {
                                                                     ),
                                                                     new FkRegex("/spam-send", new TkSpam(farm)),
                                                                     new FkRegex("/shutdown", new TkShutdown(props, farm)),
-                                                                    new FkRegex("/policy", new TkPolicy()),
+                                                                    new FkRegex("/policy", new TkPolicy(farm)),
                                                                     new FkRegex("/join", new TkJoin(farm)),
                                                                     new FkRegex("/join-post", new TkJoinPost(farm)),
                                                                     new FkRegex(
@@ -366,6 +366,10 @@ public final class TkApp extends TkWrap {
                                                                     new FkRegex(
                                                                         "/health",
                                                                         new TkHealth(farm)
+                                                                    ),
+                                                                    new FkRegex(
+                                                                        "/logs",
+                                                                        new TkLog(farm)
                                                                     )
                                                                 )
                                                             )

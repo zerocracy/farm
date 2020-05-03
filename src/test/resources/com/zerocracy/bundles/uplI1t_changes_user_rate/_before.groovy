@@ -17,6 +17,7 @@
 package com.zerocracy.bundles.changes_user_rate
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.cash.Cash
 import com.zerocracy.pm.cost.Rates
@@ -26,7 +27,8 @@ import org.hamcrest.Matchers
 def exec(Project project, XML xml) {
   String user = 'user42'
   Rates rates = new Rates(project).bootstrap()
-  rates.set(user, new Cash.S('$10'))
+  Farm farm = binding.variables.farm
+  rates.set(user, new Cash.S('$10'), farm)
   MatcherAssert.assertThat(
     rates.rate(user).decimal().doubleValue(),
     Matchers.equalTo(10.0D)

@@ -20,9 +20,9 @@ import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
-import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.scope.Wbs
 
@@ -36,8 +36,8 @@ def exec(Project project, XML xml) {
   if (!wbs.exists(job)) {
     return
   }
-  Orders orders = new Orders(farm, project).bootstrap()
   Farm farm = binding.variables.farm
+  Orders orders = new Orders(farm, project).bootstrap()
   if (orders.assigned(job)) {
     String performer = orders.performer(job)
     orders.resign(job)
@@ -53,8 +53,5 @@ def exec(Project project, XML xml) {
       .postTo(new ClaimsOf(farm, project))
   }
   wbs.remove(job)
-  claim.reply(
-    new Par('The job %s is now out of scope').say(job)
-  ).postTo(new ClaimsOf(farm, project))
   claim.copy().type('Job removed from WBS').postTo(new ClaimsOf(farm, project))
 }

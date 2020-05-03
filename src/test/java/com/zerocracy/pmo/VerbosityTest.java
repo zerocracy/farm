@@ -16,9 +16,9 @@
  */
 package com.zerocracy.pmo;
 
+import com.zerocracy.FkFarm;
+import com.zerocracy.FkProject;
 import com.zerocracy.Project;
-import com.zerocracy.farm.fake.FkFarm;
-import com.zerocracy.farm.fake.FkProject;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;

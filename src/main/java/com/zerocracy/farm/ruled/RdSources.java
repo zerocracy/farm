@@ -17,10 +17,8 @@
 package com.zerocracy.farm.ruled;
 
 import com.jcabi.xml.Sources;
-import com.zerocracy.Item;
 import com.zerocracy.Project;
 import java.io.IOException;
-import java.nio.file.Path;
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.stream.StreamSource;
@@ -53,20 +51,22 @@ final class RdSources implements Sources {
     @Override
     public Source resolve(final String href, final String base)
         throws TransformerException {
-        try (final Item item = this.project.acq(href)) {
-            final Path path = item.path();
-            final Input input;
-            if (path.toFile().length() > 0L) {
-                input = new InputOf(item.path());
-            } else {
-                input = new InputOf("<always-empty/>");
-            }
-            return new StreamSource(
-                new InputStreamOf(new TextOf(input).asString())
+        try {
+            return this.project.acq(href).read(
+                path -> {
+                    final Input input;
+                    if (path.toFile().length() > 0L) {
+                        input = new InputOf(path);
+                    } else {
+                        input = new InputOf("<always-empty/>");
+                    }
+                    return new StreamSource(
+                        new InputStreamOf(new TextOf(input).asString())
+                    );
+                }
             );
         } catch (final IOException ex) {
             throw new TransformerException(ex);
         }
     }
-
 }

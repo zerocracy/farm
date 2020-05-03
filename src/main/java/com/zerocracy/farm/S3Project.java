@@ -20,11 +20,9 @@ import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.jcabi.s3.Bucket;
 import com.zerocracy.Item;
+import com.zerocracy.ItemFrom;
 import com.zerocracy.Project;
-import com.zerocracy.farm.fake.FkItem;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.StringUtils;
 import org.cactoos.collection.Joined;
@@ -32,7 +30,6 @@ import org.cactoos.collection.Mapped;
 import org.cactoos.time.DateAsText;
 import org.xembly.Directive;
 import org.xembly.Directives;
-import org.xembly.Xembler;
 
 /**
  * Project in S3.
@@ -53,30 +50,13 @@ final class S3Project implements Project {
     private final String prefix;
 
     /**
-     * Path to temporary storage.
-     */
-    private final Path temp;
-
-    /**
      * Ctor.
      * @param bkt Bucket
      * @param pfx Prefix
-     * @throws IOException If fails
      */
-    S3Project(final Bucket bkt, final String pfx) throws IOException {
-        this(bkt, pfx, Files.createTempDirectory(""));
-    }
-
-    /**
-     * Ctor.
-     * @param bkt Bucket
-     * @param pfx Prefix
-     * @param tmp Storage
-     */
-    S3Project(final Bucket bkt, final String pfx, final Path tmp) {
+    S3Project(final Bucket bkt, final String pfx) {
         this.bucket = bkt;
         this.prefix = pfx;
-        this.temp = tmp;
     }
 
     @Override
@@ -94,34 +74,32 @@ final class S3Project implements Project {
         if ("_list.xml".equals(file)) {
             final ObjectListing listing = this.bucket.region().aws()
                 .listObjects(this.bucket.name(), this.prefix);
-            item = new FkItem(
-                new Xembler(
-                    new Directives().add("items").append(
-                        new Joined<Directive>(
-                            new Mapped<S3ObjectSummary, Iterable<Directive>>(
-                                sum -> new Directives()
-                                    .add("item")
-                                    .add("name")
-                                    .set(
-                                        sum.getKey().substring(
-                                            this.prefix.length()
-                                        )
+            item = new ItemFrom(
+                new Directives().add("items").append(
+                    new Joined<Directive>(
+                        new Mapped<S3ObjectSummary, Iterable<Directive>>(
+                            sum -> new Directives()
+                                .add("item")
+                                .add("name")
+                                .set(
+                                    sum.getKey().substring(
+                                        this.prefix.length()
                                     )
-                                    .up()
-                                    .add("size").set(sum.getSize()).up()
-                                    .add("modified")
-                                    .set(
-                                        new DateAsText(
-                                            sum.getLastModified()
-                                        ).asString()
-                                    )
-                                    .up()
-                                    .up(),
-                                listing.getObjectSummaries()
-                            )
+                                )
+                                .up()
+                                .add("size").set(sum.getSize()).up()
+                                .add("modified")
+                                .set(
+                                    new DateAsText(
+                                        sum.getLastModified()
+                                    ).asString()
+                                )
+                                .up()
+                                .up(),
+                            listing.getObjectSummaries()
                         )
                     )
-                ).xmlQuietly()
+                )
             );
         } else {
             if (!file.matches("[a-z0-9\\-/]+\\.[a-z]+")) {
@@ -132,12 +110,8 @@ final class S3Project implements Project {
                 );
             }
             final String key = String.format("%s%s", this.prefix, file);
-            item = new S3Item(
-                this.bucket.ocket(key),
-                this.temp.resolve(key)
-            );
+            item = new S3Item(this.bucket.ocket(key));
         }
         return item;
     }
-
 }

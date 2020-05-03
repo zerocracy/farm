@@ -16,13 +16,15 @@
  */
 package com.zerocracy.farm.fake;
 
-import com.zerocracy.Item;
+import com.zerocracy.TextItem;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 /**
  * Test case for {@link FkItem}.
@@ -32,27 +34,21 @@ import org.junit.Test;
  */
 public final class FkItemTest {
 
-    @Test
-    public void createsInDefaultTempDir() throws Exception {
-        try (final Item item = new FkItem()) {
-            MatcherAssert.assertThat(
-                item.toString(),
-                Matchers.endsWith(".xml")
-            );
-        }
-    }
+    /**
+     * Temp dir rule.
+     */
+    @Rule
+    public final TemporaryFolder tmp = new TemporaryFolder();
 
     @Test
     public void implementsToString() throws Exception {
         final Path dir = Files.createTempDirectory("x1");
         final String name = "test.xml";
         final Path path = dir.resolve(name);
-        try (final Item item = new FkItem(path)) {
-            MatcherAssert.assertThat(
-                item.toString(),
-                Matchers.equalTo(name)
-            );
-        }
+        MatcherAssert.assertThat(
+            new FkItem(path).read(pth -> pth.getFileName().toString()),
+            Matchers.equalTo(name)
+        );
     }
 
     @Test
@@ -60,22 +56,19 @@ public final class FkItemTest {
         final Path dir = Files.createTempDirectory("x2");
         final String name = "testing.xml";
         final Path path = dir.resolve(name);
-        try (final Item item = new FkItem(path)) {
-            MatcherAssert.assertThat(
-                item,
-                Matchers.equalTo(new FkItem(path))
-            );
-        }
+        MatcherAssert.assertThat(
+            new FkItem(path),
+            Matchers.equalTo(new FkItem(path))
+        );
     }
 
     @Test
     public void returnsByContent() throws Exception {
-        try (final Item item = new FkItem("hello, world!")) {
-            MatcherAssert.assertThat(
-                new TextOf(item.path()).asString(),
-                Matchers.startsWith("hello, ")
-            );
-        }
+        final Path path = this.tmp.newFile().toPath();
+        Files.write(path, "hello, world!".getBytes(StandardCharsets.UTF_8));
+        MatcherAssert.assertThat(
+            new TextItem(new FkItem(path)).readAll(),
+            Matchers.startsWith("hello, ")
+        );
     }
-
 }

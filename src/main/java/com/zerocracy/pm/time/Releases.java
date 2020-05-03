@@ -16,9 +16,8 @@
  */
 package com.zerocracy.pm.time;
 
-import com.zerocracy.Item;
+import com.zerocracy.ItemXml;
 import com.zerocracy.Project;
-import com.zerocracy.Xocument;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.Comparator;
@@ -56,21 +55,19 @@ public final class Releases {
      * @throws IOException If fails
      */
     public Instant latest() throws IOException {
-        try (final Item item = this.item()) {
-            return new IoCheckedScalar<>(
-                new ItemAt<>(
-                    Instant.ofEpochMilli(0L),
-                    new Sorted<>(
-                        Comparator.reverseOrder(),
-                        new Mapped<>(
-                            Instant::parse,
-                            new Xocument(item.path())
-                                .xpath("/releases/release/published/text()")
-                        )
+        return new IoCheckedScalar<>(
+            new ItemAt<>(
+                Instant.ofEpochMilli(0L),
+                new Sorted<>(
+                    Comparator.reverseOrder(),
+                    new Mapped<>(
+                        Instant::parse,
+                        this.item()
+                            .xpath("/releases/release/published/text()")
                     )
                 )
-            ).value();
-        }
+            )
+        ).value();
     }
 
     /**
@@ -83,29 +80,23 @@ public final class Releases {
      */
     public void add(final String repo, final String tag, final Instant time)
         throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
-                new Directives()
-                    .xpath("/releases")
-                    .add("release")
-                    .attr("repo", repo)
-                    .attr("tag", tag)
-                    .add("published")
-                    .set(time.toString())
-            );
-        }
+        this.item().update(
+            new Directives()
+                .xpath("/releases")
+                .add("release")
+                .attr("repo", repo)
+                .attr("tag", tag)
+                .add("published")
+                .set(time.toString())
+        );
     }
 
     /**
      * Bootstrap it.
      *
      * @return Itself
-     * @throws IOException If fails
      */
-    public Releases bootstrap() throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).bootstrap("pm/time/releases");
-        }
+    public Releases bootstrap() {
         return this;
     }
 
@@ -115,7 +106,7 @@ public final class Releases {
      * @return Item
      * @throws IOException If fails
      */
-    private Item item() throws IOException {
-        return this.pkt.acq("releases.xml");
+    private ItemXml item() throws IOException {
+        return new ItemXml(this.pkt.acq("releases.xml"), "pm/time/releases");
     }
 }

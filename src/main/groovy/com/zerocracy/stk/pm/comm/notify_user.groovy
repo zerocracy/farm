@@ -19,9 +19,9 @@ package com.zerocracy.stk.pm.comm
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
-import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pmo.Catalog
 import com.zerocracy.pmo.People
 import com.zerocracy.pmo.Projects

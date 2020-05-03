@@ -16,9 +16,9 @@
  */
 package com.zerocracy.kpi;
 
+import com.zerocracy.FkFarm;
 import com.zerocracy.entry.ExtCloudWatch;
 import com.zerocracy.farm.props.Props;
-import com.zerocracy.farm.props.PropsFarm;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.time.Duration;
@@ -48,7 +48,7 @@ public final class KpiCloudWatchITCase {
     public static void checkProps() throws Exception {
         Assume.assumeTrue(
             "cloudwatch credentials are not provided",
-            new Props(new PropsFarm()).has("//cloudwatch")
+            new Props(FkFarm.props()).has("//cloudwatch")
         );
     }
 
@@ -56,7 +56,7 @@ public final class KpiCloudWatchITCase {
     public void sendMetric() throws Exception {
         final String name = KpiCloudWatchITCase.metric("test1");
         final KpiMetrics kpi = new KpiCloudWatch(
-            new ExtCloudWatch(new PropsFarm()).value()
+            new ExtCloudWatch(FkFarm.props()).value()
         );
         kpi.send(name, 1.0);
         TimeUnit.MINUTES.sleep(1L);
@@ -70,7 +70,7 @@ public final class KpiCloudWatchITCase {
     public void getStatisticForMetric() throws Exception {
         final String name = KpiCloudWatchITCase.metric("test2");
         final KpiMetrics kpi = new KpiCloudWatch(
-            new ExtCloudWatch(new PropsFarm()).value()
+            new ExtCloudWatch(FkFarm.props()).value()
         );
         kpi.send(name, 1.0);
         kpi.send(name, 10.0);

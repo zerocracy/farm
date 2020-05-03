@@ -21,13 +21,12 @@ import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Policy
 import com.zerocracy.Project
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
-import com.zerocracy.claims.ClaimIn
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Start order')
+  new Assume(project, xml).notPmo().type('Start order')
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
   Farm farm = binding.variables.farm
@@ -43,7 +42,7 @@ def exec(Project project, XML xml) {
         'reason',
         new Par('Manual assignment of issues is discouraged, see §19').say()
       )
-      .param('minutes', -new Policy().get('19.penalty', 5))
+      .param('minutes', -new Policy(farm).get('19.penalty', 5))
       .postTo(new ClaimsOf(farm, project))
   }
 }

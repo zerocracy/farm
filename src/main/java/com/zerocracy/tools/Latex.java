@@ -18,6 +18,7 @@ package com.zerocracy.tools;
 
 import com.jcabi.http.request.JdkRequest;
 import com.jcabi.http.response.RestResponse;
+import com.zerocracy.Farm;
 import com.zerocracy.farm.props.Props;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -47,13 +48,20 @@ public final class Latex {
     private final String data;
 
     /**
+     * Farm.
+     */
+    private final Farm farm;
+
+    /**
      * Ctor.
      * @param src LaTeX source
      * @param dta The data to sign
+     * @param farm Farm
      */
-    public Latex(final String src, final String dta) {
+    public Latex(final String src, final String dta, final Farm farm) {
         this.source = src;
         this.data = dta;
+        this.farm = farm;
     }
 
     /**
@@ -73,7 +81,10 @@ public final class Latex {
             )
         );
         final JsonObject req = Json.createObjectBuilder()
-            .add("apikey", new Props().get("//cloudconvert/key", ""))
+            .add(
+                "apikey",
+                new Props(this.farm).get("//cloudconvert/key", "")
+            )
             .add("inputformat", "tex")
             .add("outputformat", "pdf")
             .add("wait", true)
@@ -104,5 +115,4 @@ public final class Latex {
                 .binary()
         );
     }
-
 }

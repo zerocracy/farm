@@ -17,9 +17,8 @@
 package com.zerocracy.pm.time;
 
 import com.jcabi.xml.XML;
-import com.zerocracy.Item;
+import com.zerocracy.ItemXml;
 import com.zerocracy.Project;
-import com.zerocracy.Xocument;
 import java.io.IOException;
 import org.xembly.Directives;
 
@@ -49,12 +48,8 @@ public final class Precedences {
     /**
      * Bootstrap it.
      * @return Itself
-     * @throws IOException If fails
      */
-    public Precedences bootstrap() throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).bootstrap("pm/time/precedences");
-        }
+    public Precedences bootstrap() {
         return this;
     }
 
@@ -91,23 +86,21 @@ public final class Precedences {
         final String successor,
         final String suctype
     ) throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
-                new Directives()
-                    .xpath("/precedences")
-                    .add("precedence")
-                    .add("type")
-                    .set(type)
-                    .up()
-                    .add("predecessor")
-                    .attr("type", prectype)
-                    .set(predecessor)
-                    .up()
-                    .add("successor")
-                    .attr("type", suctype)
-                    .set(successor)
-            );
-        }
+        this.item().update(
+            new Directives()
+                .xpath("/precedences")
+                .add("precedence")
+                .add("type")
+                .set(type)
+                .up()
+                .add("predecessor")
+                .attr("type", prectype)
+                .set(predecessor)
+                .up()
+                .add("successor")
+                .attr("type", suctype)
+                .set(successor)
+        );
     }
 
     /**
@@ -116,10 +109,7 @@ public final class Precedences {
      * @throws IOException If fails
      */
     public Iterable<XML> iterate() throws IOException {
-        try (final Item item = this.item()) {
-            return new Xocument(item.path())
-                .nodes("/precedences/precedence");
-        }
+        return this.item().nodes("/precedences/precedence");
     }
 
     /**
@@ -127,7 +117,9 @@ public final class Precedences {
      * @return Item
      * @throws IOException If fails
      */
-    private Item item() throws IOException {
-        return this.project.acq("precedences.xml");
+    private ItemXml item() throws IOException {
+        return new ItemXml(
+            this.project.acq("precedences.xml"), "pm/time/precedences"
+        );
     }
 }

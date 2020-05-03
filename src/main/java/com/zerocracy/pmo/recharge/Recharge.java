@@ -18,10 +18,9 @@ package com.zerocracy.pmo.recharge;
 
 import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
-import com.zerocracy.Item;
+import com.zerocracy.ItemXml;
 import com.zerocracy.Par;
 import com.zerocracy.Project;
-import com.zerocracy.Xocument;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.claims.ClaimOut;
 import com.zerocracy.pm.cost.Estimates;
@@ -66,13 +65,11 @@ public final class Recharge {
      * @throws IOException If fails
      */
     public boolean exists() throws IOException {
-        try (final Item item = this.item()) {
-            return !new Xocument(item.path()).nodes(
-                String.format(
-                    "/catalog/project[@id='%s']/recharge", this.pkt.pid()
-                )
-            ).isEmpty();
-        }
+        return this.item().exists(
+            String.format(
+                "/catalog/project[@id='%s']/recharge", this.pkt.pid()
+            )
+        );
     }
 
     /**
@@ -89,14 +86,11 @@ public final class Recharge {
                 )
             );
         }
-        final XML xml;
-        try (final Item item = this.item()) {
-            xml = new Xocument(item.path()).nodes(
-                String.format(
-                    "/catalog/project[@id='%s']/recharge", this.pkt.pid()
-                )
-            ).get(0);
-        }
+        final XML xml = this.item().nodes(
+            String.format(
+                "/catalog/project[@id='%s']/recharge", this.pkt.pid()
+            )
+        ).get(0);
         final String system = xml.xpath("system/text()").get(0);
         if (!"stripe".equals(system)) {
             throw new IllegalStateException(
@@ -130,15 +124,13 @@ public final class Recharge {
                 )
             );
         }
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
-                new Directives().xpath(
-                    String.format(
-                        "/catalog/project[@id='%s']/recharge", this.pkt.pid()
-                    )
-                ).strict(1).remove()
-            );
-        }
+        this.item().update(
+            new Directives().xpath(
+                String.format(
+                    "/catalog/project[@id='%s']/recharge", this.pkt.pid()
+                )
+            ).strict(1).remove()
+        );
     }
 
     /**
@@ -155,16 +147,14 @@ public final class Recharge {
                 )
             );
         }
-        try (final Item item = this.item()) {
-            return new Cash.S(
-                new Xocument(item.path()).xpath(
-                    String.format(
-                        "/catalog/project[@id='%s']/recharge/amount/text()",
-                        this.pkt.pid()
-                    )
-                ).get(0)
-            );
-        }
+        return new Cash.S(
+            this.item().xpath(
+                String.format(
+                    "/catalog/project[@id='%s']/recharge/amount/text()",
+                    this.pkt.pid()
+                )
+            ).get(0)
+        );
     }
 
     /**
@@ -199,20 +189,18 @@ public final class Recharge {
         if (this.exists()) {
             this.delete();
         }
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
-                new Directives()
-                    .xpath(
-                        String.format(
-                            "/catalog/project[@id='%s']", this.pkt.pid()
-                        )
+        this.item().update(
+            new Directives()
+                .xpath(
+                    String.format(
+                        "/catalog/project[@id='%s']", this.pkt.pid()
                     )
-                    .add("recharge")
-                    .add("system").set(system).up()
-                    .add("amount").set(amount).up()
-                    .add("code").set(code).up()
-            );
-        }
+                )
+                .add("recharge")
+                .add("system").set(system).up()
+                .add("amount").set(amount).up()
+                .add("code").set(code).up()
+        );
     }
 
     /**
@@ -220,7 +208,9 @@ public final class Recharge {
      * @return Item
      * @throws IOException If fails
      */
-    private Item item() throws IOException {
-        return new Pmo(this.farm).acq("catalog.xml");
+    private ItemXml item() throws IOException {
+        return new ItemXml(
+            new Pmo(this.farm).acq("catalog.xml"), "pmo/catalog"
+        );
     }
 }

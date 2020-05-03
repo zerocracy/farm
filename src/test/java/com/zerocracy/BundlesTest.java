@@ -25,8 +25,6 @@ import com.zerocracy.claims.Footprint;
 import com.zerocracy.farm.SmartFarm;
 import com.zerocracy.farm.StkSafe;
 import com.zerocracy.farm.StkTimed;
-import com.zerocracy.farm.fake.FkFarm;
-import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.footprint.FtFarm;
 import com.zerocracy.farm.reactive.Brigade;
 import com.zerocracy.farm.reactive.StkGroovy;

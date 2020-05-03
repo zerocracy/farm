@@ -21,13 +21,13 @@ import com.jcabi.log.VerboseRunnable;
 import com.jcabi.s3.Bucket;
 import com.jcabi.s3.fake.FkBucket;
 import com.zerocracy.Farm;
-import com.zerocracy.Item;
+import com.zerocracy.FkFarm;
 import com.zerocracy.Project;
+import com.zerocracy.TextItem;
 import com.zerocracy.farm.S3Farm;
-import com.zerocracy.farm.fake.FkFarm;
-import com.zerocracy.farm.fake.FkItem;
-import com.zerocracy.farm.fake.FkProject;
+import com.zerocracy.farm.sync.Locks;
 import com.zerocracy.farm.sync.SyncFarm;
+import com.zerocracy.farm.sync.TestLocks;
 import com.zerocracy.pm.cost.Boosts;
 import com.zerocracy.pm.scope.Wbs;
 import com.zerocracy.pmo.Pmo;
@@ -35,13 +35,13 @@ import java.nio.file.Files;
 import org.cactoos.func.RunnableOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.hamcrest.core.IsEqual;
 import org.junit.Test;
 
 /**
  * Test case for {@link RdItem}.
  * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle LineLengthCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class RdItemTest {
@@ -59,9 +59,7 @@ public final class RdItemTest {
     public void ignoresNonXmlFiles() throws Exception {
         try (final Farm farm = new RdFarm(new FkFarm())) {
             final Project pmo = new Pmo(farm);
-            try (final Item item = pmo.acq("test.txt")) {
-                Files.write(item.path(), "How are you, dude?".getBytes());
-            }
+            new TextItem(pmo.acq("test.txt")).write("How are you, dude?");
         }
     }
 
@@ -71,7 +69,8 @@ public final class RdItemTest {
             Files.createTempDirectory("").toFile(),
             "the-bucket-1"
         );
-        try (final Farm farm = new RdFarm(new SyncFarm(new S3Farm(bucket)))) {
+        final Locks locks = new TestLocks();
+        try (final Farm farm = new RdFarm(new SyncFarm(new S3Farm(bucket, locks)))) {
             final Project pkt = farm.find("@id='ABCDEDDHI'").iterator().next();
             final String job = "gh:test/test#55";
             new VerboseRunnable(
@@ -95,7 +94,8 @@ public final class RdItemTest {
             Files.createTempDirectory("").toFile(),
             "the-bucket"
         );
-        try (final Farm farm = new RdFarm(new SyncFarm(new S3Farm(bucket)))) {
+        final Locks locks = new TestLocks();
+        try (final Farm farm = new RdFarm(new SyncFarm(new S3Farm(bucket, locks)))) {
             final Project pkt = farm.find("@id='ABCDEFGHI'").iterator().next();
             final String first = "gh:test/test#1";
             new Wbs(pkt).bootstrap().add(first);
@@ -121,7 +121,8 @@ public final class RdItemTest {
             Files.createTempDirectory("").toFile(),
             "the-bucket-98"
         );
-        try (final Farm farm = new RdFarm(new SyncFarm(new S3Farm(bucket)))) {
+        final Locks locks = new TestLocks();
+        try (final Farm farm = new RdFarm(new SyncFarm(new S3Farm(bucket, locks)))) {
             final Project pkt = farm.find("@id='ABCDTTGHI'").iterator().next();
             final String job = "gh:test/test#143";
             final Thread bug = new Thread(
@@ -136,20 +137,4 @@ public final class RdItemTest {
             new Boosts(farm, pkt).bootstrap();
         }
     }
-
-    @Test
-    public void createsFileAndDeletesOnClose() throws Exception {
-        final RdItem item = new RdItem(new FkProject(), new FkItem(), "blah");
-        try {
-            MatcherAssert.assertThat(
-                item.path().toFile().exists(), new IsEqual<>(true)
-            );
-        } finally {
-            item.close();
-        }
-        MatcherAssert.assertThat(
-            item.path().toFile().exists(), new IsEqual<>(false)
-        );
-    }
-
 }

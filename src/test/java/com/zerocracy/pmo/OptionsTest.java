@@ -17,9 +17,8 @@
 package com.zerocracy.pmo;
 
 import com.zerocracy.Farm;
-import com.zerocracy.Item;
-import com.zerocracy.Xocument;
-import com.zerocracy.farm.fake.FkFarm;
+import com.zerocracy.FkFarm;
+import com.zerocracy.ItemXml;
 import java.io.IOException;
 import java.util.Iterator;
 import org.hamcrest.MatcherAssert;
@@ -32,9 +31,11 @@ import org.xembly.Directives;
  * Test case for {@link Options}.
  * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle LineLengthCheck (500 lines)
  */
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 public final class OptionsTest {
+
     @Test
     public void readMaxJobs() throws Exception {
         MatcherAssert.assertThat(
@@ -136,11 +137,7 @@ public final class OptionsTest {
     private static Options options(final Iterable<Directive> dirs)
         throws IOException {
         final Farm farm = new FkFarm();
-        try (
-            final Item item = new Pmo(farm).acq("options/test.xml")
-        ) {
-            new Xocument(item).bootstrap("pmo/options").modify(dirs);
-        }
+        new ItemXml(new Pmo(farm).acq("options/test.xml"), "pmo/options").update(dirs);
         return new Options(new Pmo(farm), "test").bootstrap();
     }
 
@@ -148,14 +145,17 @@ public final class OptionsTest {
      * Notify directives.
      */
     private static final class XeNotify implements Iterable<Directive> {
+
         /**
          * Options name.
          */
         private final String name;
+
         /**
          * Option value.
          */
         private final boolean val;
+
         /**
          * Ctor.
          * @param option Option name
@@ -165,6 +165,7 @@ public final class OptionsTest {
             this.name = option;
             this.val = value;
         }
+
         @Override
         public Iterator<Directive> iterator() {
             return new Directives()

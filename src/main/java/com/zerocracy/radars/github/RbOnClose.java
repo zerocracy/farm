@@ -62,6 +62,7 @@ public final class RbOnClose implements Rebound {
                 .param(
                     "reason",
                     new Par(
+                        farm,
                         "GitHub issue was closed as 'invalid' by @%s"
                     ).say(author)
                 )

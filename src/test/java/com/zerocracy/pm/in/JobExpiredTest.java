@@ -17,10 +17,10 @@
 package com.zerocracy.pm.in;
 
 import com.zerocracy.Farm;
+import com.zerocracy.FkFarm;
+import com.zerocracy.FkProject;
 import com.zerocracy.Policy;
 import com.zerocracy.Project;
-import com.zerocracy.farm.fake.FkFarm;
-import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pm.scope.Wbs;
 import com.zerocracy.pmo.Awards;
@@ -55,7 +55,7 @@ public final class JobExpiredTest {
             new JobExpired(
                 new Pmo(farm),
                 orders,
-                new Policy(),
+                new Policy(farm),
                 LocalDateTime.now().plusDays(13L),
                 job
             ),
@@ -78,7 +78,7 @@ public final class JobExpiredTest {
             new JobExpired(
                 new Pmo(farm),
                 orders,
-                new Policy(),
+                new Policy(farm),
                 LocalDateTime.now().plusDays(13L),
                 job
             ),

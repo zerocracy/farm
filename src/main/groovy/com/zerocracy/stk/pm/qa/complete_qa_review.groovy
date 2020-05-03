@@ -18,10 +18,10 @@ package com.zerocracy.stk.pm.qa
 
 import com.jcabi.xml.XML
 import com.zerocracy.*
-import com.zerocracy.entry.ClaimsOf
-import com.zerocracy.farm.Assume
 import com.zerocracy.claims.ClaimIn
 import com.zerocracy.claims.ClaimOut
+import com.zerocracy.entry.ClaimsOf
+import com.zerocracy.farm.Assume
 import com.zerocracy.pm.qa.Reviews
 import com.zerocracy.pmo.Agenda
 
@@ -45,8 +45,8 @@ def exec(Project project, XML xml) {
       new Par('Thanks, but quality review is not required in this job').say()
     )
   }
-  int bonus = new Policy().get('31.bonus-minutes', 5)
   Farm farm = binding.variables.farm
+  int bonus = new Policy(farm).get('31.bonus-minutes', 5)
   ClaimOut out = reviews.remove(job, quality == 'good' ? bonus : 0, claim.copy())
   if (quality == 'bad') {
     claim.copy()
@@ -77,7 +77,7 @@ def exec(Project project, XML xml) {
     .param('login', inspector)
     .param('reason', 'Quality review completed')
     .param('estimated', 'false')
-    .param('minutes', new Policy().get('30.price', 8))
+    .param('minutes', new Policy(farm).get('30.price', 8))
     .postTo(new ClaimsOf(farm, project))
   new Agenda(farm, performer).bootstrap().with {
     if (it.exists(job)) {

@@ -17,13 +17,10 @@
 package com.zerocracy.pm.staff.ranks;
 
 import com.jcabi.github.Github;
-import com.jcabi.github.Issue;
-import com.zerocracy.radars.github.Job;
-import com.zerocracy.radars.github.Quota;
+import com.zerocracy.gh.CachedIssues;
 import java.util.Comparator;
-import org.cactoos.BiFunc;
-import org.cactoos.func.StickyBiFunc;
-import org.cactoos.func.UncheckedBiFunc;
+import org.cactoos.func.SolidFunc;
+import org.cactoos.func.UncheckedFunc;
 
 /**
  * Give higher rank to Github issues with milestone with
@@ -37,27 +34,9 @@ import org.cactoos.func.UncheckedBiFunc;
 public final class RnkGithubMilestone implements Comparator<String> {
 
     /**
-     * Global milestones cache.
-     */
-    private static final BiFunc<Github, String, Boolean> CACHED =
-        new UncheckedBiFunc<>(
-            new StickyBiFunc<>(
-                (ghb, job) -> job.startsWith("gh:")
-                    && new Quota(ghb).quiet()
-                    && new Issue.Smart(new Job.Issue(ghb, job))
-                    .hasMilestone()
-            )
-        );
-
-    /**
-     * Github.
-     */
-    private final Github github;
-
-    /**
      * Milestone cache.
      */
-    private final UncheckedBiFunc<Github, String, Boolean> cache;
+    private final UncheckedFunc<String, Boolean> cache;
 
     /**
      * Ctor.
@@ -65,26 +44,18 @@ public final class RnkGithubMilestone implements Comparator<String> {
      * @param github Github
      */
     public RnkGithubMilestone(final Github github) {
-        this(github, RnkGithubMilestone.CACHED);
-    }
-
-    /**
-     * Ctor.
-     *
-     * @param github Github
-     * @param cache Milestone cache
-     */
-    RnkGithubMilestone(final Github github,
-        final BiFunc<Github, String, Boolean> cache) {
-        this.github = github;
-        this.cache = new UncheckedBiFunc<>(cache);
+        this.cache = new UncheckedFunc<>(
+            new SolidFunc<>(
+                job -> new CachedIssues.Ext(github).value().hasMilestone(job)
+            )
+        );
     }
 
     @Override
     public int compare(final String left, final String right) {
         return Boolean.compare(
-            this.cache.apply(this.github, right),
-            this.cache.apply(this.github, left)
+            this.cache.apply(right),
+            this.cache.apply(left)
         );
     }
 }

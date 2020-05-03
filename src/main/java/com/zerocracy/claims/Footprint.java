@@ -20,6 +20,7 @@ import com.jcabi.aspects.Tv;
 import com.jcabi.xml.XML;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 import com.zerocracy.Farm;
@@ -29,7 +30,6 @@ import com.zerocracy.farm.props.Props;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -52,10 +52,12 @@ public final class Footprint implements Closeable {
      * Database name.
      */
     private static final String DBNAME = "footprint";
+
     /**
      * Collection.
      */
     private static final String CLAIMS = "claims";
+
     /**
      * Project ID.
      */
@@ -67,23 +69,30 @@ public final class Footprint implements Closeable {
     private final MongoClient mongo;
 
     /**
+     * Farm.
+     */
+    private final Farm farm;
+
+    /**
      * Ctor.
      * @param farm Farm
      * @param pkt Project
      * @throws IOException If fails
      */
     public Footprint(final Farm farm, final Project pkt) throws IOException {
-        this(new ExtMongo(farm).value(), pkt.pid());
+        this(new ExtMongo(farm).value(), pkt.pid(), farm);
     }
 
     /**
      * Ctor.
      * @param clt Client
      * @param pkt Project name
+     * @param farm Farm
      */
-    public Footprint(final MongoClient clt, final String pkt) {
+    public Footprint(final MongoClient clt, final String pkt, final Farm farm) {
         this.mongo = clt;
         this.pid = pkt;
+        this.farm = farm;
     }
 
     /**
@@ -104,23 +113,29 @@ public final class Footprint implements Closeable {
             final MongoCollection<Document> col =
                 this.mongo.getDatabase("footprint")
                     .getCollection("claims");
-            final Iterator<Document> found = col.find(
-                Filters.and(
-                    Filters.eq("cid", cid),
-                    Filters.eq("project", this.pid)
-                )
-            ).iterator();
-            if (found.hasNext() && !claim.type().equals("Ping")) {
-                throw new IllegalArgumentException(
-                    String.format(
-                        "Claim #%s (%s) already exists for %s",
-                        cid, claim.type(), this.pid
+            try (
+                final MongoCursor<Document> found = col.find(
+                    Filters.and(
+                        Filters.eq("cid", cid),
+                        Filters.eq("project", this.pid)
                     )
-                );
+                ).iterator()
+            ) {
+                if (found.hasNext() && !claim.type().equals("Ping")) {
+                    throw new IllegalArgumentException(
+                        String.format(
+                            "Claim #%s (%s) already exists for %s",
+                            cid, claim.type(), this.pid
+                        )
+                    );
+                }
             }
             Document doc = new Document()
                 .append("cid", cid)
-                .append("version", new Props().get("//build/version", ""))
+                .append(
+                    "version",
+                    new Props(this.farm).get("//build/version", "")
+                )
                 .append("project", this.pid)
                 .append("type", claim.type())
                 .append("created", claim.created())

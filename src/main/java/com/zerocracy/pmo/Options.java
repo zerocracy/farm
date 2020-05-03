@@ -16,8 +16,7 @@
  */
 package com.zerocracy.pmo;
 
-import com.zerocracy.Item;
-import com.zerocracy.Xocument;
+import com.zerocracy.ItemXml;
 import java.io.IOException;
 import org.cactoos.iterable.ItemAt;
 import org.cactoos.iterable.Mapped;
@@ -31,14 +30,17 @@ import org.xembly.Directives;
  * @since 1.0
  */
 public final class Options {
+
     /**
      * PMO.
      */
     private final Pmo pmo;
+
     /**
      * User id.
      */
     private final String uid;
+
     /**
      * Ctor.
      * @param pmo PMO project
@@ -52,12 +54,8 @@ public final class Options {
     /**
      * Bootstrap it.
      * @return Itself
-     * @throws IOException If fails
      */
-    public Options bootstrap() throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item).bootstrap("pmo/options");
-        }
+    public Options bootstrap() {
         return this;
     }
 
@@ -67,18 +65,15 @@ public final class Options {
      * @throws IOException If fails
      */
     public int maxJobsInAgenda() throws IOException {
-        try (final Item item = this.item()) {
-            return new IoCheckedScalar<>(
-                new ItemAt<Number>(
-                    xpath -> Integer.MAX_VALUE,
-                    new Mapped<>(
-                        NumberOf::new,
-                        new Xocument(item.path())
-                            .xpath("/options/maxJobsInAgenda/text()")
-                    )
+        return new IoCheckedScalar<>(
+            new ItemAt<Number>(
+                xpath -> Integer.MAX_VALUE,
+                new Mapped<>(
+                    NumberOf::new,
+                    this.item().xpath("/options/maxJobsInAgenda/text()")
                 )
-            ).value().intValue();
-        }
+            )
+        ).value().intValue();
     }
 
     /**
@@ -88,14 +83,12 @@ public final class Options {
      */
     @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     public void maxJobsInAgenda(final int max) throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
-                new Directives()
-                    .xpath("/options")
-                    .addIf("maxJobsInAgenda")
-                    .set(max)
-            );
-        }
+        this.item().update(
+            new Directives()
+                .xpath("/options")
+                .addIf("maxJobsInAgenda")
+                .set(max)
+        );
     }
 
     /**
@@ -104,18 +97,16 @@ public final class Options {
      * @throws IOException If fails
      */
     public int maxRevJobsInAgenda() throws IOException {
-        try (final Item item = this.item()) {
-            return new IoCheckedScalar<>(
-                new ItemAt<Number>(
-                    xpath -> Integer.MAX_VALUE,
-                    new Mapped<>(
-                        NumberOf::new,
-                        new Xocument(item.path())
-                            .xpath("/options/maxRevJobsInAgenda/text()")
-                    )
+        return new IoCheckedScalar<>(
+            new ItemAt<Number>(
+                xpath -> Integer.MAX_VALUE,
+                new Mapped<>(
+                    NumberOf::new,
+                    this.item()
+                        .xpath("/options/maxRevJobsInAgenda/text()")
                 )
-            ).value().intValue();
-        }
+            )
+        ).value().intValue();
     }
 
     /**
@@ -125,14 +116,12 @@ public final class Options {
      */
     @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     public void maxRevJobsInAgenda(final int max) throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
-                new Directives()
-                    .xpath("/options")
-                    .addIf("maxRevJobsInAgenda")
-                    .set(max)
-            );
-        }
+        this.item().update(
+            new Directives()
+                .xpath("/options")
+                .addIf("maxRevJobsInAgenda")
+                .set(max)
+        );
     }
 
     /**
@@ -171,23 +160,17 @@ public final class Options {
      */
     private boolean notify(final String name, final boolean def)
         throws IOException {
-        try (final Item item = this.item()) {
-            return new IoCheckedScalar<>(
-                new ItemAt<Boolean>(
-                    xpath -> def,
-                    new Mapped<>(
-                        Boolean::valueOf,
-                        new Xocument(item.path())
-                            .xpath(
-                                String.format(
-                                    "/options/notify/%s/text()",
-                                    name
-                                )
-                            )
+        return new IoCheckedScalar<>(
+            new ItemAt<Boolean>(
+                xpath -> def,
+                new Mapped<>(
+                    Boolean::valueOf,
+                    this.item().xpath(
+                        String.format("/options/notify/%s/text()", name)
                     )
                 )
-            ).value();
-        }
+            )
+        ).value();
     }
 
     /**
@@ -195,7 +178,10 @@ public final class Options {
      * @return Item
      * @throws IOException If fails
      */
-    private Item item() throws IOException {
-        return this.pmo.acq(String.format("options/%s.xml", this.uid));
+    private ItemXml item() throws IOException {
+        return new ItemXml(
+            this.pmo.acq(String.format("options/%s.xml", this.uid)),
+            "pmo/options"
+        );
     }
 }

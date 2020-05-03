@@ -20,6 +20,7 @@ import com.jcabi.aspects.Tv;
 import com.jcabi.xml.XML;
 import com.mongodb.client.model.Filters;
 import com.zerocracy.Farm;
+import com.zerocracy.FkFarm;
 import com.zerocracy.Project;
 import com.zerocracy.RunsInThreads;
 import com.zerocracy.claims.ClaimOut;
@@ -27,7 +28,6 @@ import com.zerocracy.claims.ClaimsItem;
 import com.zerocracy.claims.Footprint;
 import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.entry.ExtMongo;
-import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.farm.sync.SyncFarm;
 import java.io.IOException;
 import java.util.Date;
@@ -49,7 +49,7 @@ public final class FootprintTest {
 
     @Test
     public void addsClaims() throws Exception {
-        final Farm farm = new PropsFarm();
+        final Farm farm = FkFarm.props();
         final Project project = farm.find("@id='FOOTPRNTX'")
             .iterator().next();
         new ClaimOut().type("Hello").postTo(new ClaimsOf(farm, project));
@@ -71,7 +71,7 @@ public final class FootprintTest {
 
     @Test
     public void addsInThreads() throws Exception {
-        try (final Farm farm = new SyncFarm(new PropsFarm())) {
+        try (final Farm farm = new SyncFarm(FkFarm.props())) {
             MatcherAssert.assertThat(
                 inc -> {
                     final Project project = farm.find(
@@ -92,14 +92,14 @@ public final class FootprintTest {
                         ).iterator().hasNext();
                     }
                 },
-                new RunsInThreads<>(new AtomicInteger())
+                new RunsInThreads<>(new AtomicInteger(), 1)
             );
         }
     }
 
     @Test
     public void cleanOldClaims() throws Exception {
-        final Farm farm = new PropsFarm();
+        final Farm farm = FkFarm.props();
         final Project project = farm.find("@id='FOOTPRNTY'")
             .iterator().next();
         new ClaimOut(new Date(0L)).type("Notify")
@@ -127,7 +127,7 @@ public final class FootprintTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void rejectDuplicates() throws Exception {
-        final Farm farm = new PropsFarm();
+        final Farm farm = FkFarm.props();
         final Project project = farm.find("@id='FOOTPRNTZ'")
             .iterator().next();
         new ClaimOut().type("Hello").postTo(new ClaimsOf(farm, project));
@@ -154,7 +154,7 @@ public final class FootprintTest {
         throws IOException {
         return new Footprint(
             new ExtMongo(farm, UUID.randomUUID().toString()).value(),
-            project.pid()
+            project.pid(), FkFarm.props()
         );
     }
 }

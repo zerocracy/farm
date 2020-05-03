@@ -20,17 +20,14 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.zerocracy.Farm;
 import com.zerocracy.Item;
+import com.zerocracy.ItemFrom;
 import com.zerocracy.Project;
-import com.zerocracy.farm.fake.FkItem;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.lang.management.ManagementFactory;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import org.cactoos.Scalar;
-import org.cactoos.io.LengthOf;
-import org.cactoos.io.TeeInput;
 import org.cactoos.iterable.Joined;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.scalar.IoCheckedScalar;
@@ -92,31 +89,33 @@ final class GsProject implements Project {
 
     @Override
     public Item acq(final String file) throws IOException {
-        final Path temp = Files.createTempFile("farm", ".xml");
         final Iterator<Project> pkts = this.farm.find(this.query).iterator();
-        XML before = new XMLDocument(
+        final XML start = new XMLDocument(
             new Xembler(GsProject.start()).xmlQuietly()
         );
+        final XML before;
         if (pkts.hasNext()) {
-            try (final Item item = pkts.next().acq(file)) {
-                final Path path = item.path();
-                if (path.toFile().exists()
-                    && path.toFile().length() != 0L) {
-                    before = new XMLDocument(path);
+            before = pkts.next().acq(file).read(
+                path -> {
+                    final XML res;
+                    if (path.toFile().exists()
+                        && path.toFile().length() != 0L) {
+                        res = new XMLDocument(path);
+                    } else {
+                        res = start;
+                    }
+                    return res;
                 }
-            }
+            );
+        } else {
+            before = start;
         }
-        new LengthOf(
-            new TeeInput(
-                new XMLDocument(
-                    new Xembler(this.dirs.value()).applyQuietly(
-                        before.node()
-                    )
-                ).toString(),
-                temp
+        final String res = new XMLDocument(
+            new Xembler(this.dirs.value()).applyQuietly(
+                before.node()
             )
-        ).intValue();
-        return new FkItem(temp);
+        ).toString();
+        return new ItemFrom(res);
     }
 
     /**
@@ -145,6 +144,10 @@ final class GsProject implements Project {
             "totalThreads",
             Thread.getAllStackTraces().size()
         );
+        final int process = GsProject.process();
+        if (process > 0) {
+            attrs.put("pid", process);
+        }
         return new Directives()
             .pi("xml-stylesheet", "href='/xsl/guts.xsl' type='text/xsl'")
             .add("guts")
@@ -180,4 +183,19 @@ final class GsProject implements Project {
             .up();
     }
 
+    /**
+     * Return process ID (PID).
+     * @return PID number
+     */
+    private static int process() {
+        final String rmxn = ManagementFactory.getRuntimeMXBean().getName();
+        final int res;
+        if (rmxn.isEmpty() || !rmxn.contains("@")) {
+            res = -1;
+        } else {
+            final String part = rmxn.split("@")[0];
+            res = Integer.parseInt(part);
+        }
+        return res;
+    }
 }

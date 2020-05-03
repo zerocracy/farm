@@ -19,7 +19,6 @@ package com.zerocracy.tk.profile;
 import com.zerocracy.Farm;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.pmo.People;
-import com.zerocracy.pmo.Pmo;
 import com.zerocracy.tk.RqUser;
 import com.zerocracy.tk.RsPage;
 import java.io.IOException;
@@ -52,14 +51,13 @@ public final class TkIdentify implements TkRegex {
 
     @Override
     public Response act(final RqRegex req) throws IOException {
-        final Pmo pmo = new Pmo(this.farm);
         return new RsPage(
             this.farm,
             "/xsl/identify.xsl",
             req,
             () -> {
                 final String user = new RqUser(this.farm, req).value();
-                final People people = new People(pmo).bootstrap();
+                final People people = new People(this.farm).bootstrap();
                 return new XeChain(
                     new XeAppend(
                         "yoti_app_id",

@@ -70,7 +70,7 @@ public final class TkEquity implements TkRegex {
             );
         }
         return new RsWithHeaders(
-            new RsWithBody(new BytesOf(equity.pdf(user)).asBytes()),
+            new RsWithBody(new BytesOf(equity.pdf(user, this.farm)).asBytes()),
             "Content-Type: application/pdf",
             String.format(
                 "Content-Disposition: attachment; filename=equity-%s.pdf",

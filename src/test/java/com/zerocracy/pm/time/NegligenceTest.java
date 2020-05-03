@@ -16,9 +16,9 @@
  */
 package com.zerocracy.pm.time;
 
+import com.zerocracy.FkFarm;
+import com.zerocracy.FkProject;
 import com.zerocracy.Project;
-import com.zerocracy.farm.fake.FkFarm;
-import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.pmo.Negligence;
 import java.time.Duration;
 import java.time.Instant;

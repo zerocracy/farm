@@ -18,6 +18,8 @@ package com.zerocracy.kpi;
 
 import com.amazonaws.services.cloudwatch.AmazonCloudWatch;
 import com.amazonaws.services.cloudwatch.model.Datapoint;
+import com.amazonaws.services.cloudwatch.model.Dimension;
+import com.amazonaws.services.cloudwatch.model.DimensionFilter;
 import com.amazonaws.services.cloudwatch.model.GetMetricStatisticsRequest;
 import com.amazonaws.services.cloudwatch.model.ListMetricsRequest;
 import com.amazonaws.services.cloudwatch.model.ListMetricsResult;
@@ -46,6 +48,16 @@ public final class KpiCloudWatch implements KpiMetrics {
     private static final String NAMESPACE = "0crat/farm";
 
     /**
+     * Dimensions name.
+     */
+    private static final String DIM_NAME = "scope";
+
+    /**
+     * Dimension value.
+     */
+    private static final String DIM_VAL = "KPI";
+
+    /**
      * CloudWatch.
      */
     private final AmazonCloudWatch cloudwatch;
@@ -66,6 +78,10 @@ public final class KpiCloudWatch implements KpiMetrics {
                 .withNamespace(KpiCloudWatch.NAMESPACE)
                 .withMetricData(
                     new MetricDatum()
+                        .withDimensions(
+                            new Dimension().withName(KpiCloudWatch.DIM_NAME)
+                                .withValue(KpiCloudWatch.DIM_VAL)
+                        )
                         .withMetricName(name)
                         .withUnit(StandardUnit.None)
                         .withValue(value)
@@ -78,6 +94,10 @@ public final class KpiCloudWatch implements KpiMetrics {
     public Set<String> metrics() {
         final Set<String> names = new HashSet<>(0);
         final ListMetricsRequest request = new ListMetricsRequest()
+            .withDimensions(
+                new DimensionFilter().withName(KpiCloudWatch.DIM_NAME)
+                    .withValue(KpiCloudWatch.DIM_VAL)
+            )
             .withNamespace(KpiCloudWatch.NAMESPACE);
         do {
             final ListMetricsResult result =

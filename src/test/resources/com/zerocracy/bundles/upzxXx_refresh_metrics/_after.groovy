@@ -17,6 +17,7 @@
 package com.zerocracy.bundles.refresh_speed
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.pmo.Awards
 import com.zerocracy.pmo.People
@@ -26,8 +27,9 @@ import org.hamcrest.Matchers
 
 def exec(Project pmo, XML xml) {
   String login = 'developer'
+  Farm farm = binding.variables.farm
   MatcherAssert.assertThat(
-    new People(pmo).bootstrap().speed(login),
+    new People(farm).bootstrap().speed(login),
     Matchers.closeTo(20.0d, 0.0001d)
   )
   Awards awards = new Awards(pmo, login).bootstrap()

@@ -16,12 +16,12 @@
  */
 package com.zerocracy.pm.cost;
 
-import com.zerocracy.Item;
+import com.zerocracy.Farm;
+import com.zerocracy.ItemXml;
 import com.zerocracy.Par;
 import com.zerocracy.Policy;
 import com.zerocracy.Project;
 import com.zerocracy.SoftException;
-import com.zerocracy.Xocument;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.cash.CashParsingException;
 import java.io.IOException;
@@ -51,12 +51,8 @@ public final class Rates {
     /**
      * Bootstrap it.
      * @return Itself
-     * @throws IOException If fails
      */
-    public Rates bootstrap() throws IOException {
-        try (final Item wbs = this.item()) {
-            new Xocument(wbs.path()).bootstrap("pm/cost/rates");
-        }
+    public Rates bootstrap() {
         return this;
     }
 
@@ -64,10 +60,13 @@ public final class Rates {
      * Set rate of a person.
      * @param login User GitHub login
      * @param rate His rate
+     * @param farm Farm
      * @throws IOException If fails
      */
-    public void set(final String login, final Cash rate) throws IOException {
-        final Cash max = new Policy().get("16.max", new Cash.S("$256"));
+    public void set(final String login, final Cash rate, final Farm farm)
+        throws IOException {
+        final Policy policy = new Policy(farm);
+        final Cash max = policy.get("16.max", new Cash.S("$256"));
         if (rate.compareTo(max) > 0) {
             throw new SoftException(
                 new Par(
@@ -76,7 +75,7 @@ public final class Rates {
                 ).say(rate, max)
             );
         }
-        final Cash min = new Policy().get("16.min", Cash.ZERO);
+        final Cash min = policy.get("16.min", Cash.ZERO);
         if (!rate.equals(Cash.ZERO) && rate.compareTo(min) < 0) {
             throw new SoftException(
                 new Par(
@@ -85,23 +84,21 @@ public final class Rates {
                 ).say(rate, min)
             );
         }
-        try (final Item item = this.item()) {
-            new Xocument(item).modify(
+        this.item().update(
+            new Directives()
+                .xpath(String.format("/rates/person[@id='%s']", login))
+                .remove()
+        );
+        if (!rate.equals(Cash.ZERO)) {
+            this.item().update(
                 new Directives()
-                    .xpath(String.format("/rates/person[@id='%s']", login))
-                    .remove()
+                    .xpath("/rates")
+                    .add("person")
+                    .attr("id", login)
+                    .add("created").set(new DateAsText().asString()).up()
+                    .add("rate")
+                    .set(rate)
             );
-            if (!rate.equals(Cash.ZERO)) {
-                new Xocument(item).modify(
-                    new Directives()
-                        .xpath("/rates")
-                        .add("person")
-                        .attr("id", login)
-                        .add("created").set(new DateAsText().asString()).up()
-                        .add("rate")
-                        .set(rate)
-                );
-            }
         }
     }
 
@@ -119,9 +116,9 @@ public final class Rates {
                 ).say(login)
             );
         }
-        try (final Item item = this.item()) {
+        try {
             return new Cash.S(
-                new Xocument(item).xpath(
+                this.item().xpath(
                     String.format("/rates/person[@id='%s']/rate/text()", login)
                 ).get(0)
             );
@@ -137,11 +134,9 @@ public final class Rates {
      * @throws IOException If fails
      */
     public boolean exists(final String login) throws IOException {
-        try (final Item item = this.item()) {
-            return !new Xocument(item).nodes(
-                String.format("/rates/person[@id='%s']/rate", login)
-            ).isEmpty();
-        }
+        return this.item().exists(
+            String.format("/rates/person[@id='%s']/rate", login)
+        );
     }
 
     /**
@@ -149,7 +144,7 @@ public final class Rates {
      * @return Item
      * @throws IOException If fails
      */
-    private Item item() throws IOException {
-        return this.project.acq("rates.xml");
+    private ItemXml item() throws IOException {
+        return new ItemXml(this.project.acq("rates.xml"), "pm/cost/rates");
     }
 }

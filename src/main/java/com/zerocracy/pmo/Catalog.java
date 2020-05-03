@@ -16,22 +16,24 @@
  */
 package com.zerocracy.pmo;
 
+import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
-import com.zerocracy.Item;
+import com.zerocracy.ItemXml;
 import com.zerocracy.Par;
 import com.zerocracy.Project;
 import com.zerocracy.SoftException;
 import com.zerocracy.Xocument;
 import com.zerocracy.cash.Cash;
+import com.zerocracy.farm.props.Props;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import org.cactoos.collection.CollectionOf;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.list.ListOf;
-import org.cactoos.list.SolidList;
 import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.scalar.Reduced;
 import org.cactoos.time.DateAsText;
@@ -47,6 +49,7 @@ import org.xembly.Directives;
  *  typing is sometimes dodgy in there. There is a lot of classes to change so
  *  try to find a good small cluster of related classes that can be updated.
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @checkstyle LineLengthCheck (5000 lines)
  */
 @SuppressWarnings(
     {
@@ -84,12 +87,8 @@ public final class Catalog {
     /**
      * Bootstrap it.
      * @return Itself
-     * @throws IOException If fails
      */
-    public Catalog bootstrap() throws IOException {
-        try (final Item team = this.item()) {
-            new Xocument(team).bootstrap("pmo/catalog");
-        }
+    public Catalog bootstrap() {
         return this;
     }
 
@@ -99,14 +98,13 @@ public final class Catalog {
      * @throws IOException If fails
      */
     public void delete(final String pid) throws IOException {
-        this.checkExist(pid);
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
+        this.item().update(
+            xoc -> Catalog.require(xoc, pid).modify(
                 new Directives().xpath(
                     String.format("/catalog/project[@id='%s'] ", pid)
                 ).strict(1).remove()
-            );
-        }
+            )
+        );
     }
 
     /**
@@ -116,33 +114,26 @@ public final class Catalog {
      * @throws IOException If fails
      */
     public void add(final String pid, final String prefix) throws IOException {
-        if (this.exists(pid)) {
-            throw new IllegalArgumentException(
-                new Par("Project %s already exists").say(pid)
-            );
-        }
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
-                new Directives()
-                    .xpath("/catalog")
-                    .add("project")
-                    .attr("id", pid)
-                    .add(Catalog.PRJ_TITLE).set(pid).up()
-                    .add("created")
-                    .set(new DateAsText().asString()).up()
-                    .add("prefix").set(prefix).up()
-                    .add("alive").set(true).up()
-                    .add("fee").set(Cash.ZERO).up()
-                    .add("publish").set(Boolean.toString(false)).up()
-                    .add("adviser").set("0crat").up()
-                    .add("architect").set("0crat").up()
-                    .add("members").up()
-                    .add("jobs").set(0).up()
-                    .add("orders").set(0).up()
-                    .add("cash").attr("deficit", false).set(Cash.ZERO).up()
-                    .add("languages").up()
-            );
-        }
+        this.item().update(
+            new Directives()
+                .xpath("/catalog")
+                .add("project")
+                .attr("id", pid)
+                .add(Catalog.PRJ_TITLE).set(pid).up()
+                .add("created")
+                .set(new DateAsText().asString()).up()
+                .add("prefix").set(prefix).up()
+                .add("alive").set(true).up()
+                .add("fee").set(Cash.ZERO).up()
+                .add("publish").set(Boolean.toString(false)).up()
+                .add("adviser").set("0crat").up()
+                .add("architect").set("0crat").up()
+                .add("members").up()
+                .add("jobs").set(0).up()
+                .add("orders").set(0).up()
+                .add("cash").attr("deficit", false).set(Cash.ZERO).up()
+                .add("languages").up()
+        );
     }
 
     /**
@@ -152,16 +143,14 @@ public final class Catalog {
      * @throws IOException If fails
      */
     public String architect(final String pid) throws IOException {
-        this.checkExist(pid);
-        try (final Item item = this.item()) {
-            return new Xocument(item.path())
-                .xpath(
-                    String.format(
-                        "/catalog/project[@id = '%s']/architect/text()",
-                        pid
-                    )
-                ).iterator().next();
-        }
+        return this.item().read(
+            xoc -> Catalog.require(xoc, pid).xpath(
+                String.format(
+                    "/catalog/project[@id = '%s']/architect/text()",
+                    pid
+                )
+            )
+        ).get(0);
     }
 
     /**
@@ -172,16 +161,15 @@ public final class Catalog {
      */
     public void architect(final String pid, final String arc)
         throws IOException {
-        this.checkExist(pid);
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
+        this.item().update(
+            xoc -> Catalog.require(xoc, pid).modify(
                 new Directives()
                     .xpath(String.format("/catalog/project[@id =  '%s']", pid))
                     .strict(1)
                     .addIf("architect")
                     .set(arc)
-            );
-        }
+            )
+        );
     }
 
     /**
@@ -191,18 +179,16 @@ public final class Catalog {
      * @throws IOException If fails
      */
     public int jobs(final String pid) throws IOException {
-        this.checkExist(pid);
-        try (final Item item = this.item()) {
-            return Integer.parseInt(
-                new Xocument(item.path())
-                    .xpath(
-                        String.format(
-                            "/catalog/project[@id = '%s']/jobs/text()",
-                            pid
-                        )
-                    ).iterator().next()
-            );
-        }
+        return Integer.parseInt(
+            this.item().read(
+                xoc -> Catalog.require(xoc, pid).xpath(
+                    String.format(
+                        "/catalog/project[@id = '%s']/jobs/text()",
+                        pid
+                    )
+                )
+            ).get(0)
+        );
     }
 
     /**
@@ -213,16 +199,15 @@ public final class Catalog {
      */
     public void jobs(final String pid, final int cnt)
         throws IOException {
-        this.checkExist(pid);
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
+        this.item().update(
+            xoc -> Catalog.require(xoc, pid).modify(
                 new Directives()
                     .xpath(String.format("/catalog/project[@id =  '%s']", pid))
                     .strict(1)
                     .addIf("jobs")
                     .set(cnt)
-            );
-        }
+            )
+        );
     }
 
     /**
@@ -232,18 +217,16 @@ public final class Catalog {
      * @throws IOException If fails
      */
     public int orders(final String pid) throws IOException {
-        this.checkExist(pid);
-        try (final Item item = this.item()) {
-            return Integer.parseInt(
-                new Xocument(item.path())
-                    .xpath(
-                        String.format(
-                            "/catalog/project[@id = '%s']/orders/text()",
-                            pid
-                        )
-                    ).iterator().next()
-            );
-        }
+        return Integer.parseInt(
+            this.item().read(
+                xoc -> Catalog.require(xoc, pid).xpath(
+                    String.format(
+                        "/catalog/project[@id = '%s']/orders/text()",
+                        pid
+                    )
+                )
+            ).get(0)
+        );
     }
 
     /**
@@ -254,16 +237,15 @@ public final class Catalog {
      */
     public void orders(final String pid, final int cnt)
         throws IOException {
-        this.checkExist(pid);
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
+        this.item().update(
+            xoc -> Catalog.require(xoc, pid).modify(
                 new Directives()
                     .xpath(String.format("/catalog/project[@id =  '%s']", pid))
                     .strict(1)
                     .addIf("orders")
                     .set(cnt)
-            );
-        }
+            )
+        );
     }
 
     /**
@@ -273,18 +255,16 @@ public final class Catalog {
      * @throws IOException If fails
      */
     public boolean deficit(final String pid) throws IOException {
-        this.checkExist(pid);
-        try (final Item item = this.item()) {
-            return Boolean.parseBoolean(
-                new Xocument(item.path())
-                    .xpath(
-                        String.format(
-                            "/catalog/project[@id = '%s']/cash/@deficit",
-                            pid
-                        )
-                    ).iterator().next()
-            );
-        }
+        return Boolean.parseBoolean(
+            this.item().read(
+                xoc -> Catalog.require(xoc, pid).xpath(
+                    String.format(
+                        "/catalog/project[@id = '%s']/cash/@deficit",
+                        pid
+                    )
+                )
+            ).get(0)
+        );
     }
 
     /**
@@ -294,18 +274,15 @@ public final class Catalog {
      * @throws IOException If fails
      */
     public Cash cash(final String pid) throws IOException {
-        this.checkExist(pid);
-        try (final Item item = this.item()) {
-            return new Cash.S(
-                new Xocument(item.path())
-                    .xpath(
-                        String.format(
-                            "/catalog/project[@id = '%s']/cash/text()",
-                            pid
-                        )
-                    ).iterator().next()
-            );
-        }
+        return new Cash.S(
+            this.item().read(
+                xoc -> Catalog.require(xoc, pid).xpath(
+                    String.format(
+                        "/catalog/project[@id = '%s']/cash/text()", pid
+                    )
+                )
+            ).get(0)
+        );
     }
 
     /**
@@ -317,9 +294,8 @@ public final class Catalog {
      */
     public void cash(final String pid, final Cash cash, final boolean deficit)
         throws IOException {
-        this.checkExist(pid);
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
+        this.item().update(
+            xoc -> Catalog.require(xoc, pid).modify(
                 new Directives()
                     .xpath(String.format("/catalog/project[@id =  '%s']", pid))
                     .strict(1)
@@ -330,8 +306,8 @@ public final class Catalog {
                     .add("cash")
                     .attr("deficit", deficit)
                     .set(cash)
-            );
-        }
+            )
+        );
     }
 
     /**
@@ -341,15 +317,14 @@ public final class Catalog {
      * @throws IOException If fails
      */
     public Collection<String> members(final String pid) throws IOException {
-        this.checkExist(pid);
-        try (final Item item = this.item()) {
-            return new Xocument(item.path()).xpath(
+        return this.item().read(
+            xoc -> Catalog.require(xoc, pid).xpath(
                 String.format(
                     "/catalog/project[@id='%s']/members/member/text()",
                     pid
                 )
-            );
-        }
+            )
+        );
     }
 
     /**
@@ -360,9 +335,8 @@ public final class Catalog {
      */
     public void members(final String pid, final Iterable<String> members)
         throws IOException {
-        this.checkExist(pid);
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
+        this.item().update(
+            xoc -> Catalog.require(xoc, pid).modify(
                 new Directives()
                     .xpath(String.format("/catalog/project[@id =  '%s']", pid))
                     .strict(1)
@@ -383,8 +357,8 @@ public final class Catalog {
                             )
                         ).value()
                     )
-            );
-        }
+            )
+        );
     }
 
     /**
@@ -394,19 +368,18 @@ public final class Catalog {
      * @throws IOException If fails
      */
     public Set<String> languages(final String pid) throws IOException {
-        this.checkExist(pid);
-        try (final Item item = this.item()) {
-            return new HashSet<>(
-                new ListOf<>(
-                    new Xocument(item.path()).xpath(
+        return new HashSet<>(
+            new ListOf<>(
+                this.item().read(
+                    xoc -> Catalog.require(xoc, pid).xpath(
                         String.format(
                             "/catalog/project[@id = '%s']/languages/text()",
                             pid
                         )
-                    ).iterator().next().split(",")
-                )
-            );
-        }
+                    )
+                ).get(0).split(",")
+            )
+        );
     }
 
     /**
@@ -417,16 +390,15 @@ public final class Catalog {
      */
     public void languages(final String pid, final Set<String> langs)
         throws IOException {
-        this.checkExist(pid);
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
+        this.item().update(
+            xoc -> Catalog.require(xoc, pid).modify(
                 new Directives()
                     .xpath(String.format("/catalog/project[@id =  '%s']", pid))
                     .strict(1)
                     .addIf("languages")
                     .set(String.join(",", langs))
-            );
-        }
+            )
+        );
     }
 
     /**
@@ -436,11 +408,7 @@ public final class Catalog {
      * @throws IOException If fails
      */
     public boolean exists(final String pid) throws IOException {
-        try (final Item item = this.item()) {
-            return !new Xocument(item).nodes(
-                String.format("//project[@id  ='%s']", pid)
-            ).isEmpty();
-        }
+        return this.item().read(xoc -> Catalog.exists(xoc, pid));
     }
 
     /**
@@ -455,11 +423,9 @@ public final class Catalog {
         if (!term.isEmpty()) {
             term = String.format("[%s]", term);
         }
-        try (final Item item = this.item()) {
-            return new Xocument(item).xpath(
-                String.format("//project%s/prefix/text()", term)
-            );
-        }
+        return this.item().xpath(
+            String.format("//project%s/prefix/text()", term)
+        );
     }
 
     /**
@@ -469,17 +435,16 @@ public final class Catalog {
      * @throws IOException If fails
      */
     public boolean pause(final String pid) throws IOException {
-        this.checkExist(pid);
-        try (final Item item = this.item()) {
-            return !Boolean.parseBoolean(
-                new Xocument(item.path()).xpath(
+        return !Boolean.parseBoolean(
+            this.item().read(
+                xoc -> Catalog.require(xoc, pid).xpath(
                     String.format(
                         "/catalog/project[@id='%s']/alive/text()",
                         pid
                     )
-                ).get(0)
-            );
-        }
+                )
+            ).get(0)
+        );
     }
 
     /**
@@ -490,14 +455,13 @@ public final class Catalog {
      */
     public void pause(final String pid,
         final boolean pause) throws IOException {
-        this.checkExist(pid);
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
+        this.item().update(
+            xoc -> Catalog.require(xoc, pid).modify(
                 new Directives().xpath(
                     String.format("/catalog/project[@id='%s']/alive", pid)
                 ).strict(1).set(!pause)
-            );
-        }
+            )
+        );
     }
 
     /**
@@ -507,19 +471,21 @@ public final class Catalog {
      * @throws IOException If fails
      */
     public Cash fee(final String pid) throws IOException {
-        this.checkExist(pid);
-        try (final Item item = this.item()) {
-            final Iterator<String> fees = new Xocument(item.path()).xpath(
-                String.format("/catalog/project[@id='%s']/fee/text()", pid)
-            ).iterator();
-            final Cash fee;
-            if (fees.hasNext()) {
-                fee = new Cash.S(fees.next());
-            } else {
-                fee = Cash.ZERO;
+        return this.item().read(
+            xoc -> {
+                Catalog.require(xoc, pid);
+                final Iterator<String> fees = xoc.xpath(
+                    String.format("/catalog/project[@id='%s']/fee/text()", pid)
+                ).iterator();
+                final Cash fee;
+                if (fees.hasNext()) {
+                    fee = new Cash.S(fees.next());
+                } else {
+                    fee = Cash.ZERO;
+                }
+                return fee;
             }
-            return fee;
-        }
+        );
     }
 
     /**
@@ -529,14 +495,13 @@ public final class Catalog {
      * @throws IOException If fails
      */
     public void fee(final String pid, final Cash fee) throws IOException {
-        this.checkExist(pid);
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
+        this.item().update(
+            xoc -> Catalog.require(xoc, pid).modify(
                 new Directives().xpath(
                     String.format("/catalog/project[@id='%s']/fee", pid)
                 ).strict(1).set(fee)
-            );
-        }
+            )
+        );
     }
 
     /**
@@ -547,22 +512,24 @@ public final class Catalog {
      */
     public void publish(final String pid, final boolean status)
         throws IOException {
-        this.checkExist(pid);
-        if (this.links(pid, "github").isEmpty()) {
-            throw new SoftException(
-                new Par(
-                    "Project %s is not linked to any GitHub repositories,",
-                    "it can't be published on the board, see §26"
-                ).say(pid)
-            );
-        }
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
-                new Directives().xpath(
-                    String.format("/catalog/project[@id='%s']/publish", pid)
-                ).strict(1).set(Boolean.toString(status))
-            );
-        }
+        this.item().update(
+            xoc -> {
+                Catalog.require(xoc, pid);
+                if (Catalog.links(xoc, pid, "github").isEmpty()) {
+                    throw new SoftException(
+                        new Par(
+                            "Project %s is not linked to any GitHub repositories,",
+                            "it can't be published on the board, see §26"
+                        ).say(pid)
+                    );
+                }
+                xoc.modify(
+                    new Directives().xpath(
+                        String.format("/catalog/project[@id='%s']/publish", pid)
+                    ).strict(1).set(Boolean.toString(status))
+                );
+            }
+        );
     }
 
     /**
@@ -572,17 +539,16 @@ public final class Catalog {
      * @throws IOException If fails
      */
     public boolean published(final String pid) throws IOException {
-        this.checkExist(pid);
-        try (final Item item = this.item()) {
-            return Boolean.parseBoolean(
-                new Xocument(item).xpath(
+        return Boolean.parseBoolean(
+            this.item().read(
+                xoc -> Catalog.require(xoc, pid).xpath(
                     String.format(
                         "/catalog/project[@id='%s']/publish/text()",
                         pid
                     )
-                ).get(0)
-            );
-        }
+                )
+            ).get(0)
+        );
     }
 
     /**
@@ -594,32 +560,34 @@ public final class Catalog {
      */
     public void link(final String pid, final String rel, final String href)
         throws IOException {
-        this.checkExist(pid);
-        if (this.hasLink(pid, rel, href)) {
-            throw new SoftException(
-                new Par(
-                    "Project %s already has link, rel=`%s`, href=`%s`"
-                ).say(pid, rel, href)
-            );
-        }
-        if (this.linkExists(rel, href)) {
-            throw new SoftException(
-                new Par(
-                    "Some other project already has `%s/%s` link"
-                ).say(rel, href)
-            );
-        }
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
-                new Directives()
-                    .xpath(String.format("/catalog/project[@id='%s']", pid))
-                    .strict(1)
-                    .addIf("links")
-                    .add("link")
-                    .attr("rel", rel)
-                    .attr("href", href)
-            );
-        }
+        this.item().update(
+            xoc -> {
+                Catalog.require(xoc, pid);
+                if (Catalog.hasLink(xoc, pid, rel, href)) {
+                    throw new SoftException(
+                        new Par(
+                            "Project %s already has link, rel=`%s`, href=`%s`"
+                        ).say(pid, rel, href)
+                    );
+                }
+                if (Catalog.linkexists(xoc, rel, href)) {
+                    throw new SoftException(
+                        new Par(
+                            "Some other project already has `%s/%s` link"
+                        ).say(rel, href)
+                    );
+                }
+                xoc.modify(
+                    new Directives()
+                        .xpath(String.format("/catalog/project[@id='%s']", pid))
+                        .strict(1)
+                        .addIf("links")
+                        .add("link")
+                        .attr("rel", rel)
+                        .attr("href", href)
+                );
+            }
+        );
     }
 
     /**
@@ -631,9 +599,8 @@ public final class Catalog {
      */
     public void unlink(final String pid, final String rel, final String href)
         throws IOException {
-        this.checkExist(pid);
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
+        this.item().update(
+            xoc -> Catalog.require(xoc, pid).modify(
                 new Directives()
                     .xpath(String.format("/catalog/project[@id=  '%s']", pid))
                     .strict(1)
@@ -645,8 +612,8 @@ public final class Catalog {
                     )
                     .strict(1)
                     .remove()
-            );
-        }
+            )
+        );
     }
 
     /**
@@ -656,24 +623,23 @@ public final class Catalog {
      * @throws IOException If fails
      */
     public Collection<String> links(final String pid) throws IOException {
-        this.checkExist(pid);
-        try (final Item item = this.item()) {
-            return new SolidList<>(
-                new Mapped<>(
-                    xml -> String.format(
-                        "%s:%s",
-                        xml.xpath("@rel").get(0),
-                        xml.xpath("@href").get(0)
-                    ),
-                    new Xocument(item).nodes(
+        return new CollectionOf<>(
+            new Mapped<>(
+                (XML xml) -> String.format(
+                    "%s:%s",
+                    xml.xpath("@rel").get(0),
+                    xml.xpath("@href").get(0)
+                ),
+                this.item().<List<XML>>read(
+                    xoc -> Catalog.require(xoc, pid).nodes(
                         String.format(
                             "/catalog/project[@id='%s']/links/link",
                             pid
                         )
                     )
                 )
-            );
-        }
+            )
+        );
     }
 
     /**
@@ -685,15 +651,14 @@ public final class Catalog {
      */
     public Collection<String> links(final String pid, final String rel)
         throws IOException {
-        this.checkExist(pid);
-        try (final Item item = this.item()) {
-            return new Xocument(item).xpath(
+        return this.item().read(
+            xoc -> Catalog.require(xoc, pid).xpath(
                 String.format(
                     "/catalog/project[@id='%s']/links/link[@rel='%s']/@href",
                     pid, rel
                 )
-            );
-        }
+            )
+        );
     }
 
     /**
@@ -706,16 +671,11 @@ public final class Catalog {
      */
     public boolean hasLink(final String pid, final String rel,
         final String href) throws IOException {
-        this.checkExist(pid);
-        try (final Item item = this.item()) {
-            return !new Xocument(item.path()).nodes(
-                String.format(
-                    // @checkstyle LineLength (1 line)
-                    "/catalog/project[@id='%s' and links/link[@rel='%s' and @href='%s']]",
-                    pid, rel, href
-                )
-            ).isEmpty();
-        }
+        return this.item().read(
+            xoc -> Catalog.hasLink(
+                Catalog.require(xoc, pid), pid, rel, href
+            )
+        );
     }
 
     /**
@@ -727,14 +687,7 @@ public final class Catalog {
      */
     public boolean linkExists(final String rel, final String href)
         throws IOException {
-        try (final Item item = this.item()) {
-            return !new Xocument(item.path()).nodes(
-                String.format(
-                    "/catalog/project/links/link[@rel='%s' and @href='%s']",
-                    rel, href
-                )
-            ).isEmpty();
-        }
+        return this.item().read(xoc -> Catalog.linkexists(xoc, rel, href));
     }
 
     /**
@@ -745,16 +698,15 @@ public final class Catalog {
      */
     public void title(final String pid, final String title)
         throws IOException {
-        this.checkExist(pid);
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
+        this.item().update(
+            xoc -> Catalog.require(xoc, pid).modify(
                 new Directives()
                     .xpath(String.format("/catalog/project[@id =  '%s']", pid))
                     .strict(1)
                     .addIf(Catalog.PRJ_TITLE)
                     .set(title)
-            );
-        }
+            )
+        );
     }
 
     /**
@@ -764,21 +716,15 @@ public final class Catalog {
      * @throws IOException If fails
      */
     public String title(final String pid) throws IOException {
-        this.checkExist(pid);
-        try (final Item item = this.item()) {
-            final Iterator<String> items = new Xocument(item.path())
-                .xpath(
-                    String.format(
-                        "/catalog/project[@id = '%s']/title/text()",
-                        pid
-                    )
-                ).iterator();
-            String title = pid;
-            if (items.hasNext()) {
-                title = items.next();
-            }
-            return title;
-        }
+        return this.item().read(
+            xoc -> Catalog.require(xoc, pid).xpath(
+                String.format(
+                    "/catalog/project[@id = '%s']/title/text()",
+                    pid
+                ),
+                pid
+            )
+        );
     }
 
     /**
@@ -789,16 +735,15 @@ public final class Catalog {
      * @throws IOException If fails
      */
     public boolean hasAdviser(final String pid) throws IOException {
-        this.checkExist(pid);
-        try (final Item item = this.item()) {
-            final List<String> xpath = new Xocument(item.path()).xpath(
+        final List<String> nodes = this.item().read(
+            xoc -> Catalog.require(xoc, pid).xpath(
                 String.format(
                     "/catalog/project[@id = '%s']/adviser/text()",
                     pid
                 )
-            );
-            return !xpath.isEmpty() && !"0crat".equals(xpath.get(0));
-        }
+            )
+        );
+        return !nodes.isEmpty() && !"0crat".equals(nodes.get(0));
     }
 
     /**
@@ -808,15 +753,14 @@ public final class Catalog {
      * @throws IOException If fails
      */
     public String adviser(final String pid) throws IOException {
-        this.checkExist(pid);
-        try (final Item item = this.item()) {
-            return new Xocument(item.path()).xpath(
+        return this.item().read(
+            xoc -> Catalog.require(xoc, pid).xpath(
                 String.format(
                     "/catalog/project[@id = '%s']/adviser/text()",
                     pid
                 )
-            ).get(0);
-        }
+            )
+        ).get(0);
     }
 
     /**
@@ -827,17 +771,16 @@ public final class Catalog {
      */
     public void adviser(final String pid, final String adviser)
         throws IOException {
-        this.checkExist(pid);
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
+        this.item().update(
+            xoc -> Catalog.require(xoc, pid).modify(
                 new Directives().xpath(
                     String.format(
                         "/catalog/project[@id = '%s']",
                         pid
                     )
                 ).addIf("adviser").set(adviser)
-            );
-        }
+            )
+        );
     }
 
     /**
@@ -847,14 +790,13 @@ public final class Catalog {
      * @throws IOException If fails
      */
     public boolean sandbox(final String pid) throws IOException {
-        this.checkExist(pid);
-        try (final Item item = this.item()) {
-            return !new Xocument(item).nodes(
+        return !this.item().read(
+            xoc -> Catalog.require(xoc, pid).nodes(
                 String.format(
                     "/catalog/project[@id='%s' and sandbox='true']", pid
                 )
-            ).isEmpty();
-        }
+            )
+        ).isEmpty();
     }
 
     /**
@@ -865,15 +807,14 @@ public final class Catalog {
      */
     public void sandbox(final String pid, final boolean sbx)
         throws IOException {
-        this.checkExist(pid);
-        try (final Item item = this.item()) {
-            new Xocument(item).modify(
+        this.item().update(
+            xoc -> Catalog.require(xoc, pid).modify(
                 new Directives()
                     .xpath(String.format("/catalog/project[@id='%s']", pid))
                     .addIf("sandbox")
                     .set(sbx)
-            );
-        }
+            )
+        );
     }
 
     /**
@@ -882,28 +823,109 @@ public final class Catalog {
      * @throws IOException If fails
      */
     public Set<String> active() throws IOException {
-        try (final Item item = this.item()) {
-            return new HashSet<>(
-                new Xocument(item).xpath(
-                    "/catalog/project[alive = 'true']/@id"
-                )
-            );
-        }
+        return new HashSet<>(
+            this.item().xpath("/catalog/project[alive = 'true']/@id")
+        );
+    }
+
+    /**
+     * Check if verbose mode on.
+     * @param pid Project id
+     * @return True if enabled
+     * @throws IOException On failure
+     */
+    public boolean verbose(final String pid) throws IOException {
+        return "C3NDPUA8L".equals(pid)
+            || new Props(this.pmo).has("//testing");
+    }
+
+    /**
+     * Check project exists in catalog.
+     * @param xoc Xocument
+     * @param pid Project id
+     * @return True if exists
+     * @throws IOException If fails
+     */
+    private static boolean exists(final Xocument xoc, final String pid)
+        throws IOException {
+        return !xoc.nodes(
+            String.format("//project[@id  ='%s']", pid)
+        ).isEmpty();
     }
 
     /**
      * Check project exists, or throw exception.
+     * @param xoc Xocument
      * @param pid Project id
+     * @return Xocument
      * @throws IOException If not exist
      */
-    private void checkExist(final String pid) throws IOException {
-        if (!this.exists(pid)) {
+    private static Xocument require(final Xocument xoc, final String pid)
+        throws IOException {
+        if (!Catalog.exists(xoc, pid)) {
             throw new IllegalArgumentException(
                 new Par(
                     "Project %s doesn't exist"
                 ).say(pid)
             );
         }
+        return xoc;
+    }
+
+    /**
+     * Project links from xocument.
+     * @param xoc Xocument
+     * @param pid Project id
+     * @param rel REL to look for
+     * @return Links found
+     * @throws IOException If fails
+     */
+    private static Collection<String> links(final Xocument xoc,
+        final String pid, final String rel) throws IOException {
+        return xoc.xpath(
+            String.format(
+                "/catalog/project[@id='%s']/links/link[@rel='%s']/@href",
+                pid, rel
+            )
+        );
+    }
+
+    /**
+     * This link exists in any project in xocument?
+     * @param xoc Xocument
+     * @param rel REL
+     * @param href HREF
+     * @return TRUE if it exists already
+     * @throws IOException If fails
+     */
+    private static boolean linkexists(final Xocument xoc, final String rel,
+        final String href) throws IOException {
+        return !xoc.nodes(
+            String.format(
+                "/catalog/project/links/link[@rel='%s' and @href='%s']",
+                rel, href
+            )
+        ).isEmpty();
+    }
+
+    /**
+     * Xocument has this link?
+     * @param xoc Xocument
+     * @param pid Project ID
+     * @param rel REL
+     * @param href HREF
+     * @return TRUE if it has a link
+     * @throws IOException If fails
+     * @checkstyle ParameterNumberCheck (5 lines)
+     */
+    private static boolean hasLink(final Xocument xoc, final String pid,
+        final String rel, final String href) throws IOException {
+        return !xoc.nodes(
+            String.format(
+                "/catalog/project[@id='%s' and links/link[@rel='%s' and @href='%s']]",
+                pid, rel, href
+            )
+        ).isEmpty();
     }
 
     /**
@@ -911,7 +933,9 @@ public final class Catalog {
      * @return Item
      * @throws IOException If fails
      */
-    private Item item() throws IOException {
-        return this.pmo.acq("catalog.xml");
+    private ItemXml item() throws IOException {
+        return new ItemXml(
+            this.pmo.acq("catalog.xml"), "pmo/catalog"
+        );
     }
 }

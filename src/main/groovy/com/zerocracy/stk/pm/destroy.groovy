@@ -17,14 +17,14 @@
 package com.zerocracy.stk.pm
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Par
+import com.zerocracy.Project
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.entry.ExtBucket
 import com.zerocracy.farm.Assume
 import com.zerocracy.farm.S3Farm
-import com.zerocracy.Farm
-import com.zerocracy.Project
-import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pmo.Agenda
 import com.zerocracy.pmo.Catalog
@@ -41,7 +41,7 @@ def exec(Project project, XML xml) {
   }
   Catalog catalog = new Catalog(farm).bootstrap()
   String prefix = catalog.findByXPath("@id='${project.pid()}'").iterator().next()
-  new S3Farm(new ExtBucket().value()).delete(prefix)
+  new S3Farm(new ExtBucket().value(), locks).delete(prefix)
   catalog.delete(project.pid())
   new ClaimIn(xml).reply(
     new Par(

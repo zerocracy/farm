@@ -16,7 +16,7 @@
  */
 package com.zerocracy.radars.viber;
 
-import com.zerocracy.farm.fake.FkFarm;
+import com.zerocracy.FkFarm;
 import java.io.StringReader;
 import javax.json.Json;
 import org.cactoos.text.TextOf;

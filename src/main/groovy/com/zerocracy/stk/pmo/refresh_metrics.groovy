@@ -29,12 +29,12 @@ import java.time.Instant
 import java.time.Period
 
 def exec(Project pmo, XML xml) {
-  new Assume(pmo, xml).isPmo().type('Ping nightly', 'Refresh metrics force')
+  new Assume(pmo, xml).isPmo().type('Refresh metrics force')
   ClaimIn claim = new ClaimIn(xml)
   Farm farm = binding.variables.farm
   Policy policy = new Policy(farm)
   Instant outdated = claim.created().toInstant() - Period.ofDays(policy.get('18.days', 90))
-  new People(pmo).bootstrap().iterate().each { login ->
+  new People(farm).bootstrap().iterate().each { login ->
     new Awards(pmo, login).bootstrap().with {
       int before = total()
       removeOlderThan(outdated)

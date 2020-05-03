@@ -16,7 +16,7 @@
  */
 package com.zerocracy.pm.time;
 
-import com.zerocracy.farm.fake.FkProject;
+import com.zerocracy.FkProject;
 import java.time.LocalDate;
 import java.time.Month;
 import org.hamcrest.MatcherAssert;

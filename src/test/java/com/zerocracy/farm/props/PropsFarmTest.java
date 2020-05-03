@@ -17,7 +17,7 @@
 package com.zerocracy.farm.props;
 
 import com.zerocracy.Farm;
-import com.zerocracy.farm.fake.FkFarm;
+import com.zerocracy.FkFarm;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -32,7 +32,7 @@ public final class PropsFarmTest {
     @Test
     public void retrievesProps() throws Exception {
         MatcherAssert.assertThat(
-            new Props(new PropsFarm(new FkFarm())).get("/props/testing"),
+            new Props(FkFarm.props()).get("/props/testing"),
             Matchers.equalTo("yes")
         );
     }

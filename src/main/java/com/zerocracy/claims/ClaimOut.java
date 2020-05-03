@@ -255,6 +255,15 @@ public final class ClaimOut implements Iterable<Directive> {
     }
 
     /**
+     * Change message priority.
+     * @param val Priority value
+     * @return This
+     */
+    public ClaimOut priority(final MsgPriority val) {
+        return this.param("priority", val.toString());
+    }
+
+    /**
      * With this param.
      * @param name Name
      * @param value Value

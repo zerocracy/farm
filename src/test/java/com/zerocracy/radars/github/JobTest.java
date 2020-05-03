@@ -20,8 +20,8 @@ import com.jcabi.github.Github;
 import com.jcabi.github.Repo;
 import com.jcabi.github.Repos;
 import com.jcabi.github.mock.MkGithub;
+import com.zerocracy.FkFarm;
 import com.zerocracy.entry.ExtGithub;
-import com.zerocracy.farm.props.PropsFarm;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -37,7 +37,7 @@ public final class JobTest {
     @Test
     public void underscoreIsValid() throws Exception {
         final Github ghb = MkGithub.class.cast(
-            new ExtGithub(new PropsFarm()).value()
+            new ExtGithub(FkFarm.props()).value()
         ).relogin("january-ai");
         final Repo repo = ghb.repos().create(
             new Repos.RepoCreate("restaurant_crawling", false)

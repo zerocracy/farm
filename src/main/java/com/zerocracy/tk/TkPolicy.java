@@ -16,6 +16,7 @@
  */
 package com.zerocracy.tk;
 
+import com.zerocracy.Farm;
 import com.zerocracy.Policy;
 import java.io.IOException;
 import org.takes.Request;
@@ -32,11 +33,24 @@ import org.takes.rs.RsText;
  */
 final class TkPolicy implements Take {
 
+    /**
+     * Farm.
+     */
+    private final Farm farm;
+
+    /**
+     * Ctor.
+     * @param farm Farm
+     */
+    TkPolicy(final Farm farm) {
+        this.farm = farm;
+    }
+
     @Override
     public Response act(final Request req) throws IOException {
         return new RsText(
-            new Policy().get(new RqHref.Smart(req).single("i"), "unknown")
+            new Policy(this.farm)
+                .get(new RqHref.Smart(req).single("i"), "unknown")
         );
     }
-
 }

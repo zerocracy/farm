@@ -47,7 +47,7 @@ public final class VsBigDebt implements Votes {
         throws IOException {
         final double vote;
         final Debts debts = new Debts(this.pmo).bootstrap();
-        final Cash max = new Policy().get("3.max-debt", Cash.ZERO);
+        final Cash max = new Policy(this.pmo).get("3.max-debt", Cash.ZERO);
         if (debts.exists(login)
             && debts.amount(login).compareTo(max) > 0) {
             log.append("The debt is too big");

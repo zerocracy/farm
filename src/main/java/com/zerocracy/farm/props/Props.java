@@ -20,10 +20,10 @@ import com.jcabi.xml.XMLDocument;
 import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Project;
+import com.zerocracy.TextItem;
 import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
 import java.util.List;
-import org.cactoos.text.TextOf;
 
 /**
  * Properties of PMO project.
@@ -43,13 +43,6 @@ public final class Props {
 
     /**
      * Ctor.
-     */
-    public Props() {
-        this(new PropsFarm());
-    }
-
-    /**
-     * Ctor.
      * @param farm Original farm
      */
     public Props(final Farm farm) {
@@ -66,8 +59,8 @@ public final class Props {
 
     @Override
     public String toString() {
-        try (final Item item = this.item()) {
-            return new TextOf(item.path()).asString();
+        try {
+            return new TextItem(this.item()).readAll();
         } catch (final IOException ex) {
             throw new IllegalStateException(ex);
         }
@@ -119,11 +112,9 @@ public final class Props {
      * @throws IOException If fails
      */
     private List<String> values(final String xpath) throws IOException {
-        try (final Item item = this.item()) {
-            return new XMLDocument(item.path()).xpath(
-                String.format("%s/text()", xpath)
-            );
-        }
+        return this.item().read(XMLDocument::new).xpath(
+            String.format("%s/text()", xpath)
+        );
     }
 
     /**
@@ -134,5 +125,4 @@ public final class Props {
     private Item item() throws IOException {
         return this.project.acq("_props.xml");
     }
-
 }

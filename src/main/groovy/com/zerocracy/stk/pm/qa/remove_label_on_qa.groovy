@@ -14,47 +14,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.internal
+package com.zerocracy.stk.pm.qa
 
+import com.jcabi.github.Github
+import com.jcabi.github.Issue
+import com.jcabi.github.IssueLabels
 import com.jcabi.log.Logger
-import com.jcabi.s3.Bucket
-import com.jcabi.s3.fake.FkBucket
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
-import com.zerocracy.entry.ExtBucket
-import com.zerocracy.entry.HeapDump
+import com.zerocracy.claims.ClaimIn
+import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
-import com.zerocracy.farm.props.Props
+import com.zerocracy.radars.github.Job
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).isPmo()
-  new Assume(project, xml).type('Ping hourly')
+  new Assume(project, xml).notPmo().type('Quality review completed')
   Farm farm = binding.variables.farm
-  if (new Props(farm).has('//testing')) {
-    project.acq('test').withCloseable {
-      if (it.path().toString().contains('update_heapdump')) {
-        Bucket bucket
-        project.acq('test/bucket').withCloseable {
-          bucket = new FkBucket(
-              it.path(),
-              'dumpbucket'
-          )
-        }
-        Logger.info(this, 'Saving test heap')
-        new HeapDump(
-            bucket,
-            '',
-            it.path(),
-            'heap'
-        ).save()
-      }
-    }
-  } else {
-    try {
-      new HeapDump(new ExtBucket(farm).value(), '').save()
-    } catch (IOException err) {
-      Logger.info(this, "Heap dump doesn't exist: ${err.message}")
-    }
+  ClaimIn claim = new ClaimIn(xml)
+  String job = claim.param('job')
+  if (!job.startsWith('gh:')) {
+    return
+  }
+  Github github = new ExtGithub(farm).value()
+  Issue.Smart issue = new Issue.Smart(new Job.Issue(github, job))
+  IssueLabels labels = new IssueLabels.Smart(issue.labels())
+  String quality = claim.param('quality')
+  try {
+    labels.removeIfExists('qa')
+  } catch (AssertionError ex) {
+    Logger.warn(this, "Can't remove label to issue %s: %s", issue, ex.localizedMessage)
+  }
+  try {
+    labels.addIfAbsent("quality/${quality}", '800040')
+  } catch (AssertionError ex) {
+    Logger.warn(this, "Can't add label to issue %s: %s", issue, ex.localizedMessage)
   }
 }

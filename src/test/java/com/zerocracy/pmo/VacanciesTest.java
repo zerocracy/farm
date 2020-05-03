@@ -17,9 +17,9 @@
 package com.zerocracy.pmo;
 
 import com.jcabi.matchers.XhtmlMatchers;
+import com.zerocracy.FkFarm;
+import com.zerocracy.FkProject;
 import com.zerocracy.Project;
-import com.zerocracy.farm.fake.FkFarm;
-import com.zerocracy.farm.fake.FkProject;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Month;
@@ -35,6 +35,7 @@ import org.junit.Test;
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class VacanciesTest {
+
     @Test
     public void addsVacancy() throws Exception {
         final Vacancies vacancies = new Vacancies(new FkFarm()).bootstrap();

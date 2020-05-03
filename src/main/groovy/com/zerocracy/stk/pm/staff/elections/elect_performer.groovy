@@ -16,14 +16,16 @@
  */
 package com.zerocracy.stk.pm.staff.elections
 
-import com.jcabi.aspects.Tv
+
 import com.jcabi.github.Github
 import com.jcabi.log.Logger
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Policy
 import com.zerocracy.Project
+import com.zerocracy.SoftException
 import com.zerocracy.claims.ClaimIn
+import com.zerocracy.claims.MsgPriority
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
@@ -33,20 +35,23 @@ import com.zerocracy.pm.cost.Rates
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.qa.Reviews
 import com.zerocracy.pm.scope.Wbs
-import com.zerocracy.pm.staff.Bans
-import com.zerocracy.pm.staff.Election
-import com.zerocracy.pm.staff.ElectionResult
-import com.zerocracy.pm.staff.Roles
-import com.zerocracy.pm.staff.Votes
+import com.zerocracy.pm.staff.*
 import com.zerocracy.pm.staff.ranks.*
 import com.zerocracy.pm.staff.votes.*
 import com.zerocracy.pmo.Pmo
+import com.zerocracy.radars.github.Quota
 import org.cactoos.iterable.Mapped
+import org.cactoos.text.TextOf
 
+@SuppressWarnings('CyclomaticComplexity')
 def exec(Project project, XML xml) {
-  new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Ping')
+  new Assume(project, xml).notPmo().type('Ping hourly', 'Elect performer')
   ClaimIn claim = new ClaimIn(xml)
+  Farm farm = binding.variables.farm
+  Github ghb = new ExtGithub(farm).value()
+  if (new Quota(ghb).over(new TextOf('elect_performer: Github quota is over'))) {
+    throw new SoftException('Unable to elect performer: GitHub quota is over')
+  }
   boolean deficit = new Ledger(farm, project).bootstrap().deficit()
   Roles roles = new Roles(project).bootstrap()
   Rates rates = new Rates(project).bootstrap()
@@ -59,7 +64,7 @@ def exec(Project project, XML xml) {
   //  as a performer for few jobs and another project may elect same user
   //  before jobs from first project will be assigned to the performer.
   Wbs wbs = new Wbs(project).bootstrap()
-  if (wbs.size() > Tv.FIFTY) {
+  if (wbs.size() > 70 && !claim.hasParam('job')) {
     // @todo #2194:30min Election is disabled for huge WBS (> 50 items).
     //  Analyze the bottleneck of election performance, most
     //  probably it can be solved by caching some external resources,
@@ -67,11 +72,18 @@ def exec(Project project, XML xml) {
     //  Then optimize election process and enable it back.
     return
   }
-  Collection<String> orders = new Orders(farm, project).bootstrap().iterate()
+  Orders ord = new Orders(farm, project).bootstrap()
+  Collection<String> orders
+  if (claim.hasParam('job')) {
+    if (claim.param('reason', 'none') != 'PR added to WBS') {
+      new Assume(project, xml).roles('ARC', 'PO')
+    }
+    orders = Collections.singletonList(claim.param('job'))
+  } else {
+    orders = ord.iterate()
+  }
   Collection<String> reviews = new Reviews(project).bootstrap().iterate()
-  Farm farm = binding.variables.farm
   Pmo pmo = new Pmo(farm)
-  Github github = new ExtGithub(farm).value()
   // @todo #1214:30min 0crat is assigning closed jobs. It happens when the
   //  issue was closed in github but the Close Job flow fails
   //  for some reason and the job does not leave WBS. Assure that we are
@@ -79,10 +91,10 @@ def exec(Project project, XML xml) {
   //  _after.groovy tests in dont_assign_job_closed bundle.
   List<String> jobs = wbs.iterate().toList()
   List<Comparator<String>> ranks = [
-    new RnkMeasured(new RnkGithubLabel(github, 'pdd')),
-    new RnkMeasured(new RnkGithubLabel(github, 'bug')),
+    new RnkMeasured(new RnkGithubLabel(ghb, 'pdd')),
+    new RnkMeasured(new RnkGithubLabel(ghb, 'bug')),
     new RnkMeasured(new RnkBoost(new Boosts(farm, project).bootstrap())),
-    new RnkMeasured(new RnkGithubMilestone(github)),
+    new RnkMeasured(new RnkGithubMilestone(ghb)),
     new RnkMeasured(new RnkRev(new Wbs(project).bootstrap()))
   ]
   ranks.each { jobs.sort(it) }
@@ -99,7 +111,7 @@ def exec(Project project, XML xml) {
       )
     )
   }
-  int max = new Policy().get('3.absolute-max', 32)
+  int max = new Policy(farm).get('3.absolute-max', 32)
   int count = 0
   long vtime = System.nanoTime()
   String elected = 'not-elected'
@@ -135,14 +147,14 @@ def exec(Project project, XML xml) {
         [
           (wrapped(new VsHardCap(pmo, max)))                                     : -100,
           (wrapped(new VsReputation(pmo, logins)))                               : 4,
-          (wrapped(new VsLosers(pmo, new Policy().get('3.low-threshold', -128)))): -100,
+          (wrapped(new VsLosers(pmo, new Policy(farm).get('3.low-threshold', -128)))): -100,
           (wrapped(new VsRate(project, logins)))                                 : 2,
           (wrapped(new VsBigDebt(pmo)))                                          : -100,
           (wrapped(new VsNoRoom(pmo)))                                           : role == 'REV' ? 0 : -100,
           (wrapped(new VsOptionsMaxJobs(pmo)))                                   : role == 'REV' ? 0 : -100,
           (wrapped(new VsOptionsMaxRevJobs(pmo)))                                : role == 'REV' ? -100 : 0,
           (wrapped(new VsBanned(project, job)))                                  : -100,
-          (wrapped(new VsVacation(pmo)))                                         : -100,
+          (wrapped(new VsVacation(farm)))                                         : -100,
           (wrapped(new VsWorkload(farm, logins)))                                : 1,
           (wrapped(new VsWorkload(farm, project, logins)))                       : 1,
           (wrapped(new VsSpeed(pmo, logins)))                                    : 3,
@@ -164,6 +176,14 @@ def exec(Project project, XML xml) {
         .param('reason', result.reason())
         .postTo(new ClaimsOf(farm, project))
       break
+    } else if (claim.hasParam('job')) {
+      claim.copy()
+        .type('Performer was not elected')
+        .param('job', job)
+        .param('role', role)
+        .param('reason', result.reason())
+        .priority(MsgPriority.LOW)
+        .postTo(new ClaimsOf(farm, project))
     }
   }
   if (Logger.isInfoEnabled(ltag)) {

@@ -62,7 +62,7 @@ def exec(Project project, XML xml) {
   People people = new People(farm).bootstrap()
   boolean hasMentor = people.hasMentor(login) && people.mentor(login) != '0crat'
   if (!claim.hasParam('no-tuition-fee') && hasMentor && project.pid() != 'PMO') {
-    int share = new Policy().get('45.share', 8)
+    int share = new Policy(farm).get('45.share', 8)
     Cash fee = price.mul(share) / 100
     price = price.mul(100 - share) / 100
     String mentor = people.mentor(login)

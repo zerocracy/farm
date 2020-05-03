@@ -17,10 +17,9 @@
 package com.zerocracy.pm.staff.ranks;
 
 import com.zerocracy.pm.cost.Boosts;
-import java.io.IOException;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
+import org.cactoos.func.SolidFunc;
+import org.cactoos.func.UncheckedFunc;
 
 /**
  * Give higher rank for boosted jobs.
@@ -29,46 +28,22 @@ import java.util.Map;
  */
 public final class RnkBoost implements Comparator<String> {
     /**
-     * Boosts.
+     * Cached factor comparator.
      */
-    private final Boosts boosts;
-    /**
-     * Boost cache.
-     */
-    private final Map<String, Integer> cache;
+    private final UncheckedFunc<String, Integer> cmp;
 
     /**
      * Ctor.
-     * @param bsts Boosts
+     * @param boosts Boosts
      */
-    public RnkBoost(final Boosts bsts) {
-        this.boosts = bsts;
-        this.cache = new HashMap<>(1);
+    public RnkBoost(final Boosts boosts) {
+        this.cmp = new UncheckedFunc<>(
+            new SolidFunc<>(job -> boosts.factor(job))
+        );
     }
 
     @Override
     public int compare(final String left, final String right) {
-        try {
-            return Integer.compare(this.factor(right), this.factor(left));
-        } catch (final IOException err) {
-            throw new IllegalStateException(err);
-        }
-    }
-
-    /**
-     * Boost factor for a job.
-     * @param job A job
-     * @return Factor value
-     * @throws IOException If fails
-     */
-    private int factor(final String job) throws IOException {
-        final int factor;
-        if (this.cache.containsKey(job)) {
-            factor = this.cache.get(job);
-        } else {
-            factor = this.boosts.factor(job);
-            this.cache.put(job, factor);
-        }
-        return factor;
+        return Integer.compare(this.cmp.apply(right), this.cmp.apply(left));
     }
 }

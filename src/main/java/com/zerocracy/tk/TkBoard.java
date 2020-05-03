@@ -18,7 +18,6 @@ package com.zerocracy.tk;
 
 import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
-import com.zerocracy.Item;
 import com.zerocracy.Xocument;
 import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
@@ -66,8 +65,8 @@ public final class TkBoard implements Take {
             () -> {
                 final String user = new RqUser(this.farm, req, false).value();
                 final Collection<XeSource> sources = new LinkedList<>();
-                try (final Item item = new Pmo(this.farm).acq("catalog.xml")) {
-                    new And(
+                new Pmo(this.farm).acq("catalog.xml").read(
+                    path -> new And(
                         new FuncOf<>(
                             input -> sources.add(
                                 TkBoard.source(
@@ -76,11 +75,11 @@ public final class TkBoard implements Take {
                             ),
                             true
                         ),
-                        new Xocument(item).nodes(
+                        new Xocument(path).nodes(
                             "/catalog/project[@id!='PMO' and publish='true']"
                         )
-                    ).value();
-                }
+                    ).value()
+                );
                 return new XeAppend("projects", new XeChain(sources));
             }
         );

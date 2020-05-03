@@ -24,8 +24,8 @@ import com.jcabi.github.Repos;
 import com.jcabi.github.mock.MkGithub;
 import com.jcabi.github.mock.MkStorage;
 import com.zerocracy.Farm;
+import com.zerocracy.FkFarm;
 import com.zerocracy.SoftException;
-import com.zerocracy.farm.fake.FkFarm;
 import java.io.IOException;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -117,7 +117,7 @@ public final class ReIfAddressedTest {
      */
     private Comment.Smart comment(final String body) throws IOException {
         final MkStorage server = new MkStorage.InFile();
-        final Github jeff = new MkGithub(server,  "jeff");
+        final Github jeff = new MkGithub(server, "jeff");
         final Repo repo = jeff.repos().create(
             new Repos.RepoCreate("test", false)
         );
@@ -128,11 +128,10 @@ public final class ReIfAddressedTest {
             issue.comments().post(body)
         );
         return new Comment.Smart(
-            new MkGithub(server,  "0crat")
+            new MkGithub(server, "0crat")
                 .repos().get(repo.coordinates())
                 .issues().get(issue.number())
                 .comments().get(initial.number())
         );
     }
-
 }

@@ -69,7 +69,8 @@ public final class TkHiring implements TkRegex {
             .author(user)
             .param("login", user)
             .param("job", "none")
-            .param("minutes", -new Policy().get("51.price", 0))
+            // @checkstyle LineLengthCheck (1 line)
+            .param("minutes", -new Policy(this.farm).get("51.price", 0))
             .param("reason", "Job announced to all users")
             .postTo(new ClaimsOf(this.farm, project));
         new Vacancies(this.farm).bootstrap().add(project, user, text);
@@ -87,7 +88,8 @@ public final class TkHiring implements TkRegex {
                     "this is what they say in their announcement:\n\n%s"
                 ).say(project.pid(), user, text)
             )
-            .param("min", new Policy().get("33.min-live", 0))
+            // @checkstyle LineLengthCheck (1 line)
+            .param("min", new Policy(this.farm).get("33.min-live", 0))
             .param("reason", "Project published")
             .postTo(new ClaimsOf(this.farm, project));
         return new RsForward(

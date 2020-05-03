@@ -19,7 +19,6 @@ package com.zerocracy.tk.project;
 import com.jcabi.xml.StrictXML;
 import com.jcabi.xml.XMLDocument;
 import com.zerocracy.Farm;
-import com.zerocracy.Item;
 import com.zerocracy.Par;
 import com.zerocracy.Project;
 import com.zerocracy.claims.ClaimOut;
@@ -27,9 +26,9 @@ import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.tk.RqUser;
 import com.zerocracy.tk.RsParFlash;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.logging.Level;
-import org.cactoos.io.LengthOf;
-import org.cactoos.io.TeeInput;
 import org.takes.Response;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
@@ -75,14 +74,14 @@ public final class TkUpload implements TkRegex {
         final Project project = new RqProject(this.farm, req, "PO");
         final String body =
             new RqPrint(form.single("file")).printBody().trim();
-        try (final Item item = project.acq(artifact)) {
-            new LengthOf(
-                new TeeInput(
-                    new StrictXML(new XMLDocument(body)).toString(),
-                    item.path()
-                )
-            ).intValue();
-        }
+        project.acq(artifact).update(
+            path -> Files.write(
+                path,
+                new StrictXML(
+                    new XMLDocument(body)
+                ).toString().getBytes(StandardCharsets.UTF_8)
+            )
+        );
         new ClaimOut().type("Notify PMO").param(
             "message", new Par(
                 "File `%s` uploaded manually to %s by @%s"
@@ -98,5 +97,4 @@ public final class TkUpload implements TkRegex {
             String.format("/files/%s", project.pid())
         );
     }
-
 }

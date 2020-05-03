@@ -19,14 +19,13 @@ package com.zerocracy.entry;
 import com.jcabi.aspects.Tv;
 import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
-import com.zerocracy.Item;
+import com.zerocracy.FkFarm;
+import com.zerocracy.FkProject;
+import com.zerocracy.ItemXml;
 import com.zerocracy.Project;
-import com.zerocracy.Xocument;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.claims.ClaimIn;
 import com.zerocracy.claims.ClaimsItem;
-import com.zerocracy.farm.fake.FkFarm;
-import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pmo.Catalog;
 import java.util.LinkedList;
@@ -67,29 +66,26 @@ public final class PingTest {
     public void worksForSingleProject() throws Exception {
         final FkProject pkt = new FkProject();
         final Farm farm = new PropsFarm(new FkFarm(pkt));
-        try (final Item item = pkt.acq("catalog.xml")) {
-            new Xocument(item.path()).bootstrap("pmo/catalog");
-            new Xocument(item.path()).modify(
-                new Directives()
-                    .xpath("/catalog")
-                    .add("project")
-                    .attr("id", pkt.pid())
-                    .add("title").set(pkt.pid()).up()
-                    .add("created")
-                    .set(new DateAsText().asString()).up()
-                    .add("prefix").set("2017/01/AAAABBBBC/").up()
-                    .add("fee").set("0").up()
-                    .add("alive").set("true").up()
-                    .add("publish").set("false").up()
-                    .add("adviser").set("0crat").up()
-                    .add("architect").set("1crat").up()
-                    .add("members").up()
-                    .add("jobs").set(0).up()
-                    .add("orders").set(0).up()
-                    .add("cash").attr("deficit", false).set(Cash.ZERO).up()
-                    .add("languages").up()
-            );
-        }
+        new ItemXml(pkt.acq("catalog.xml"), "pmo/catalog").update(
+            new Directives()
+                .xpath("/catalog")
+                .add("project")
+                .attr("id", pkt.pid())
+                .add("title").set(pkt.pid()).up()
+                .add("created")
+                .set(new DateAsText().asString()).up()
+                .add("prefix").set("2017/01/AAAABBBBC/").up()
+                .add("fee").set("0").up()
+                .add("alive").set("true").up()
+                .add("publish").set("false").up()
+                .add("adviser").set("0crat").up()
+                .add("architect").set("1crat").up()
+                .add("members").up()
+                .add("jobs").set(0).up()
+                .add("orders").set(0).up()
+                .add("cash").attr("deficit", false).set(Cash.ZERO).up()
+                .add("languages").up()
+        );
         final AtomicInteger counter = new AtomicInteger(0);
         final int batches = Tv.FIVE;
         for (int count = 0; count < batches; ++count) {

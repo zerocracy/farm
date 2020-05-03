@@ -30,12 +30,12 @@ release:
     - settings.xml
   script: |
     [[ "${tag}" =~ ^[0-9]+(\.[0-9]+)*$ ]] || exit -1
-    mvn clean process-resources --quiet
-    mvn clean versions:set "-DnewVersion=${tag}" --quiet
+    mvn clean process-resources --settings=./no-settings.xml --quiet
+    mvn clean versions:set --settings=./no-settings.xml "-DnewVersion=${tag}" --quiet
     git commit -am "${tag}"
     cp ../settings.xml settings.xml
     mvn clean package -Pqulice,codenarc,zc-farm --errors --batch-mode --quiet --settings ../settings.xml
-    git remote add dokku dokku@dokku.0crat.com:zerocrat
+    git remote add heroku git@heroku.com:zerocrat.git
     mkdir ~/.ssh
     mv ../id_rsa ../id_rsa.pub ~/.ssh
     chmod -R 600 ~/.ssh/*
@@ -45,7 +45,7 @@ release:
     mvn initialize -Pshutdown --settings settings.xml
     mvn liquibase:update -Pliquibase --errors --settings settings.xml
     git commit -m 'settings.xml'; trap "git reset HEAD~1" EXIT
-    git push -f dokku $(git symbolic-ref --short HEAD):master
+    git push -f heroku $(git symbolic-ref --short HEAD):master
     rm -rf settings.xml
     curl -f --connect-timeout 15 --retry 5 --retry-delay 30 https://www.0crat.com > /dev/null
 merge:

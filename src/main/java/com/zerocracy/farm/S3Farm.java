@@ -16,15 +16,19 @@
  */
 package com.zerocracy.farm;
 
+import com.jcabi.log.Logger;
 import com.jcabi.s3.Bucket;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
+import com.zerocracy.farm.sync.Locks;
 import com.zerocracy.pmo.Catalog;
+import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.EqualsAndHashCode;
@@ -46,27 +50,18 @@ public final class S3Farm implements Farm {
     private final Bucket bucket;
 
     /**
-     * Path to temporary storage.
+     * Locks.
      */
-    private final Path temp;
+    private final Locks locks;
 
     /**
      * Ctor.
      * @param bkt Bucket
-     * @throws IOException If fails
+     * @param locks Locks
      */
-    public S3Farm(final Bucket bkt) throws IOException {
-        this(bkt, Files.createTempDirectory(""));
-    }
-
-    /**
-     * Ctor.
-     * @param bkt Bucket
-     * @param tmp Temporary storage
-     */
-    public S3Farm(final Bucket bkt, final Path tmp) {
+    public S3Farm(final Bucket bkt, final Locks locks) {
         this.bucket = bkt;
-        this.temp = tmp;
+        this.locks = locks;
     }
 
     @Override
@@ -74,16 +69,36 @@ public final class S3Farm implements Farm {
         Iterable<Project> found;
         if ("@id='PMO'".equals(xpath)) {
             found = new SolidList<>(
-                new S3Project(this.bucket, "PMO/", this.temp)
+                new S3Project(this.bucket, "PMO/")
             );
         } else {
-            final Catalog catalog = new Catalog(this).bootstrap();
-            found = new Mapped<>(
-                prefix -> new S3Project(this.bucket, prefix, this.temp),
-                catalog.findByXPath(xpath)
+            final ReadWriteLock rwl = this.locks.lock(
+                new Pmo(this), "catalog.xml"
             );
-            if (!found.iterator().hasNext()) {
-                found = this.force(catalog, xpath);
+            final Lock lock = rwl.writeLock();
+            try {
+                // @checkstyle MagicNumberCheck (1 line)
+                if (!lock.tryLock(15L, TimeUnit.SECONDS)) {
+                    throw new IOException("Failed to lock in 15 seconds");
+                }
+            } catch (final InterruptedException err) {
+                throw new IllegalStateException("interrupted", err);
+            }
+            Logger.debug(this, "#find(): catalog.xml locked");
+            try {
+                final Catalog catalog = new Catalog(this).bootstrap();
+                found = new Mapped<>(
+                    prefix -> new S3Project(this.bucket, prefix),
+                    catalog.findByXPath(xpath)
+                );
+                final boolean empty = !found.iterator().hasNext();
+                Logger.debug(this, "#find(): empty?=%b", empty);
+                if (empty) {
+                    found = this.force(catalog, xpath);
+                }
+            } finally {
+                lock.unlock();
+                Logger.debug(this, "#find(): unlock");
             }
         }
         return found;
@@ -120,6 +135,9 @@ public final class S3Farm implements Farm {
         final Iterable<Project> found;
         if (matcher.matches()) {
             final String pid = matcher.group(1);
+            Logger.debug(
+                this, "#force(): adding new project: %s", pid
+            );
             catalog.add(
                 pid, String.format("%tY/%1$tm/%s/", new Date(), pid)
             );
@@ -129,5 +147,4 @@ public final class S3Farm implements Farm {
         }
         return found;
     }
-
 }

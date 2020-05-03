@@ -18,9 +18,8 @@ package com.zerocracy.tk.profile;
 
 import com.jcabi.matchers.XhtmlMatchers;
 import com.zerocracy.Farm;
-import com.zerocracy.farm.fake.FkFarm;
-import com.zerocracy.farm.fake.FkProject;
-import com.zerocracy.farm.props.PropsFarm;
+import com.zerocracy.FkFarm;
+import com.zerocracy.FkProject;
 import com.zerocracy.pmo.Awards;
 import com.zerocracy.tk.View;
 import org.hamcrest.MatcherAssert;
@@ -37,7 +36,7 @@ public final class TkAwardsTest {
 
     @Test
     public void rendersXmlAwardsPage() throws Exception {
-        final Farm farm = new PropsFarm(new FkFarm());
+        final Farm farm = FkFarm.props();
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
                 XhtmlMatchers.xhtml(
@@ -50,7 +49,7 @@ public final class TkAwardsTest {
 
     @Test
     public void rendersHtmlAwardsPageForFirefox() throws Exception {
-        final Farm farm = new PropsFarm(new FkFarm());
+        final Farm farm = FkFarm.props();
         final String user = "yegor256";
         final int points = 1234;
         new Awards(farm, user).bootstrap()

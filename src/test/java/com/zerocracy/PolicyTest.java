@@ -16,8 +16,6 @@
  */
 package com.zerocracy;
 
-import com.zerocracy.farm.fake.FkFarm;
-import com.zerocracy.farm.props.PropsFarm;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -33,7 +31,7 @@ public final class PolicyTest {
     @Test
     public void findsBasicNumbers() throws Exception {
         MatcherAssert.assertThat(
-            new Policy(new PropsFarm(new FkFarm())).get("1.min-rep", "???"),
+            new Policy(FkFarm.props()).get("1.min-rep", "???"),
             Matchers.startsWith("??")
         );
     }

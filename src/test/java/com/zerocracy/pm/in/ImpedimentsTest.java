@@ -16,10 +16,11 @@
  */
 package com.zerocracy.pm.in;
 
+import com.zerocracy.Farm;
+import com.zerocracy.FkFarm;
+import com.zerocracy.FkProject;
 import com.zerocracy.Project;
 import com.zerocracy.SoftException;
-import com.zerocracy.farm.fake.FkProject;
-import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pm.scope.Wbs;
 import java.util.UUID;
 import org.hamcrest.MatcherAssert;
@@ -37,11 +38,11 @@ public final class ImpedimentsTest {
     @Test
     public void registerImpediment() throws Exception {
         final Project project = new FkProject();
-        final Impediments imp = new Impediments(new PropsFarm(), project)
+        final Impediments imp = new Impediments(FkFarm.props(), project)
             .bootstrap();
         final String job = "gh:test/test#1";
         new Wbs(project).bootstrap().add(job);
-        new Orders(new PropsFarm(), project).bootstrap()
+        new Orders(FkFarm.props(), project).bootstrap()
             .assign(job, "yegor256", UUID.randomUUID().toString());
         imp.register(job, "test");
         MatcherAssert.assertThat(
@@ -57,7 +58,7 @@ public final class ImpedimentsTest {
     @Test
     public void removesImpediment() throws Exception {
         final Project project = new FkProject();
-        final PropsFarm farm = new PropsFarm();
+        final Farm farm = FkFarm.props();
         final Impediments imp = new Impediments(farm, project).bootstrap();
         final String job = "gh:test/test#2";
         new Wbs(project).bootstrap().add(job);
@@ -86,7 +87,7 @@ public final class ImpedimentsTest {
     @Test(expected = SoftException.class)
     public void removesMissingImpediment() throws Exception {
         final Impediments imp =
-            new Impediments(new PropsFarm(), new FkProject()).bootstrap();
+            new Impediments(FkFarm.props(), new FkProject()).bootstrap();
         imp.remove("gh:test/test#8");
     }
 }

@@ -21,9 +21,9 @@ import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.SoftException
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
-import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.staff.Roles
 
@@ -34,6 +34,7 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo().type('Cancel order')
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
+  Farm farm = binding.variables.farm
   Orders orders = new Orders(farm, project).bootstrap()
   String performer = orders.performer(job)
   Roles roles = new Roles(project).bootstrap()
@@ -54,7 +55,6 @@ def exec(Project project, XML xml) {
     )
   }
   orders.resign(job)
-  Farm farm = binding.variables.farm
   String reason
   if (claim.hasParam('reason')) {
     reason = claim.param('reason')

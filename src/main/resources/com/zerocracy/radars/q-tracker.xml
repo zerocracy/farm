@@ -123,6 +123,13 @@ SOFTWARE.
     </opts>
   </cmd>
   <cmd>
+    <code>Elect performer</code>
+    <regex>elect</regex>
+    <label>elect</label>
+    <help>Trigger election for ticket</help>
+    <invited>true</invited>
+  </cmd>
+  <cmd>
     <code>Pay extra</code>
     <regex>pay|extra</regex>
     <label>pay</label>

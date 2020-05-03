@@ -17,7 +17,6 @@
 package com.zerocracy.tk;
 
 import com.zerocracy.Farm;
-import com.zerocracy.Item;
 import com.zerocracy.Xocument;
 import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
@@ -68,8 +67,8 @@ public final class TkTeam implements Take {
             () -> {
                 new RqUser(this.farm, req, false).value();
                 final Collection<XeSource> sources = new LinkedList<>();
-                try (final Item item = new Pmo(this.farm).acq("people.xml")) {
-                    new And(
+                new Pmo(this.farm).acq("people.xml").read(
+                    path -> new And(
                         new FuncOf<>(
                             node -> sources.add(
                                 new XeAppend(
@@ -97,10 +96,10 @@ public final class TkTeam implements Take {
                         ),
                         new Filtered<>(
                             node -> Boolean.parseBoolean(node.xpath("active/text()").get(0)),
-                            new Xocument(item).nodes("/people/person[mentor]")
+                            new Xocument(path).nodes("/people/person[mentor]")
                         )
-                    ).value();
-                }
+                    ).value()
+                );
                 return new XeAppend("people", new XeChain(sources));
             }
         );

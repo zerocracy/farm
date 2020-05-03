@@ -21,16 +21,16 @@ import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.cash.Cash
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
-import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pm.qa.Reviews
 import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pmo.Agenda
 import com.zerocracy.pmo.People
 import org.cactoos.collection.Filtered
-import java.security.SecureRandom
 
+import java.security.SecureRandom
 
 // @todo #1904:30min 0crat often can't update agenda of performer on 'Start QA review'
 //  because failed to find the job in agenda. 0crat is responding with message

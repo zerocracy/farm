@@ -18,7 +18,7 @@ package com.zerocracy.radars.github;
 
 import com.jcabi.github.Github;
 import com.jcabi.github.mock.MkGithub;
-import com.zerocracy.farm.fake.FkFarm;
+import com.zerocracy.FkFarm;
 import java.io.IOException;
 import javax.json.Json;
 import org.hamcrest.MatcherAssert;

@@ -16,6 +16,7 @@
  */
 package com.zerocracy.tools;
 
+import com.zerocracy.FkFarm;
 import java.io.File;
 import org.cactoos.Input;
 import org.cactoos.io.LengthOf;
@@ -40,7 +41,8 @@ public final class LatexITCase {
     public void renders() throws Exception {
         final Input pdf = new Latex(
             "\\documentclass{article}\\begin{document}test\\end{document}",
-            "this is our secret data"
+            "this is our secret data",
+            FkFarm.props()
         ).pdf();
         final File temp = new File("/tmp/bill.pdf");
         new LengthOf(new TeeInput(pdf, temp)).intValue();
@@ -49,5 +51,4 @@ public final class LatexITCase {
             Matchers.greaterThan(0)
         );
     }
-
 }

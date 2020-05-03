@@ -21,9 +21,9 @@ import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Policy
 import com.zerocracy.Project
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
-import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pmo.Awards
 import com.zerocracy.pmo.Pmo
@@ -39,7 +39,7 @@ def exec(Project pmo, XML xml) {
   }
   String student = claim.param('login')
   String job = 'gh:zerocracy/datum#1'
-  int points = -new Policy().get('47.penalty', 256)
+  int points = -new Policy(farm).get('47.penalty', 256)
   String reason = new Par(
     'Penalize for breakup with %s'
   ).say(student)

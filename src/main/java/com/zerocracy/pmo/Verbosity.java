@@ -17,9 +17,8 @@
 package com.zerocracy.pmo;
 
 import com.zerocracy.Farm;
-import com.zerocracy.Item;
+import com.zerocracy.ItemXml;
 import com.zerocracy.Project;
-import com.zerocracy.Xocument;
 import java.io.IOException;
 import java.time.Instant;
 import org.cactoos.iterable.ItemAt;
@@ -87,26 +86,24 @@ public final class Verbosity {
      */
     public void add(final Project project, final String job,
         final int verbosity, final Instant time) throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item).modify(
-                new Directives()
-                    .xpath("/verbosity")
-                    .push()
-                    .xpath(String.format("order[@job='%s']", job))
-                    .remove()
-                    .pop()
-                    .add("order")
-                    .attr("job", job)
-                    .add("project")
-                    .set(project.pid())
-                    .up()
-                    .add("messages")
-                    .set(verbosity)
-                    .up()
-                    .add("added")
-                    .set(time)
-            );
-        }
+        this.item().update(
+            new Directives()
+                .xpath("/verbosity")
+                .push()
+                .xpath(String.format("order[@job='%s']", job))
+                .remove()
+                .pop()
+                .add("order")
+                .attr("job", job)
+                .add("project")
+                .set(project.pid())
+                .up()
+                .add("messages")
+                .set(verbosity)
+                .up()
+                .add("added")
+                .set(time)
+        );
     }
 
     /**
@@ -115,18 +112,15 @@ public final class Verbosity {
      * @throws IOException If fails
      */
     public int messages() throws IOException {
-        try (final Item item = this.item()) {
-            return new IoCheckedScalar<>(
-                new ItemAt<Integer>(
-                    iter -> 0,
-                    new Mapped<>(
-                        Integer::parseInt,
-                        new Xocument(item)
-                            .xpath("/verbosity/order/messages/text()")
-                    )
+        return new IoCheckedScalar<>(
+            new ItemAt<Integer>(
+                iter -> 0,
+                new Mapped<>(
+                    Integer::parseInt,
+                    this.item().xpath("/verbosity/order/messages/text()")
                 )
-            ).value();
-        }
+            )
+        ).value();
     }
 
     /**
@@ -135,31 +129,25 @@ public final class Verbosity {
      * @throws IOException If failed
      */
     public void removeOlderThan(final Instant date) throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
-                new Directives()
-                    .xpath(
-                        new JoinedText(
-                            "",
-                            "/verbosity/order[xs:dateTime(added) < ",
-                            "xs:dateTime('",
-                            date.toString(),
-                            "')]"
-                        ).asString()
-                    ).remove()
-            );
-        }
+        this.item().update(
+            new Directives()
+                .xpath(
+                    new JoinedText(
+                        "",
+                        "/verbosity/order[xs:dateTime(added) < ",
+                        "xs:dateTime('",
+                        date.toString(),
+                        "')]"
+                    ).asString()
+                ).remove()
+        );
     }
 
     /**
      * Bootstrap it.
      * @return This
-     * @throws IOException If fails
      */
-    public Verbosity bootstrap() throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).bootstrap("pmo/verbosity");
-        }
+    public Verbosity bootstrap() {
         return this;
     }
 
@@ -168,9 +156,12 @@ public final class Verbosity {
      * @return Item
      * @throws IOException If fails
      */
-    private Item item() throws IOException {
-        return this.pkt.acq(
-            String.format("verbosity/%s.xml", this.login)
+    private ItemXml item() throws IOException {
+        return new ItemXml(
+            this.pkt.acq(
+                String.format("verbosity/%s.xml", this.login)
+            ),
+            "pmo/verbosity"
         );
     }
 }

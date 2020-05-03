@@ -16,19 +16,13 @@
  */
 package com.zerocracy.farm.props;
 
-import com.jcabi.xml.XMLDocument;
 import com.zerocracy.Item;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import lombok.EqualsAndHashCode;
-import org.cactoos.io.LengthOf;
-import org.cactoos.io.ResourceOf;
-import org.cactoos.io.TeeInput;
-import org.cactoos.text.TextOf;
-import org.xembly.Directive;
-import org.xembly.Directives;
-import org.xembly.Xembler;
+import org.cactoos.Func;
+import org.cactoos.Proc;
+import org.cactoos.func.IoCheckedFunc;
 
 /**
  * Props item.
@@ -37,35 +31,20 @@ import org.xembly.Xembler;
  *
  * @since 1.0
  */
-@EqualsAndHashCode(of = "temp")
+@EqualsAndHashCode(of = "props")
 final class PropsItem implements Item {
 
     /**
      * Temp file.
      */
-    private final Path temp;
-
-    /**
-     * Post processing.
-     */
-    private final Iterable<Directive> post;
+    private final Path props;
 
     /**
      * Ctor.
-     * @param tmp Temp file
+     * @param props Temp file
      */
-    PropsItem(final Path tmp) {
-        this(tmp, new Directives());
-    }
-
-    /**
-     * Ctor.
-     * @param tmp Temp file
-     * @param dirs Post processing dirs
-     */
-    PropsItem(final Path tmp, final Iterable<Directive> dirs) {
-        this.temp = tmp;
-        this.post = dirs;
+    PropsItem(final Path props) {
+        this.props = props;
     }
 
     @Override
@@ -74,32 +53,12 @@ final class PropsItem implements Item {
     }
 
     @Override
-    public Path path() throws IOException {
-        final Directives dirs = new Directives();
-        if (this.getClass().getResource("/org/junit/Test.class") != null) {
-            dirs.xpath("/props").add("testing").set("yes");
-        }
-        dirs.append(this.post);
-        new LengthOf(
-            new TeeInput(
-                new XMLDocument(
-                    new Xembler(dirs).applyQuietly(
-                        new XMLDocument(
-                            new TextOf(
-                                new ResourceOf("com/zerocracy/_props.xml")
-                            ).asString()
-                        ).node()
-                    )
-                ).toString(),
-                this.temp
-            )
-        ).intValue();
-        return this.temp;
+    public <T> T read(final Func<Path, T> reader) throws IOException {
+        return new IoCheckedFunc<>(reader).apply(this.props);
     }
 
     @Override
-    public void close() throws IOException {
-        Files.delete(this.temp);
+    public void update(final Proc<Path> writer) throws IOException {
+        throw new IOException("props is readonly");
     }
-
 }

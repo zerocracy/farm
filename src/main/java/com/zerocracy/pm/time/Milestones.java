@@ -16,9 +16,8 @@
  */
 package com.zerocracy.pm.time;
 
-import com.zerocracy.Item;
+import com.zerocracy.ItemXml;
 import com.zerocracy.Project;
-import com.zerocracy.Xocument;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
@@ -49,12 +48,8 @@ public final class Milestones {
     /**
      * Bootstrap it.
      * @return Itself
-     * @throws IOException If fails
      */
-    public Milestones bootstrap() throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).bootstrap("pm/time/milestones");
-        }
+    public Milestones bootstrap() {
         return this;
     }
 
@@ -66,26 +61,24 @@ public final class Milestones {
      */
     public void add(final String milestone, final LocalDate time)
         throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
-                new Directives()
-                    .xpath("/milestones")
-                    .add("milestone")
-                    .attr("id", milestone)
-                    .add("date")
-                    .set(
-                        new DateAsText(
-                            Date.from(
-                                time.atStartOfDay()
-                                    .atZone(ZoneOffset.UTC)
-                                    .toInstant()
-                            )
-                        ).asString()
-                    )
-                    .up()
-                    .up()
-            );
-        }
+        this.item().update(
+            new Directives()
+                .xpath("/milestones")
+                .add("milestone")
+                .attr("id", milestone)
+                .add("date")
+                .set(
+                    new DateAsText(
+                        Date.from(
+                            time.atStartOfDay()
+                                .atZone(ZoneOffset.UTC)
+                                .toInstant()
+                        )
+                    ).asString()
+                )
+                .up()
+                .up()
+        );
     }
 
     /**
@@ -94,10 +87,7 @@ public final class Milestones {
      * @throws IOException If fails
      */
     public Iterable<String> iterate() throws IOException {
-        try (final Item item = this.item()) {
-            return new Xocument(item.path())
-                .xpath("/milestones/milestone/@id");
-        }
+        return this.item().xpath("/milestones/milestone/@id");
     }
 
     /**
@@ -105,7 +95,10 @@ public final class Milestones {
      * @return Item
      * @throws IOException If fails
      */
-    private Item item() throws IOException {
-        return this.project.acq("milestones.xml");
+    private ItemXml item() throws IOException {
+        return new ItemXml(
+            this.project.acq("milestones.xml"),
+            "pm/time/milestones"
+        );
     }
 }
