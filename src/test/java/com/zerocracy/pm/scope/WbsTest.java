@@ -29,7 +29,8 @@ import org.junit.Test;
  * @since 1.0
  * @todo #1640:30min Implement wbs.add(job, author) and wbs.author(job) methods
  *  to change wbs.add() method behavior (every wbs item should have an author).
- *  After this, remove addsAndRemovesJobs() test and replace it by
+ *  The method wbs.add(job) must be deleted when wbs.add(job, author) is
+ *  implemented. After this, remove addsAndRemovesJobs() test and replace it by
  *  addsAndRemovesJobWithAuthor() removing its ignore annotation.
  * @checkstyle JavadocMethodCheck (500 lines)
  */
