@@ -30,6 +30,9 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo().type('Order was finished', 'Order was canceled')
   Farm farm = binding.variables.farm
   ClaimIn claim = new ClaimIn(xml)
+  if (!claim.hasParam('age')) {
+    return
+  }
   String job = claim.param('job')
   long age = Long.parseLong(claim.param('age'))
   String login = claim.param('login')
