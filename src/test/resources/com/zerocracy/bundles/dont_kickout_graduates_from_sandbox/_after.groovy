@@ -25,7 +25,6 @@ import org.hamcrest.core.IsCollectionContaining
 import org.hamcrest.core.IsEqual
 
 def exec(Project project, XML xml) {
-  Farm farm = binding.variables.farm
   Roles roles = new Roles(project).bootstrap()
   MatcherAssert.assertThat(
     'Must not remove DEV role from paulodamaso',
