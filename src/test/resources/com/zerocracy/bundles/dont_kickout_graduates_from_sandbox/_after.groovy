@@ -17,18 +17,12 @@
 package com.zerocracy.bundles.dont_kickout_graduates_from_sandbox
 
 import com.jcabi.xml.XML
-import com.mongodb.client.model.Filters
 import com.zerocracy.Farm
 import com.zerocracy.Project
-import com.zerocracy.claims.Footprint
 import com.zerocracy.pm.staff.Roles
-import com.zerocracy.pmo.People
 import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
-import org.hamcrest.collection.IsEmptyIterable
 import org.hamcrest.core.IsCollectionContaining
 import org.hamcrest.core.IsEqual
-import org.hamcrest.core.IsNot
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
