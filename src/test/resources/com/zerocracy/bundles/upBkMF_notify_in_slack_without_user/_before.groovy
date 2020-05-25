@@ -17,38 +17,21 @@
 package com.zerocracy.bundles.notify_in_slack_without_user
 
 import com.jcabi.xml.XML
-import com.ullink.slack.simpleslackapi.SlackChannel
-import com.ullink.slack.simpleslackapi.SlackUser
 import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.claims.ClaimOut
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.entry.ExtSlack
-import com.zerocracy.radars.slack.SkSession
-import org.mockito.Mockito
+import com.zerocracy.radars.slack.FkSkSession
 
-/**
- * @todo #1139:30min Finish implementation of FkSkSession, FkTeam and
- *  FkPersona, fake classes implementing SkSession, SlackTeam and
- *  SlackPersona. Then use these classes to replace Mockito in tests
- */
 def exec(Project project, XML xml) {
   String channelId = 'C123'
   binding.variables.slack_testing = true
-  SkSession session = Mockito.mock(SkSession)
-  Mockito.when(session.user(Mockito.any(String)))
-    .thenReturn(null)
-  Mockito.when(session.openDirectMessageChannel(Mockito.<SlackUser>isNull()))
-    .thenThrow(NullPointerException)
-  SlackChannel channel = Mockito.mock(SlackChannel)
-  Mockito.when(channel.id).thenReturn(channelId)
   Farm farm = binding.variables.farm
-  new ExtSlack(farm).value()[channelId] = session
+  new ExtSlack(farm).value()[channelId] = new FkSkSession()
   new ClaimOut()
     .type('Notify in Slack')
-    .token("slack;${channelId};none;one-more-part")
+    .token("slack;${channelId};none;direct")
     .param('message', 'Hello None!')
     .postTo(new ClaimsOf(farm, project))
 }
-
-
