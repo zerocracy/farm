@@ -17,7 +17,6 @@
 package com.zerocracy.bundles.dont_kickout_graduates_from_sandbox
 
 import com.jcabi.xml.XML
-import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.pm.staff.Roles
 import org.hamcrest.MatcherAssert
