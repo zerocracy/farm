@@ -151,8 +151,12 @@ public final class Zold {
         if (rsp.status() != HttpURLConnection.HTTP_OK) {
             new ZldError(rsp).raise("Failed to get rates");
         }
-        return Json.createReader(new StringReader(rsp.body()))
-            .readObject()
+        final JsonObject json = Json.createReader(new StringReader(rsp.body()))
+            .readObject();
+        if (!json.getBoolean("valid")) {
+            new ZldError(rsp).raise("WTS rates response is invalid");
+        }
+        return json
             .getJsonNumber("usd_rate")
             .bigDecimalValue();
     }
