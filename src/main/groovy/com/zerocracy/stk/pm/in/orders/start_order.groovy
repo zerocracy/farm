@@ -109,7 +109,10 @@ def exec(Project project, XML xml) {
   } else {
     msg += new Par('; there will be no monetary reward for this job').say()
   }
-  claim.reply(msg).postTo(new ClaimsOf(farm, project))
+  People people = new People(farm)
+  if (people.exists(login) && people.reputation(login) < 256) {
+    claim.reply(msg).postTo(new ClaimsOf(farm, project))
+  }
   claim.copy()
     .type('Order was given')
     .param('role', role)

@@ -40,7 +40,7 @@ def exec(Project project, XML xml) {
   Github github = new ExtGithub(farm).value()
   Issue.Smart issue = new Issue.Smart(new Job.Issue(github, job))
   try {
-    new IssueLabels.Smart(issue.labels()).removeIfExists('scope')
+    new IssueLabels.Smart(issue.labels()).removeIfExists('0crat/scope')
   } catch (AssertionError ex) {
     Logger.warn(this, "Can't remove label from issue %s: %s", issue, ex.localizedMessage)
   }

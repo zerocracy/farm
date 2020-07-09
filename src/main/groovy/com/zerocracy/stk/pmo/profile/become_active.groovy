@@ -14,34 +14,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.remove_job_from_wbs
+package com.zerocracy.stk.pmo.profile
 
-import com.jcabi.github.Github
-import com.jcabi.github.Issue
-import com.jcabi.github.Repo
-import com.jcabi.github.Repos
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
+import com.zerocracy.Par
 import com.zerocracy.Project
-import com.zerocracy.claims.ClaimOut
+import com.zerocracy.SoftException
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
-import com.zerocracy.entry.ExtGithub
-import com.zerocracy.pm.scope.Wbs
-import org.cactoos.iterable.IterableOf
+import com.zerocracy.farm.Assume
+import com.zerocracy.pmo.Options
+import com.zerocracy.pmo.Pmo
 
-def exec(Project project, XML xml) {
+
+def exec(Project pmo, XML xml) {
+  new Assume(pmo, xml).isPmo().type('Become active')
   Farm farm = binding.variables.farm
-  Github github = new ExtGithub(farm).value()
-  Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
-  Issue issue = repo.issues().create('A bug', '')
-  issue.labels().add(new IterableOf<String>('0crat/scope', 'bug'))
-  String job = "gh:test/test#${issue.number()}"
-  new Wbs(project)
-    .bootstrap()
-    .add(job)
-  new ClaimOut()
-    .type('Remove job from WBS')
-    .token('test;C123;user42')
-    .param('job', job)
-    .postTo(new ClaimsOf(farm, project))
+  ClaimIn claim = new ClaimIn(xml)
+
 }

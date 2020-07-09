@@ -20,9 +20,7 @@ import com.jcabi.github.Comment;
 import com.jcabi.github.Repo;
 import com.zerocracy.Farm;
 import com.zerocracy.Item;
-import com.zerocracy.Par;
 import com.zerocracy.Project;
-import com.zerocracy.SoftException;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Locale;
@@ -68,12 +66,7 @@ public final class GhProject implements Project {
                     )
                 ).iterator();
                 if (!list.hasNext()) {
-                    throw new SoftException(
-                        new Par(
-                            "I'm not managing `%s` GitHub repository,",
-                            "you have to contact me in Slack first, see §11"
-                        ).say(name)
-                    );
+                    throw new GhProjectNotFoundException(repo);
                 }
                 return list.next();
             }
@@ -89,5 +82,4 @@ public final class GhProject implements Project {
     public Item acq(final String file) throws IOException {
         return new IoCheckedScalar<>(this.pkt).value().acq(file);
     }
-
 }

@@ -64,6 +64,8 @@ public final class RbSafe implements Rebound {
                     String result;
                     try {
                         result = this.origin.react(farm, github, event);
+                    } catch (final GhProjectNotFoundException err) {
+                        result = err.getLocalizedMessage();
                     } catch (final SoftException ex) {
                         new ThrottledComments(
                             RbSafe.issue(github, event).comments()

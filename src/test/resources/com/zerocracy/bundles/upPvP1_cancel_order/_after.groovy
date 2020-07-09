@@ -37,7 +37,7 @@ def exec(Project project, XML xml) {
   Bans bans = new Bans(project).bootstrap()
   MatcherAssert.assertThat(
     issue.assignee().login(),
-    Matchers.equalTo('')
+    Matchers.equalTo('g4s8')
   )
   MatcherAssert.assertThat(
     new Agenda(farm, 'g4s8').bootstrap().exists('gh:test/test#1'),

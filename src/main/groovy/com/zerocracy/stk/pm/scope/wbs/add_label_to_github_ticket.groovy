@@ -43,13 +43,14 @@ def exec(Project project, XML xml) {
   Github github = new ExtGithub(farm).value()
   Issue.Smart issue = new Issue.Smart(new Job.Issue(github, job))
   IssueLabels labels = new IssueLabels.Smart(issue.labels())
+  labels.removeIfExists('0crat/new')
   try {
-    labels.addIfAbsent('scope', '3a6622')
+    labels.addIfAbsent('0crat/scope', '3a6622')
   } catch (AssertionError ex) {
     Logger.warn(this, "Can't add label to issue %s: %s", issue, ex.localizedMessage)
   }
   try {
-    labels.addIfAbsent("role/${role}", '581249')
+    labels.addIfAbsent("0crat/role/${role}", '581249')
   } catch (AssertionError ex) {
     Logger.warn(this, "Can't add label to issue %s: %s", issue, ex.localizedMessage)
   }

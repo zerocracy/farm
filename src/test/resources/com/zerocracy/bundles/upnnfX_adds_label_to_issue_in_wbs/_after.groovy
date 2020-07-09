@@ -48,12 +48,12 @@ def exec(Project project, XML xml) {
   Issue.Smart issueOut = new Issue.Smart(new Job.Issue(github, wbsOut))
   MatcherAssert.assertThat(
     'Issue in WBS does not contain "scope" label',
-    new IssueLabels.Smart(issueIn.labels()).contains('scope'),
+    new IssueLabels.Smart(issueIn.labels()).contains('0crat/scope'),
     Matchers.is(true)
   )
   MatcherAssert.assertThat(
     'Issue not in WBS contains "scope" label',
-    new IssueLabels.Smart(issueOut.labels()).contains('scope'),
+    new IssueLabels.Smart(issueOut.labels()).contains('0crat/scope'),
     Matchers.is(false)
   )
 }

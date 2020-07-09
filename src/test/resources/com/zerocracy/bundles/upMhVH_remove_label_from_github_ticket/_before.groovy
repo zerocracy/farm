@@ -33,7 +33,7 @@ def exec(Project project, XML xml) {
   Github github = new ExtGithub(farm).value()
   Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
   Issue issue = repo.issues().create('A bug', '')
-  issue.labels().add(new IterableOf<String>('scope', 'bug'))
+  issue.labels().add(new IterableOf<String>('0crat/scope', 'bug'))
 
   new ClaimOut()
     .type('Job removed from WBS')

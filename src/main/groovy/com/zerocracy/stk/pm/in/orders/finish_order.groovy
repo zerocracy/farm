@@ -44,6 +44,7 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Finish order')
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
+  Farm farm = binding.variables.farm
   Orders orders = new Orders(farm, project).bootstrap()
   Instant closed
   if (claim.hasParam('closed')) {
@@ -52,11 +53,13 @@ def exec(Project project, XML xml) {
     closed = Instant.now()
   }
 
+  if (!orders.assigned(job)) {
+    return
+  }
   long velocity = closed.toEpochMilli() - orders.startTime(job).time
   String performer = orders.performer(job)
   Estimates estimates = new Estimates(farm, project).bootstrap()
   Cash price = Cash.ZERO
-  Farm farm = binding.variables.farm
   int speed = 0
   if (velocity <= Duration.ofHours(new Policy(farm).get('36.hours', 48)).toMillis()) {
     // @todo #1381:30min This message has to be moved to the final message in
