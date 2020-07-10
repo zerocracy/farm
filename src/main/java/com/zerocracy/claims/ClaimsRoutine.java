@@ -30,7 +30,7 @@ import com.jcabi.xml.XMLDocument;
 import com.zerocracy.Farm;
 import com.zerocracy.claims.proc.MsgExpired;
 import com.zerocracy.entry.ExtSqs;
-import com.zerocracy.shutdown.ShutdownFarm;
+import com.zerocracy.shutdown.ShutdownHook;
 import java.io.Closeable;
 import java.time.Duration;
 import java.time.Instant;
@@ -130,7 +130,7 @@ public final class ClaimsRoutine implements Runnable, Closeable {
      *
      * @param shutdown Shutdown hook
      */
-    public void start(final ShutdownFarm.Hook shutdown) {
+    public void start(final ShutdownHook shutdown) {
         Logger.info(
             this,
             "Starting claims routine with local queue size = %s",
@@ -331,7 +331,7 @@ public final class ClaimsRoutine implements Runnable, Closeable {
         /**
          * Shutdown hook.
          */
-        private final ShutdownFarm.Hook shutdown;
+        private final ShutdownHook shutdown;
 
         /**
          * Ctor.
@@ -340,7 +340,7 @@ public final class ClaimsRoutine implements Runnable, Closeable {
          * @param shutdown Shutdown hook
          */
         ShutdownRunnable(final Runnable origin,
-            final ShutdownFarm.Hook shutdown) {
+            final ShutdownHook shutdown) {
             this.origin = origin;
             this.shutdown = shutdown;
         }

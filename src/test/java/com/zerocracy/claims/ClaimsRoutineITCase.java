@@ -28,7 +28,7 @@ import com.zerocracy.claims.proc.SqsProject;
 import com.zerocracy.entry.ExtSqs;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.farm.props.PropsFarm;
-import com.zerocracy.shutdown.ShutdownFarm;
+import com.zerocracy.shutdown.ShutdownHook;
 import java.util.concurrent.TimeUnit;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -62,7 +62,7 @@ public final class ClaimsRoutineITCase {
         final String queue = new ClaimsQueueUrl(farm).asString();
         final ClaimsSqs claims = new ClaimsSqs(farm, sqs, queue, project);
         final ClaimsRoutine routine = new ClaimsRoutine(farm);
-        routine.start(new ShutdownFarm.Hook());
+        routine.start(new ShutdownHook());
         TimeUnit.SECONDS.sleep((long) Tv.FIVE);
         final String type = "test";
         new ClaimOut()

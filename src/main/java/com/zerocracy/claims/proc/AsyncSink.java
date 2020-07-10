@@ -24,7 +24,7 @@ import com.zerocracy.Farm;
 import com.zerocracy.claims.ClaimsQueueUrl;
 import com.zerocracy.claims.MsgPriority;
 import com.zerocracy.entry.ExtSqs;
-import com.zerocracy.shutdown.ShutdownFarm;
+import com.zerocracy.shutdown.ShutdownHook;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -58,7 +58,7 @@ public final class AsyncSink {
     /**
      * Shutdown hook.
      */
-    private final ShutdownFarm.Hook shutdown;
+    private final ShutdownHook shutdown;
 
     /**
      * Queue per project map.
@@ -79,7 +79,7 @@ public final class AsyncSink {
      * @checkstyle ParameterNumberCheck (3 lines)
      */
     public AsyncSink(final Proc<Message> origin,
-        final ShutdownFarm.Hook shutdown, final Farm farm) {
+        final ShutdownHook shutdown, final Farm farm) {
         this.origin = origin;
         this.shutdown = shutdown;
         this.farm = farm;

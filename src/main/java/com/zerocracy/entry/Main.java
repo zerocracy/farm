@@ -34,7 +34,7 @@ import com.zerocracy.radars.slack.SlackRadar;
 import com.zerocracy.radars.slack.TkSlack;
 import com.zerocracy.radars.viber.TkViber;
 import com.zerocracy.sentry.SafeSentry;
-import com.zerocracy.shutdown.ShutdownFarm;
+import com.zerocracy.shutdown.ShutdownHook;
 import com.zerocracy.tk.TkAlias;
 import com.zerocracy.tk.TkApp;
 import com.zerocracy.tk.TkSentry;
@@ -103,22 +103,19 @@ public final class Main {
     @SuppressWarnings("unchecked")
     public void exec() throws IOException {
         Logger.info(this, "Farm is ready to start");
-        final ShutdownFarm.Hook shutdown = new ShutdownFarm.Hook();
+        final ShutdownHook shutdown = new ShutdownHook();
         final ClaimGuts cgts = new ClaimGuts();
         final TestLocks locks = new TestLocks();
         try (
             final MessageSink farm = new MessageSink(
-                new ShutdownFarm(
-                    new ClaimsFarm(
-                        new TempFiles.Farm(
-                            new SmartFarm(
-                                new S3Farm(new ExtBucket().value(), locks),
-                                locks
-                            )
-                        ),
-                        cgts
+                new ClaimsFarm(
+                    new TempFiles.Farm(
+                        new SmartFarm(
+                            new S3Farm(new ExtBucket().value(), locks),
+                            locks
+                        )
                     ),
-                    shutdown
+                    cgts
                 ),
                 shutdown
             );
@@ -141,6 +138,7 @@ public final class Main {
             ).exec(null);
             new GithubRoutine(farm).start();
             new Pings(farm).start();
+            shutdown.register(Runtime.getRuntime());
             new FtCli(
                 new TkApp(
                     farm,

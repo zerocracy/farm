@@ -28,7 +28,7 @@ import com.jcabi.log.VerboseThreads;
 import com.zerocracy.Farm;
 import com.zerocracy.claims.ClaimsQueueUrl;
 import com.zerocracy.entry.ExtSqs;
-import com.zerocracy.shutdown.ShutdownFarm;
+import com.zerocracy.shutdown.ShutdownHook;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -88,7 +88,7 @@ public final class MessageMonitorProc implements Proc<Message> {
     /**
      * Shutdown hook.
      */
-    private final ShutdownFarm.Hook shutdown;
+    private final ShutdownHook shutdown;
 
     /**
      * Ctor.
@@ -98,7 +98,7 @@ public final class MessageMonitorProc implements Proc<Message> {
      * @param shutdown Shutdown hook
      */
     public MessageMonitorProc(final Farm farm, final Proc<Message> origin,
-        final ShutdownFarm.Hook shutdown) {
+        final ShutdownHook shutdown) {
         this(
             origin,
             farm,
@@ -121,7 +121,7 @@ public final class MessageMonitorProc implements Proc<Message> {
     public MessageMonitorProc(final Proc<Message> origin,
         final Farm farm,
         final long interval, final int duration,
-        final ShutdownFarm.Hook shutdown) {
+        final ShutdownHook shutdown) {
         this.origin = origin;
         this.farm = farm;
         this.duration = duration;

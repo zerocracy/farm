@@ -30,7 +30,7 @@ import com.zerocracy.claims.proc.MessageMonitorProc;
 import com.zerocracy.claims.proc.ProcGuts;
 import com.zerocracy.claims.proc.SentryProc;
 import com.zerocracy.farm.guts.Guts;
-import com.zerocracy.shutdown.ShutdownFarm;
+import com.zerocracy.shutdown.ShutdownHook;
 import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -72,7 +72,7 @@ public final class MessageSink implements Farm {
      * @param shutdown Shutdown
      */
     @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-    public MessageSink(final Farm farm, final ShutdownFarm.Hook shutdown) {
+    public MessageSink(final Farm farm, final ShutdownHook shutdown) {
         final ProcGuts proc = new ProcGuts(
             new FootprintProc(
                 farm,
