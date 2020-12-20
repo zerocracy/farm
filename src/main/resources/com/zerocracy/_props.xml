@@ -35,6 +35,7 @@ SOFTWARE.
     <app.client_secret>${github.app.client_secret}</app.client_secret>
     <zerocrat.login>0crat</zerocrat.login>
     <zerocrat.password>${github.0crat.password}</zerocrat.password>
+    <zerocrat.token>${github.0crat.token}</zerocrat.token>
     <webhook.url>http://www.rehttp.net/p/https://www.0crat.com/ghook</webhook.url>
   </github>
   <slack>
