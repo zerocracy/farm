@@ -81,10 +81,7 @@ public final class ExtGithub implements Scalar<Github> {
      */
     private static Github prod(final Props props) throws IOException {
         return new RtGithub(
-            new RtGithub(
-                props.get("//github//zerocrat.login"),
-                props.get("//github//zerocrat.password")
-            )
+            new RtGithub(props.get("//github//zerocrat.token"))
                 .entry()
                 .through(CachingWire.class, "(POST|PUT|PATCH) .*")
                 .through(OneMinuteWire.class)
