@@ -50,7 +50,7 @@ def exec(Project project, XML xml) {
     if (!people.hasMentor(uid)) {
       return
     }
-    if (uid == 'victornoel') {
+    if (uid == 'victornoel' || uid == 'andreoss') {
       // @todo #2030:30min Reimplement this stakeholder in such way:
       //  it should react to 'Reputation was updated' for the user,
       //  and if it was less than 1024 but becomes greater than 1024 then
