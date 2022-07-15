@@ -78,7 +78,7 @@ SOFTWARE.
     <mongo.version>3.8.0</mongo.version>
     <telegram.version>3.6</telegram.version>
     <branch.coverage>0.42</branch.coverage>
-    <aws.version>1.11.211</aws.version>
+    <aws.version>1.12.261</aws.version>
     <groovy.version>2.4.15</groovy.version>
     <argLine>-Duser.language=en -Duser.country=US</argLine>
   </properties>
