@@ -33,7 +33,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
-import org.cactoos.cache.SoftFunc;
+import org.cactoos.func.SolidFunc;
 import org.cactoos.func.SyncFunc;
 import org.cactoos.func.UncheckedFunc;
 import org.cactoos.io.InputOf;
@@ -81,7 +81,7 @@ public final class Xocument {
      */
     private static final UncheckedFunc<URL, XML> INDEXES = new UncheckedFunc<>(
         new SyncFunc<>(
-            new SoftFunc<>(
+            new SolidFunc<>(
                 url -> new XMLDocument(
                     new TextOf(
                         new InputWithFallback(

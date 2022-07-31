@@ -82,13 +82,6 @@ SOFTWARE.
     <groovy.version>2.4.15</groovy.version>
     <argLine>-Duser.language=en -Duser.country=US</argLine>
   </properties>
-  <repositories>
-    <repository>
-      <id>bintray-g4s8-maven</id>
-      <name>bintray-g4s8-maven</name>
-      <url>https://dl.bintray.com/g4s8/mvn</url>
-    </repository>
-  </repositories>
   <dependencies>
     <dependency>
       <groupId>org.cactoos</groupId>
@@ -432,11 +425,6 @@ SOFTWARE.
       <groupId>commons-dbcp</groupId>
       <artifactId>commons-dbcp</artifactId>
       <version>1.4</version>
-    </dependency>
-    <dependency>
-      <groupId>com.g4s8</groupId>
-      <artifactId>cactoos-cache</artifactId>
-      <version>0.1.3</version>
     </dependency>
     <dependency>
       <groupId>com.sun.grizzly</groupId>
