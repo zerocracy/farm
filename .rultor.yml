@@ -1,7 +1,8 @@
+docker:
+  image: yegor256/rultor-image:1.9.1
 assets:
   settings.xml: yegor256/home#assets/zerocracy/settings.xml
-  id_rsa: yegor256/home#assets/heroku-key
-  id_rsa.pub: yegor256/home#assets/heroku-key.pub
+  heroku-netrc: yegor256/home#assets/heroku-netrc
 install: |
   sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6
   echo "deb [ arch=amd64 ] http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
@@ -31,11 +32,8 @@ release:
     git commit -am "${tag}"
     cp ../settings.xml settings.xml
     mvn clean package -Pqulice,codenarc,zc-farm --errors --batch-mode --quiet --settings ../settings.xml
-    git remote add heroku git@heroku.com:zerocrat.git
-    mkdir ~/.ssh
-    mv ../id_rsa ../id_rsa.pub ~/.ssh
-    chmod -R 600 ~/.ssh/*
-    echo -e "Host *\n  StrictHostKeyChecking no\n  UserKnownHostsFile=/dev/null" > ~/.ssh/config
+    git remote add heroku https://git.heroku.com/rultor.git
+    mv ../heroku-netrc ~/.netrc
     git fetch
     git add settings.xml
     mvn initialize -Pshutdown --settings settings.xml
@@ -51,6 +49,3 @@ merge:
     mvn help:system install -Pqulice,codenarc --settings ../settings.xml
     mvn clean site -Psite --settings ../settings.xml --quiet
     git commit -am "updated resources" || echo "nothing to update"
-architect:
-  - g4s8
-  - yegor256

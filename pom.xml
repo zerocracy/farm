@@ -202,9 +202,9 @@ SOFTWARE.
       <version>0.9.11</version>
     </dependency>
     <dependency>
-      <groupId>com.github.mongobee</groupId>
+      <groupId>com.github.dalet-oss</groupId>
       <artifactId>mongobee</artifactId>
-      <version>0.13</version>
+      <version>1.0.4</version>
       <exclusions>
         <exclusion>
           <groupId>org.mongodb</groupId>
