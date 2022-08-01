@@ -195,21 +195,21 @@ public final class ExtMongo implements Scalar<MongoClient> {
                     ExtMongo.FAKE.apply(this.id)
                 );
             } else {
-                client = realMongoClient(
-                    testHost(),
-                    testPort(),
-                    testUser(),
-                    testPassword(),
-                    testDbName()
+                client = ExtMongo.realMongoClient(
+                    ExtMongo.testHost(),
+                    ExtMongo.testPort(),
+                    ExtMongo.testUser(),
+                    ExtMongo.testPassword(),
+                    ExtMongo.testDbName()
                 );
             }
         } else {
-            client = realMongoClient(
+            client = ExtMongo.realMongoClient(
                 props.get("//mongo/host"),
                 Integer.parseInt(props.get("//mongo/port")),
                 props.get("//mongo/user"),
                 props.get("//mongo/password"),
-                props.get("//mongo/dbname")
+                props.get("//mongo/source")
             );
         }
         return client;

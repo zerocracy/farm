@@ -76,6 +76,7 @@ SOFTWARE.
     <secret>${cloudwatch.secret}</secret>
   </cloudwatch>
   <mongo>
+    <source>${mongo.source}</source>
     <dbname>${mongo.dbname}</dbname>
     <host>${mongo.host}</host>
     <port>${mongo.port}</port>
