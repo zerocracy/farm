@@ -33,41 +33,41 @@ import java.util.concurrent.TimeUnit
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Ping hourly')
-  ClaimIn claim = new ClaimIn(xml)
-  Orders orders = new Orders(farm, project).bootstrap()
-  Wbs wbs = new Wbs(project).bootstrap()
-  Roles roles = new Roles(project).bootstrap()
-  Bans bans = new Bans(project).bootstrap()
-  Farm farm = binding.variables.farm
-  String arc = roles.findByRole('ARC')[0]
-  wbs.iterate().each { job ->
-    if (orders.assigned(job)) {
-      return
-    }
-    String role = wbs.role(job)
-    boolean available = roles.findByRole(role).any { uid ->
-      !bans.exists(job, uid)
-    }
-    if (available) {
-      return
-    }
-    new Hint(
-      farm,
-      (int) TimeUnit.DAYS.toSeconds(5L),
-      claim.copy()
-        .type('Notify job')
-        .token("job;${job}")
-        .param('mnemo', 'Everybody is banned')
-        .param(
-          'message',
-          new Par(
-            '@%s everybody who has role %s is banned at %s;',
-            'I won\'t be able to assign anyone automatically;',
-            'consider assigning someone manually (as in §19),',
-            'or invite more people (as in §51),',
-            'or remove the job from the scope (as in §14)'
-          ).say(arc, role, job)
-        )
-    ).postTo(project)
-  }
+//  ClaimIn claim = new ClaimIn(xml)
+//  Orders orders = new Orders(farm, project).bootstrap()
+//  Wbs wbs = new Wbs(project).bootstrap()
+//  Roles roles = new Roles(project).bootstrap()
+//  Bans bans = new Bans(project).bootstrap()
+//  Farm farm = binding.variables.farm
+//  String arc = roles.findByRole('ARC')[0]
+//  wbs.iterate().each { job ->
+//    if (orders.assigned(job)) {
+//      return
+//    }
+//    String role = wbs.role(job)
+//    boolean available = roles.findByRole(role).any { uid ->
+//      !bans.exists(job, uid)
+//    }
+//    if (available) {
+//      return
+//    }
+//    new Hint(
+//      farm,
+//      (int) TimeUnit.DAYS.toSeconds(5L),
+//      claim.copy()
+//        .type('Notify job')
+//        .token("job;${job}")
+//        .param('mnemo', 'Everybody is banned')
+//        .param(
+//          'message',
+//          new Par(
+//            '@%s everybody who has role %s is banned at %s;',
+//            'I won\'t be able to assign anyone automatically;',
+//            'consider assigning someone manually (as in §19),',
+//            'or invite more people (as in §51),',
+//            'or remove the job from the scope (as in §14)'
+//          ).say(arc, role, job)
+//        )
+//    ).postTo(project)
+//  }
 }

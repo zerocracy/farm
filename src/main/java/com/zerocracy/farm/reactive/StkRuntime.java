@@ -25,6 +25,7 @@ import com.zerocracy.farm.MismatchException;
 import groovy.lang.Binding;
 import groovy.lang.Script;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import org.codehaus.groovy.runtime.InvokerInvocationException;
 
 /**
@@ -58,14 +59,14 @@ public final class StkRuntime implements Stakeholder {
         try {
             final Binding binding = new Binding();
             binding.setVariable("farm", this.frm);
-            final Script script = this.tpe.newInstance();
+            final Script script = this.tpe.getConstructor().newInstance();
             script.setBinding(binding);
             script.invokeMethod(
                 "exec",
                 new Object[]{project, claim}
             );
         } catch (final IllegalAccessException | InstantiationException
-            | InvokerInvocationException ex) {
+            | InvokerInvocationException | InvocationTargetException ex) {
             if (ex.getCause() instanceof MismatchException) {
                 throw MismatchException.class.cast(ex.getCause());
             }
@@ -80,6 +81,8 @@ public final class StkRuntime implements Stakeholder {
                 ),
                 ex
             );
+        } catch (NoSuchMethodException e) {
+            throw new IllegalStateException(e);
         }
     }
 }
